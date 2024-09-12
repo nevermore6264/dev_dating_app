@@ -223,3 +223,4 @@ boost_id (PK)
 user_id (FK)
 start_time
 end_time
+ó theo nhu cầu cụ thể của dự án và khả năng của đội ngũ phát triển. Nếu bạn cần thêm thông tin chi tiết hoặc có câu hỏi cụ thể nào khác, hãy cho tôi biết!

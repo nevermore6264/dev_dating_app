@@ -96,3 +96,130 @@ plan_id (FK)
 benefit_name (Tên lợi ích, ví dụ: Super Like, Boost)
 benefit_description (Mô tả lợi ích)
 quantity (Số lượng lợi ích, ví dụ: 5 Super Likes mỗi ngày)
+
+Subscription Plan
+-----------------
+plan_id (PK)
+name
+price
+duration
+description
+
+Subscription Benefits
+---------------------
+benefit_id (PK)
+plan_id (FK)
+benefit_name
+benefit_description
+quantity
+
+User
+-----
+user_id (PK)
+email
+password_hash
+created_at
+last_login
+status
+
+Profile
+-------
+profile_id (PK)
+user_id (FK)
+name
+age
+gender
+bio
+location
+created_at
+updated_at
+
+Photo
+-----
+photo_id (PK)
+profile_id (FK)
+url
+created_at
+
+Like
+----
+like_id (PK)
+user_id (FK)
+profile_id (FK)
+created_at
+
+Match
+-----
+match_id (PK)
+user1_id (FK)
+user2_id (FK)
+created_at
+
+Message
+-------
+message_id (PK)
+match_id (FK)
+sender_id (FK)
+content
+created_at
+status
+
+User Preferences
+----------------
+preference_id (PK)
+user_id (FK)
+age_range
+gender_preference
+distance_preference
+
+User Settings
+-------------
+setting_id (PK)
+user_id (FK)
+notifications_enabled
+privacy_level
+
+Profile Verification
+--------------------
+verification_id (PK)
+profile_id (FK)
+status
+document_url
+created_at
+updated_at
+
+User Analytics
+--------------
+analytics_id (PK)
+user_id (FK)
+likes_received
+matches_made
+messages_sent
+
+Match Analytics
+---------------
+analytics_id (PK)
+match_id (FK)
+success_rate
+
+Subscription
+-------------
+subscription_id (PK)
+user_id (FK)
+plan_id (FK)
+start_date
+end_date
+
+Super Like
+-----------
+superlike_id (PK)
+user_id (FK)
+profile_id (FK)
+created_at
+
+Boost
+------
+boost_id (PK)
+user_id (FK)
+start_time
+end_time

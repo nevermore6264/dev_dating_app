@@ -223,4 +223,21 @@ boost_id (PK)
 user_id (FK)
 start_time
 end_time
-ó theo nhu cầu cụ thể của dự án và khả năng của đội ngũ phát triển. Nếu bạn cần thêm thông tin chi tiết hoặc có câu hỏi cụ thể nào khác, hãy cho tôi biết!
+Workflow Tổng Quan
+Dưới đây là mô tả tổng quan về workflow của ứng dụng:
+1. Đăng Ký và Đăng Nhập:
+Người dùng đăng ký và xác nhận email.
+Người dùng đăng nhập và được chuyển hướng đến trang chính.
+Tạo và Quản Lý Hồ Sơ:
+Người dùng tạo và cập nhật hồ sơ.
+Người dùng tải lên và quản lý ảnh.
+3. Tương Tác Người Dùng:
+Người dùng thích và siêu thích hồ sơ của người khác.
+Khi hai người dùng thích nhau, họ kết nối và có thể gửi tin nhắn.
+Sử Dụng Các Tính Năng Cao Cấp:
+Người dùng đăng ký các gói dịch vụ và sử dụng các lợi ích như Super Like và Boost.
+5. Quản Lý Tài Khoản và Cài Đặt:
+Người dùng thiết lập tùy chọn và cài đặt.
+Người dùng gửi tài liệu xác minh hồ sơ.
+6. Phân Tích và Báo Cáo:
+Hệ thống thu thập và lưu trữ dữ liệu phân tích người dùng và kết nối.

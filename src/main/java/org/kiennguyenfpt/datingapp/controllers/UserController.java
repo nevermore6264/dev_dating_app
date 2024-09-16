@@ -2,6 +2,8 @@ package org.kiennguyenfpt.datingapp.controllers;
 
 import org.kiennguyenfpt.datingapp.dtos.ChangePasswordRequest;
 import org.kiennguyenfpt.datingapp.dtos.ForgotPasswordRequest;
+import org.kiennguyenfpt.datingapp.dtos.UpdateProfileRequest;
+import org.kiennguyenfpt.datingapp.entities.Profile;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.services.impl.UserServiceImpl;
@@ -102,6 +104,51 @@ public class UserController {
         } catch (Exception e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setMessage("Error resetting password: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<CommonResponse<Profile>> getProfile(@RequestParam String email) {
+        CommonResponse<Profile> response = new CommonResponse<>();
+        try {
+            User user = userService.findByEmail(email);
+            if (user != null && !user.getProfiles().isEmpty()) {
+                Profile profile = user.getProfiles().get(0); // Giả sử mỗi người dùng chỉ có một hồ sơ
+                response.setStatus(HttpStatus.OK.value());
+                response.setMessage("Profile retrieved successfully");
+                response.setData(profile);
+                return ResponseEntity.ok(response);
+        } else {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setMessage("Profile not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage("Error retrieving profile: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @PostMapping("/update-profile")
+    public ResponseEntity<CommonResponse<User>> updateProfile(@RequestParam String email, @RequestBody UpdateProfileRequest request) {
+        CommonResponse<User> response = new CommonResponse<>();
+        try {
+            User user = userService.updateProfile(email, request);
+            if (user != null) {
+                response.setStatus(HttpStatus.OK.value());
+                response.setMessage("Profile updated successfully");
+                response.setData(user);
+                return ResponseEntity.ok(response);
+            } else {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                response.setMessage("Invalid email");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage("Error updating profile: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

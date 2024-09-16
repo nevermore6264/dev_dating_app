@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: DatingApp
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/datingapp
+    username: root
+    password: trungkien
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true

@@ -1,4 +1,4 @@
-package org.kiennguyenfpt.datingapp.config;
+package org.kiennguyenfpt.datingapp.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,7 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 //@Configuration
 //EnableWebSecurity
-
+//chua dung den
 @Configuration
 public class SecurityConfig {
     @Bean

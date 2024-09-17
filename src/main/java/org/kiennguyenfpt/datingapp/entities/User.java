@@ -4,10 +4,17 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import jakarta.persistence.*;
-import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.kiennguyenfpt.datingapp.enums.UserStatus;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
@@ -39,8 +46,9 @@ public class User {
     @Column(nullable = false)
     private UserStatus status;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Profile> profiles; // Một người dùng có thể có một hồ sơ
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Profile profile; // Một người dùng chỉ có một hồ sơ
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Like> likes; // Danh sách các lượt thích của người dùng

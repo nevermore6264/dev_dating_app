@@ -11,3 +11,7 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+firebase:
+  storage:
+    bucket: gs://datingapp-f4ecb.appspot.com

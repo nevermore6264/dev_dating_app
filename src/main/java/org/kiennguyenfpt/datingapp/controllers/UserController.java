@@ -9,7 +9,12 @@ import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.services.impl.UserServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/v1/users")
@@ -113,12 +118,12 @@ public class UserController {
         CommonResponse<Profile> response = new CommonResponse<>();
         try {
             User user = userService.findByEmail(email);
-            if (user != null && !user.getProfiles().isEmpty()) {
-                Profile profile = user.getProfiles().get(0); // Giả sử mỗi người dùng chỉ có một hồ sơ
-                response.setStatus(HttpStatus.OK.value());
-                response.setMessage("Profile retrieved successfully");
-                response.setData(profile);
-                return ResponseEntity.ok(response);
+        if (user != null && user.getProfile() != null) {
+            Profile profile = user.getProfile(); // Sử dụng profile của người dùng
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("Profile retrieved successfully");
+            response.setData(profile);
+            return ResponseEntity.ok(response);
         } else {
             response.setStatus(HttpStatus.NOT_FOUND.value());
             response.setMessage("Profile not found");

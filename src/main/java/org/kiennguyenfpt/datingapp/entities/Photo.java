@@ -2,6 +2,7 @@ package org.kiennguyenfpt.datingapp.entities;
 
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
@@ -32,6 +33,7 @@ public class Photo {
 
     @ManyToOne
     @JoinColumn(name = "profile_id", nullable = false)
+    @JsonBackReference
     private Profile profile;
 
     @Column(nullable = false)

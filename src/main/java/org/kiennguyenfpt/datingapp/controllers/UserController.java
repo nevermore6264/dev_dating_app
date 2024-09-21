@@ -3,6 +3,7 @@ package org.kiennguyenfpt.datingapp.controllers;
 import org.kiennguyenfpt.datingapp.dtos.ChangePasswordRequest;
 import org.kiennguyenfpt.datingapp.dtos.ForgotPasswordRequest;
 import org.kiennguyenfpt.datingapp.dtos.UpdateProfileRequest;
+import org.kiennguyenfpt.datingapp.dtos.UserRegistrationRequest;
 import org.kiennguyenfpt.datingapp.entities.Profile;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/v1/users")
 public class UserController {
+
     private final UserServiceImpl userService;
 
     public UserController(UserServiceImpl userService) {
@@ -31,27 +33,42 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<CommonResponse<User>> register(@RequestBody User user) {
+    public ResponseEntity<CommonResponse<User>> register(@RequestBody UserRegistrationRequest userReq) {
+
         CommonResponse<User> response = new CommonResponse<>();
         try {
-            User newUser = userService.register(user);
-            response.setStatus(200);
-            response.setMessage("User registered successfully");
-            response.setData(newUser);
-            return ResponseEntity.ok(response);
-        } catch(Exception exception) {
+            // Validate the user object
+            if (userReq.getEmail() == null || userReq.getPassword() == null) {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                response.setMessage("Email and password must not be null");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+
+            User newUser = userService.register(userReq.getEmail(), userReq.getPassword());
+            if (newUser != null) {
+                response.setStatus(HttpStatus.CREATED.value());
+                response.setMessage("User registered successfully");
+                response.setData(newUser);
+                return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            } else {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                response.setMessage("Registration failed: Email already exists or invalid data");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+        } catch (Exception e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.setMessage("Error registing user: " + exception.getMessage());
+            response.setMessage("Error during registration: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<CommonResponse<String>> login(@RequestParam String email, @RequestParam String password) {
+    public ResponseEntity<CommonResponse<String>> login(@RequestBody UserRegistrationRequest userReq) {
         CommonResponse<String> response = new CommonResponse<>();
         try {
-            User user = userService.login(email, password);
-            if(user != null) {
+            User user = userService.login(userReq.getEmail(), userReq.getPassword());
+            if (user != null) {
                 response.setStatus(HttpStatus.OK.value());
                 response.setMessage("User logged in successfully");
                 response.setData(String.valueOf(user.getUserId()));
@@ -62,7 +79,7 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setMessage("Error during login: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
@@ -73,7 +90,8 @@ public class UserController {
     public ResponseEntity<CommonResponse<User>> changePassword(@RequestBody ChangePasswordRequest request) {
         CommonResponse<User> response = new CommonResponse<>();
         try {
-            User user = userService.changePassword(request.getEmail(), request.getOldPassword(), request.getNewPassword());
+            User user = userService.changePassword(request.getEmail(), request.getOldPassword(),
+                    request.getNewPassword());
             if (user != null) {
                 response.setStatus(HttpStatus.OK.value());
                 response.setMessage("Password changed successfully");
@@ -118,17 +136,17 @@ public class UserController {
         CommonResponse<Profile> response = new CommonResponse<>();
         try {
             User user = userService.findByEmail(email);
-        if (user != null && user.getProfile() != null) {
-            Profile profile = user.getProfile(); // Sử dụng profile của người dùng
-            response.setStatus(HttpStatus.OK.value());
-            response.setMessage("Profile retrieved successfully");
-            response.setData(profile);
-            return ResponseEntity.ok(response);
-        } else {
-            response.setStatus(HttpStatus.NOT_FOUND.value());
-            response.setMessage("Profile not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
+            if (user != null && user.getProfile() != null) {
+                Profile profile = user.getProfile(); // Sử dụng profile của người dùng
+                response.setStatus(HttpStatus.OK.value());
+                response.setMessage("Profile retrieved successfully");
+                response.setData(profile);
+                return ResponseEntity.ok(response);
+            } else {
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+                response.setMessage("Profile not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
         } catch (Exception e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setMessage("Error retrieving profile: " + e.getMessage());
@@ -137,7 +155,8 @@ public class UserController {
     }
 
     @PostMapping("/update-profile")
-    public ResponseEntity<CommonResponse<User>> updateProfile(@RequestParam String email, @RequestBody UpdateProfileRequest request) {
+    public ResponseEntity<CommonResponse<User>> updateProfile(@RequestParam String email,
+            @RequestBody UpdateProfileRequest request) {
         CommonResponse<User> response = new CommonResponse<>();
         try {
             User user = userService.updateProfile(email, request);
@@ -158,12 +177,4 @@ public class UserController {
         }
     }
 
-
-
-
-
-
-
-
 }
-

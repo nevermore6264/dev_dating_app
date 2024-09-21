@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
+
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final UserRepository userRepository;
@@ -26,18 +27,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(User user) {
-        if (!EmailValidator.validate(user.getEmail())) {
+    public User register(String email, String password) {
+        if (!EmailValidator.validate(email)) {
             throw new IllegalArgumentException("Invalid email format!");
         }
-        if (!PasswordValidator.validate(user.getPasswordHash())) {
+        if (!PasswordValidator.validate(password)) {
             throw new IllegalArgumentException("Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character!");
         }
-        if (userRepository.findByEmail(user.getEmail()) != null) {
-            logger.error("Email already exists: " + user.getEmail());
+        if (userRepository.findByEmail(email) != null) {
+            logger.error("Email already exists: " + email);
             throw new IllegalArgumentException("Email already exists");
         }
-        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+        User user = new User();
+        user.setEmail(email);
+        user.setPasswordHash(passwordEncoder.encode(password));
         user.setStatus(UserStatus.ACTIVE);
         try {
             User savedUser = userRepository.save(user);
@@ -69,16 +72,17 @@ public class UserServiceImpl implements UserService {
         if (!EmailValidator.validate(email)) {
             throw new IllegalArgumentException("Invalid email format!");
         }
-        if (!PasswordValidator.validate(newPassword)){
+        if (!PasswordValidator.validate(newPassword)) {
             throw new IllegalArgumentException("Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character!");
         }
         User user = userRepository.findByEmail(email);
-        if(user != null && passwordEncoder.matches(oldPassword, user.getPasswordHash())){
+        if (user != null && passwordEncoder.matches(oldPassword, user.getPasswordHash())) {
             user.setPasswordHash(passwordEncoder.encode(newPassword));
             return userRepository.save(user);
         }
         return null;
     }
+
     /*
     qqgdsgdsgd cafafaf
      */
@@ -92,7 +96,7 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character");
         }
         User user = userRepository.findByEmail(email);
-        if(user != null) {
+        if (user != null) {
             user.setPasswordHash(passwordEncoder.encode(newPassword));
             return userRepository.save(user);
         }

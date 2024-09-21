@@ -46,7 +46,7 @@ public class User {
     @Column(nullable = false)
     private UserStatus status;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
     private Profile profile; // Một người dùng chỉ có một hồ sơ
 

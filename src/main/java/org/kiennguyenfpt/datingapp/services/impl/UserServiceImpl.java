@@ -6,6 +6,7 @@ import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.enums.UserStatus;
 import org.kiennguyenfpt.datingapp.repositories.UserRepository;
 import org.kiennguyenfpt.datingapp.services.UserService;
+import org.kiennguyenfpt.datingapp.utils.PasswordUtil;
 import org.kiennguyenfpt.datingapp.validation.EmailValidator;
 import org.kiennguyenfpt.datingapp.validation.PasswordValidator;
 import org.slf4j.Logger;
@@ -20,19 +21,18 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final EmailServiceImpl emailService;
 
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, EmailServiceImpl emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     @Override
-    public User register(String email, String password) {
+    public User register(String email) {
         if (!EmailValidator.validate(email)) {
             throw new IllegalArgumentException("Invalid email format!");
-        }
-        if (!PasswordValidator.validate(password)) {
-            throw new IllegalArgumentException("Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character!");
         }
         if (userRepository.findByEmail(email) != null) {
             logger.error("Email already exists: " + email);
@@ -40,11 +40,16 @@ public class UserServiceImpl implements UserService {
         }
         User user = new User();
         user.setEmail(email);
-        user.setPasswordHash(passwordEncoder.encode(password));
+        String randomPassword = PasswordUtil.generateRandomPassword();
+        user.setPasswordHash(passwordEncoder.encode(randomPassword));
         user.setStatus(UserStatus.ACTIVE);
+        user.setFirstLogin(true);
         try {
             User savedUser = userRepository.save(user);
             System.out.println("User saved successfully: " + savedUser);
+            // Send email with the random password
+            System.out.println("Generated random password: " + randomPassword);
+            emailService.sendEmail(user.getEmail(), "Your Temporary Password", "Your temporary password is: " + randomPassword);
             return savedUser;
         } catch (Exception e) {
             System.err.println("Error saving user: " + e.getMessage());
@@ -63,6 +68,7 @@ public class UserServiceImpl implements UserService {
             logger.info("User logged in successfully: " + email);
             return user;
         }
+
         logger.warn("Invalid login attempt for email: " + email);
         return null;
     }
@@ -82,10 +88,6 @@ public class UserServiceImpl implements UserService {
         }
         return null;
     }
-
-    /*
-    qqgdsgdsgd cafafaf
-     */
 
     @Override
     public User forgotPassword(String email, String newPassword) {
@@ -137,4 +139,25 @@ public class UserServiceImpl implements UserService {
         }
         return null;
     }
+
+    @Override
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    /*
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with email: " + email);
+        }
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPasswordHash(),
+                new ArrayList<>()
+        );
+    }
+
+     */
 }

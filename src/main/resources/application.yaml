@@ -2,7 +2,23 @@ spring:
   application:
     name: DatingApp
 
+  #Email:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: kientrungak@gmail.com
+    password: hrjp psbp oqce agsq
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
   datasource:
+    #url: jdbc:mysql://datingapp-1.cjgk64oswovm.ap-southeast-2.rds.amazonaws.com:3306/datingapp
+    #username: root
+    #password: huongntn04
     url: jdbc:mysql://localhost:3306/datingapp
     username: root
     password: trungkien
@@ -15,3 +31,5 @@ spring:
 firebase:
   storage:
     bucket: gs://datingapp-f4ecb.appspot.com
+
+

@@ -3,13 +3,24 @@ package org.kiennguyenfpt.datingapp.entities;
 import java.sql.Timestamp;
 import java.util.List;
 
-import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.kiennguyenfpt.datingapp.enums.UserStatus;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +35,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Table(name = "Users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long userId;
@@ -37,6 +49,9 @@ public class User {
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
+
+    @Column(name = "first_login", nullable = false)
+    private boolean firstLogin = true;
 
     @UpdateTimestamp
     @Column(name = "last_login")
@@ -59,4 +74,3 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UserRole> userRoles; // Danh sách vai trò của người dùng
 }
-

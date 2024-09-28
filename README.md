@@ -13,7 +13,22 @@ Quản Lý Gói Dịch Vụ và Lợi Ích: Thêm, sửa, hoặc xóa các gói 
 Quản Lý Giao Dịch: Theo dõi và quản lý các giao dịch mua hàng trong ứng dụng.
 Phân Tích và Báo Cáo: Theo dõi và phân tích dữ liệu người dùng và kết nối, quản lý quảng cáo và doanh thu.
 
+APIs List:
+1) User Register: 
+![image](https://github.com/user-attachments/assets/08a37ca2-cc28-4b0a-bf74-171fd786fabe)
 
+2) User Login:
+- First login:
+![image](https://github.com/user-attachments/assets/e31765bd-ab2a-4a10-942a-af5b27bf2d17)
+
+- Second login to more:
+![image](https://github.com/user-attachments/assets/99010346-c515-41ba-ae0b-e1768dba6e7e)
+
+
+3) User Change-password:
+![image](https://github.com/user-attachments/assets/d05eecf9-e363-484e-834f-d15390c2f0fb)
+
+4) User Forgot-password:
 
 
 

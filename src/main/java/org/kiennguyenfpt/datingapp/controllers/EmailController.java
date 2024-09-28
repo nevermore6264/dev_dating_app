@@ -1,10 +1,5 @@
 package org.kiennguyenfpt.datingapp.controllers;
 
-import jakarta.mail.MessagingException;
-import org.kiennguyenfpt.datingapp.dtos.EmailRequest;
-import org.kiennguyenfpt.datingapp.services.EmailService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

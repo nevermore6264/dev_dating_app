@@ -1,6 +1,6 @@
 package org.kiennguyenfpt.datingapp.services.impl;
 
-import org.kiennguyenfpt.datingapp.dtos.UpdateProfileRequest;
+import org.kiennguyenfpt.datingapp.dtos.requests.UpdateProfileRequest;
 import org.kiennguyenfpt.datingapp.entities.Profile;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.enums.UserStatus;

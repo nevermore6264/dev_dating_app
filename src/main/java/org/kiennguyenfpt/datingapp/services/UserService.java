@@ -1,9 +1,7 @@
 package org.kiennguyenfpt.datingapp.services;
 
-import org.kiennguyenfpt.datingapp.dtos.UpdateProfileRequest;
+import org.kiennguyenfpt.datingapp.dtos.requests.UpdateProfileRequest;
 import org.kiennguyenfpt.datingapp.entities.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService  {
 

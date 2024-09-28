@@ -1,4 +1,4 @@
-package org.kiennguyenfpt.datingapp.dtos;
+package org.kiennguyenfpt.datingapp.dtos.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRegistrationRequest {
-    private String email;
+public class UserLoginRequest {
+    public String email;
+    public String password;
 }

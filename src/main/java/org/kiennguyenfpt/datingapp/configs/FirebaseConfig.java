@@ -11,7 +11,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.StorageClient;
 
-@Configuration
+//@Configuration
 public class FirebaseConfig {
     @Bean
     public FirebaseApp firebaseApp() throws IOException {

@@ -1,4 +1,4 @@
-package org.kiennguyenfpt.datingapp.dtos;
+package org.kiennguyenfpt.datingapp.dtos.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

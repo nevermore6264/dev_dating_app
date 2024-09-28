@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/v1/photos")
 public class PhotoController {
+    /*
     private final PhotoService photoService;
 
     public PhotoController(PhotoService photoService) {
@@ -42,4 +43,6 @@ public class PhotoController {
         }
     }
 
+
+     */
 }

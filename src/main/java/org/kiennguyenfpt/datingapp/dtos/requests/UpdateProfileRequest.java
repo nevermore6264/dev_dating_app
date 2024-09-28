@@ -1,4 +1,4 @@
-package org.kiennguyenfpt.datingapp.dtos;
+package org.kiennguyenfpt.datingapp.dtos.requests;
 
 import org.kiennguyenfpt.datingapp.enums.Gender;
 
@@ -12,6 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateProfileRequest {
+    private String email;
     private String name;
     private Integer age;
     private String bio;

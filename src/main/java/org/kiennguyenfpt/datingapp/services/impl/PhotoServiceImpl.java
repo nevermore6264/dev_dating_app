@@ -13,7 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @Service
-public class PhotoServiceImpl implements PhotoService {
+public class PhotoServiceImpl  {
+    /*
     private final UserRepository userRepository;
     private final PhotoRepository photoRepository;
     private final StorageClient storageClient;
@@ -48,4 +49,6 @@ public class PhotoServiceImpl implements PhotoService {
         }
         return null;
     }
+
+     */
 }

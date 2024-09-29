@@ -65,6 +65,26 @@ APIs List:
 
 ![image](https://github.com/user-attachments/assets/39eb06c2-5830-4663-b01f-244635796070)
 
+6) View profile:
+
+![image](https://github.com/user-attachments/assets/8f8ad7d8-e55d-472b-8b08-11d07807659e)
+
+Handle Error:
+
+![image](https://github.com/user-attachments/assets/b746e059-22da-46d6-8659-39c5343cf8fc)
+
+7) Update profile:
+- First update: (update het)
+
+![image](https://github.com/user-attachments/assets/b4ee65f6-3727-4a5b-bd8b-e5be256a18af)
+
+- Second update to more: (update cai gi cung dc)
+
+![image](https://github.com/user-attachments/assets/f6f01050-42f1-4c8e-b5a5-6a00b966ae9e)
+
+
+
+
 
 
 

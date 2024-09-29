@@ -14,23 +14,46 @@ Quản Lý Giao Dịch: Theo dõi và quản lý các giao dịch mua hàng tron
 Phân Tích và Báo Cáo: Theo dõi và phân tích dữ liệu người dùng và kết nối, quản lý quảng cáo và doanh thu.
 
 #Current Work-Flow:
-1. Đăng ký người dùng
-2. Đăng nhập người dùng
-Thay đổi mật khẩu
-Quên mật khẩu
-Cập nhật hồ sơ
-Gửi tin nhắn
-Hành động "quẹt"
-Tải lên ảnh
-Quản lý bạn bè
-10. Thông báo
-Tìm kiếm người dùng
-Quản lý hồ sơ
-13. Quản lý ảnh
-Báo cáo và chặn người dùng
-15. Lịch sử hoạt động
-16. Tích hợp thanh toán
-17. Quản lý sự kiện
+
+1. Cải thiện Nghiệp Vụ Đăng Ký và Đăng Nhập
+Xác thực Email: Gửi email xác thực khi người dùng đăng ký.
+Đăng nhập bằng mạng xã hội: Cho phép người dùng đăng nhập bằng Google, Facebook, v.v.
+
+2. Cải thiện Hồ Sơ Người Dùng
+Cập nhật hồ sơ: Cho phép người dùng cập nhật hồ sơ với nhiều thông tin hơn như sở thích, nghề nghiệp, v.v.
+Ảnh hồ sơ: Cho phép người dùng tải lên nhiều ảnh và chọn ảnh chính.
+
+3. Cải thiện Tính Năng Tìm Kiếm và Gợi Ý
+Tìm kiếm nâng cao: Cho phép người dùng tìm kiếm theo nhiều tiêu chí như độ tuổi, khoảng cách, sở thích, v.v.
+Gợi ý thông minh: Sử dụng thuật toán học máy để gợi ý người dùng phù hợp dựa trên hành vi và sở thích.
+
+4. Cải thiện Tính Năng Nhắn Tin
+Nhắn tin thời gian thực: Sử dụng WebSocket để nhắn tin thời gian thực.
+Thông báo đẩy: Gửi thông báo đẩy khi có tin nhắn mới.
+
+5. Cải thiện Tính Năng Sự Kiện
+Tạo và tham gia sự kiện: Cho phép người dùng tạo và tham gia các sự kiện.
+Gợi ý sự kiện: Gợi ý sự kiện dựa trên sở thích và vị trí của người dùng.
+
+6. Cải thiện Tính Năng Swipe
+Swipe nâng cao: Cho phép người dùng xem thêm thông tin trước khi quyết định swipe.
+Super Like: Thêm tính năng Super Like để người dùng thể hiện sự quan tâm đặc biệt.
+
+7. Cải thiện Tính Năng Bảo Mật
+Xác thực hai yếu tố (2FA): Thêm tính năng xác thực hai yếu tố để tăng cường bảo mật.
+Báo cáo và chặn người dùng: Cho phép người dùng báo cáo và chặn người dùng khác.
+
+8. Cải thiện Giao Diện Người Dùng
+Giao diện thân thiện: Thiết kế giao diện thân thiện và dễ sử dụng.
+Đa ngôn ngữ: Hỗ trợ nhiều ngôn ngữ để phục vụ người dùng quốc tế.
+
+9. Cải thiện Hiệu Năng và Khả Năng Mở Rộng
+Tối ưu hóa cơ sở dữ liệu: Tối ưu hóa truy vấn và cấu trúc cơ sở dữ liệu.
+Sử dụng bộ nhớ đệm: Sử dụng Redis hoặc Memcached để tăng tốc độ truy xuất dữ liệu.
+
+10. Cải thiện Tính Năng Thanh Toán
+Thanh toán trực tuyến: Tích hợp các cổng thanh toán như PayPal, Stripe, v.v.
+Gói dịch vụ: Cung cấp các gói dịch vụ với các tính năng nâng cao.
 
 
 APIs List:
@@ -82,30 +105,6 @@ Handle Error:
 
 ![image](https://github.com/user-attachments/assets/f6f01050-42f1-4c8e-b5a5-6a00b966ae9e)
 
-
-
-
-
-
-
-Workflow Tổng Quan
-Dưới đây là mô tả tổng quan về workflow của ứng dụng:
-1. Đăng Ký và Đăng Nhập:
-Người dùng đăng ký và xác nhận email.
-Người dùng đăng nhập và được chuyển hướng đến trang chính.
-Tạo và Quản Lý Hồ Sơ:
-Người dùng tạo và cập nhật hồ sơ.
-Người dùng tải lên và quản lý ảnh.
-3. Tương Tác Người Dùng:
-Người dùng thích và siêu thích hồ sơ của người khác.
-Khi hai người dùng thích nhau, họ kết nối và có thể gửi tin nhắn.
-Sử Dụng Các Tính Năng Cao Cấp:
-Người dùng đăng ký các gói dịch vụ và sử dụng các lợi ích như Super Like và Boost.
-5. Quản Lý Tài Khoản và Cài Đặt:
-Người dùng thiết lập tùy chọn và cài đặt.
-Người dùng gửi tài liệu xác minh hồ sơ.
-6. Phân Tích và Báo Cáo:
-Hệ thống thu thập và lưu trữ dữ liệu phân tích người dùng và kết nối.
 Task 29/9/24:
 - Friend Management:
 - Notification Management:

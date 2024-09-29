@@ -55,3 +55,5 @@ Người dùng thiết lập tùy chọn và cài đặt.
 Người dùng gửi tài liệu xác minh hồ sơ.
 6. Phân Tích và Báo Cáo:
 Hệ thống thu thập và lưu trữ dữ liệu phân tích người dùng và kết nối.
+Task 29/9/24:
+- Friend Management:

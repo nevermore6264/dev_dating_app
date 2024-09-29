@@ -48,16 +48,20 @@ APIs List:
 
 - Second login to more:
 
-![image](https://github.com/user-attachments/assets/99010346-c515-41ba-ae0b-e1768dba6e7e)
+![image](https://github.com/user-attachments/assets/72452cc6-dc2a-44dd-ac0d-4e24448aab98)
+
 
 
 3) User Change-password:
 
-![image](https://github.com/user-attachments/assets/d05eecf9-e363-484e-834f-d15390c2f0fb)
+![image](https://github.com/user-attachments/assets/89dfc9fc-eb1d-4096-8600-29959356fdc3)
+
 
 4) User Forgot-password:
 
 ![image](https://github.com/user-attachments/assets/258dac0b-2b15-47ff-9213-c1519b1b4e01)
+
+5) Logout:
 
 
 

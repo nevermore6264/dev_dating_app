@@ -52,9 +52,13 @@ APIs List:
 
 
 3) User Change-password:
+
 ![image](https://github.com/user-attachments/assets/d05eecf9-e363-484e-834f-d15390c2f0fb)
 
 4) User Forgot-password:
+
+![image](https://github.com/user-attachments/assets/258dac0b-2b15-47ff-9213-c1519b1b4e01)
+
 
 
 

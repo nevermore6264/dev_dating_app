@@ -105,6 +105,14 @@ Handle Error:
 
 ![image](https://github.com/user-attachments/assets/f6f01050-42f1-4c8e-b5a5-6a00b966ae9e)
 
+8)
+
+9)
+
+10) Swipe:
+![image](https://github.com/user-attachments/assets/06b9ad9a-e885-42ed-8a6d-67e2ddf317a6)
+
+
 Task 29/9/24:
 - Friend Management:
 - Notification Management:

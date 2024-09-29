@@ -34,8 +34,9 @@ Báo cáo và chặn người dùng
 
 
 APIs List:
-1) User Register: 
-![image](https://github.com/user-attachments/assets/08a37ca2-cc28-4b0a-bf74-171fd786fabe)
+1) User Register:
+ 
+![image](https://github.com/user-attachments/assets/b9c21484-2cfb-4598-b390-d9faed6bce53)
 
 ![image](https://github.com/user-attachments/assets/d8b8b60b-d263-4ad9-8850-f25855c338ab)
 
@@ -43,7 +44,7 @@ APIs List:
 2) User Login:
 - First login:
 
-![image](https://github.com/user-attachments/assets/e31765bd-ab2a-4a10-942a-af5b27bf2d17)
+![image](https://github.com/user-attachments/assets/17441083-9d0c-4ada-8b22-cf38aa41d0e8)
 
 - Second login to more:
 

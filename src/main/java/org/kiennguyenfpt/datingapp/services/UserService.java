@@ -1,9 +1,12 @@
 package org.kiennguyenfpt.datingapp.services;
 
 import org.kiennguyenfpt.datingapp.dtos.requests.UpdateProfileRequest;
+import org.kiennguyenfpt.datingapp.entities.Profile;
 import org.kiennguyenfpt.datingapp.entities.User;
 
-public interface UserService  {
+import java.util.List;
+
+public interface UserService {
 
     User findByEmail(String email);
 
@@ -19,10 +22,7 @@ public interface UserService  {
 
     User save(User user);
 
-    /*
-    @Override
-    UserDetails loadUserByUsername(String email);
+    List<User> searchUsers(String keyword);
+    Profile getProfile(Long userId);
 
-     */
 }
-

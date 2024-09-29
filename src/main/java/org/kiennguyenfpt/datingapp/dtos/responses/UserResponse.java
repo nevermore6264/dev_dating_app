@@ -12,9 +12,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponse {
-
     private long userId;
     private String email;
+    private String name;
     private String password;
     private String passwordHash;
     private Timestamp createdAt;

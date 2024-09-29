@@ -19,7 +19,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Getter
@@ -28,6 +27,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Table(name = "Messages")
 public class Message {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long messageId;
@@ -37,9 +37,12 @@ public class Message {
     private Match match;
 
     @ManyToOne
-    @JoinColumn(name = "sender_id", nullable = false)
-    @ToString.Exclude
+    @JoinColumn(name = "sender_id")
     private User sender;
+
+    @ManyToOne
+    @JoinColumn(name = "receiver_id")
+    private User receiver;
 
     @Column(nullable = false)
     private String content;

@@ -11,22 +11,32 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 @Service
-public class PhotoServiceImpl  {
-    /*
+public class PhotoServiceImpl implements PhotoService  {
+
     private final UserRepository userRepository;
     private final PhotoRepository photoRepository;
-    private final StorageClient storageClient;
+    //private final StorageClient storageClient;
 
+    /*
     public PhotoServiceImpl(UserRepository userRepository, PhotoRepository photoRepository, StorageClient storageClient) {
         this.userRepository = userRepository;
         this.photoRepository = photoRepository;
         this.storageClient = storageClient;
     }
 
+     */
+
+    public PhotoServiceImpl(UserRepository userRepository, PhotoRepository photoRepository) {
+        this.userRepository = userRepository;
+        this.photoRepository = photoRepository;
+    }
+
     @Override
     public Photo uploadPhoto(String email, MultipartFile file) {
+        /*
         User user = userRepository.findByEmail(email);
         if (user != null && !file.isEmpty() && user.getProfile() != null) {
             try {
@@ -48,7 +58,19 @@ public class PhotoServiceImpl  {
             }
         }
         return null;
+
+         */
+        return null;
     }
 
-     */
+    @Override
+    public List<Photo> getPhotos(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return user.getProfile().getPhotos();
+    }
+
+    @Override
+    public void deletePhoto(Long photoId) {
+        photoRepository.deleteById(photoId);
+    }
 }

@@ -35,7 +35,7 @@ public class Profile {
     private String name;
 
     @Column(nullable = false)
-    private int age;
+    private Integer age;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;

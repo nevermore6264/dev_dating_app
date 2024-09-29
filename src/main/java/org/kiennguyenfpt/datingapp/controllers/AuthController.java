@@ -12,6 +12,7 @@ import org.kiennguyenfpt.datingapp.services.AuthService;
 import org.kiennguyenfpt.datingapp.services.EmailService;
 import org.kiennguyenfpt.datingapp.services.UserService;
 import org.kiennguyenfpt.datingapp.services.impl.AuthServiceImpl;
+import org.kiennguyenfpt.datingapp.utils.JwtUtil;
 import org.kiennguyenfpt.datingapp.utils.PasswordUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("api/v1/auth")
@@ -30,144 +33,87 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final UserService userService;
-    //private final JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
-    public AuthController(AuthService authService, EmailService emailService, PasswordEncoder passwordEncoder, UserMapper userMapper, UserService userService) {
+    public AuthController(AuthService authService, EmailService emailService, PasswordEncoder passwordEncoder, UserMapper userMapper, UserService userService, JwtUtil jwtUtil) {
         this.authService = authService;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
         this.userService = userService;
+        this.jwtUtil = jwtUtil;
     }
 
-    /*
-        @PostMapping("/register")
-        public String register(@RequestBody User user) throws MessagingException {
-            String randomPassword = PasswordUtil.generateRandomPassword();
-            user.setPasswordHash(passwordEncoder.encode(randomPassword));
-            userService.save(user);
-            emailService.sendEmail(user.getEmail(), "Your Temporary Password", "Your temporary password is: " + randomPassword);
-            return "Registration successful. Please check your email for the temporary password.";
-        }
-     */
- /*
-    @PostMapping("/register")
-    public ResponseEntity<CommonResponse<User>> register(@RequestBody UserRegistrationRequest userReq) {
-        CommonResponse<User> response = new CommonResponse<>();
-        try {
-            // Validate the user object
-            if (userReq.getEmail() == null) {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                response.setMessage("Email must not be null");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            }
-
-            User newUser = authService.register(userReq.getEmail());
-            if (newUser != null) {
-                response.setStatus(HttpStatus.CREATED.value());
-                response.setMessage("User registered successfully. Please check your email for the temporary password.");
-                response.setData(newUser);
-                return ResponseEntity.status(HttpStatus.CREATED).body(response);
-            } else {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                response.setMessage("Registration failed: Email already exists or invalid data");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            }
-        } catch (Exception e) {
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.setMessage("Error during registration: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-    }
-
-     */
-    /*
     @PostMapping("/register")
     public ResponseEntity<CommonResponse<UserResponse>> register(@RequestBody UserRegistrationRequest userReq) {
         CommonResponse<UserResponse> response = new CommonResponse<>();
         try {
-            if (userReq.getEmail() == null) {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                response.setMessage("Email must not be null!");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            }
-
-            User newUser = authService.register(userReq.getEmail());
-            if (newUser != null) {
-                UserResponse userResponse = userMapper.userToUserResponse(newUser,  );
-                response.setStatus(HttpStatus.CREATED.value());
-                response.setMessage("User registered successfully. Please check your email for the temporary password.");
+            AuthServiceImpl.UserWithPassword userWithPassword = authService.register(userReq.getEmail(), userReq.getName());
+            if (userWithPassword != null) {
+                UserResponse userResponse = userMapper.userToUserResponse(userWithPassword.getUser(), userWithPassword.getRawPassword());
+                response.setStatus(HttpStatus.OK.value());
+                response.setMessage("User registered successfully!");
                 response.setData(userResponse);
-                return ResponseEntity.status(HttpStatus.CREATED).body(response);
-            } else {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                response.setMessage("Registration failed: Email already exists or invalid data");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+                return ResponseEntity.ok(response);
             }
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setMessage("Error registering user.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         } catch (Exception e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setMessage("Error during registration: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-
-     */
-    @PostMapping("/register")
-    public ResponseEntity<CommonResponse<UserResponse>> register(@RequestBody UserRegistrationRequest userReq) {
-        CommonResponse<UserResponse> response = new CommonResponse<>();
-        try {
-            if (userReq.getEmail() == null) {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                response.setMessage("Email must not be null!");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            }
-
-            AuthServiceImpl.UserWithPassword newUserWithPassword = authService.register(userReq.getEmail());
-            if (newUserWithPassword != null) {
-                User newUser = newUserWithPassword.getUser();
-                String rawPassword = newUserWithPassword.getRawPassword();
-                UserResponse userResponse = userMapper.userToUserResponse(newUser, rawPassword);
-                response.setStatus(HttpStatus.CREATED.value());
-                response.setMessage("User registered successfully. Please check your email for the temporary password.");
-                response.setData(userResponse);
-                return ResponseEntity.status(HttpStatus.CREATED).body(response);
-            } else {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                response.setMessage("Registration failed: Email already exists or invalid data");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            }
-        } catch (Exception e) {
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.setMessage("Error during registration: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-    }
-
     @PostMapping("/login")
-    public String login(@RequestBody UserLoginRequest loginRequest) {
-        User user = userService.findByEmail(loginRequest.getEmail());
-        if (user != null && passwordEncoder.matches(loginRequest.getPassword(), user.getPasswordHash())) {
-            if (user.isFirstLogin()) {
-                return "Please change your password.";
-            } else {
-                //String token = jwtUtil.generateToken(user);
-                //return "Login successful. Token: " + token;
-                return "Login successful. Token: ";
+    public ResponseEntity<CommonResponse<String>> login(@RequestBody UserLoginRequest loginRequest) {
+        CommonResponse<String> response = new CommonResponse<>();
+        try {
+            User user = userService.findByEmail(loginRequest.getEmail());
+            if (user != null && passwordEncoder.matches(loginRequest.getPassword(), user.getPasswordHash())) {
+                if (user.isFirstLogin()) {
+                    response.setStatus(HttpStatus.OK.value());
+                    response.setMessage("Please change your password.");
+                    return ResponseEntity.ok(response);
+                } else {
+                    String token = jwtUtil.generateToken(new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPasswordHash(), new ArrayList<>()));
+                    response.setStatus(HttpStatus.OK.value());
+                    response.setMessage("Login successful.");
+                    response.setData(token);
+                    return ResponseEntity.ok(response);
+                }
             }
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setMessage("Invalid email or password.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage("Error during login: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-        return "Invalid email or password.";
     }
 
     @PostMapping("/change-password")
-    public String changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
-        User user = userService.findByEmail(changePasswordRequest.getEmail());
-        if (user != null && passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPasswordHash())) {
-            user.setPasswordHash(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
-            user.setFirstLogin(false);
-            userService.save(user);
-            return "Password changed successfully!" + changePasswordRequest.getNewPassword();
+    public ResponseEntity<CommonResponse<String>> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+        CommonResponse<String> response = new CommonResponse<>();
+        try {
+            User user = userService.findByEmail(changePasswordRequest.getEmail());
+            if (user != null && passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPasswordHash())) {
+                user.setPasswordHash(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+                user.setFirstLogin(false);
+                userService.save(user);
+                response.setStatus(HttpStatus.OK.value());
+                response.setMessage("Password changed successfully!");
+                return ResponseEntity.ok(response);
+            }
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setMessage("Invalid email or password.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage("Error during password change: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-        return "Invalid email or password.";
     }
 
     @PostMapping("/forgot-password")
@@ -192,6 +138,21 @@ public class AuthController {
         } catch (Exception e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setMessage("Error resetting password: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<CommonResponse<String>> logout(@RequestBody String token) {
+        CommonResponse<String> response = new CommonResponse<>();
+        try {
+            jwtUtil.invalidateToken(token);
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("Logout successful.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage("Error during logout: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

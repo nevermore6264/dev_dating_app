@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -110,6 +112,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email);
     }
 
+    /* 
     @Override
     public User updateProfile(String email, UpdateProfileRequest updateProfileRequest) {
         User user = userRepository.findByEmail(email);
@@ -144,6 +147,10 @@ public class UserServiceImpl implements UserService {
     public User save(User user) {
         return userRepository.save(user);
     }
+    @Override
+    public List<User> searchUsers(String keyword) {
+        return userRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword);
+    }
 
     /*
     @Override
@@ -160,4 +167,63 @@ public class UserServiceImpl implements UserService {
     }
 
      */
+    @Override
+    public User updateProfile(String email, UpdateProfileRequest updateProfileRequest) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            Profile profile = user.getProfile();
+            if (profile == null) {
+                profile = new Profile();
+                profile.setUser(user);
+                user.setProfile(profile);
+            }
+
+            // Check if this is the first update
+            boolean isFirstUpdate = profile.getName() == null && profile.getAge() == null && profile.getBio() == null && profile.getGender() == null;
+
+            if (isFirstUpdate) {
+                // Require full update for the first time
+                if (updateProfileRequest.getName() == null || updateProfileRequest.getAge() == null || updateProfileRequest.getBio() == null || updateProfileRequest.getGender() == null) {
+                    throw new IllegalArgumentException("All fields must be provided for the first update.");
+                }
+                profile.setName(updateProfileRequest.getName());
+                profile.setAge(updateProfileRequest.getAge());
+                profile.setBio(updateProfileRequest.getBio());
+                profile.setGender(updateProfileRequest.getGender());
+            } else {
+                // Allow partial update for subsequent updates
+                if (updateProfileRequest.getName() != null) {
+                    profile.setName(updateProfileRequest.getName());
+                }
+                if (updateProfileRequest.getAge() != null) {
+                    profile.setAge(updateProfileRequest.getAge());
+                }
+                if (updateProfileRequest.getBio() != null) {
+                    profile.setBio(updateProfileRequest.getBio());
+                }
+                if (updateProfileRequest.getGender() != null) {
+                    profile.setGender(updateProfileRequest.getGender());
+                }
+            }
+            userRepository.save(user);
+            return user;
+        }
+        return null;
+    }
+
+    @Override
+    public Profile getProfile(Long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        return user != null ? user.getProfile() : null;
+    }
+
+    @Override
+    public List<User> searchUsers(String keyword) {
+        return userRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword);
+    }
+
+    @Override
+    public User save(User user) {
+        return userRepository.save(user);
+    }
 }

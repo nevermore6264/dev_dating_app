@@ -63,6 +63,8 @@ APIs List:
 
 5) Logout:
 
+![image](https://github.com/user-attachments/assets/39eb06c2-5830-4663-b01f-244635796070)
+
 
 
 

@@ -57,3 +57,11 @@ Người dùng gửi tài liệu xác minh hồ sơ.
 Hệ thống thu thập và lưu trữ dữ liệu phân tích người dùng và kết nối.
 Task 29/9/24:
 - Friend Management:
+- Notification Management:
+- Search Friend:
+- Profile Management:
+- Photo Management:
+- Report and Ban user
+- Activity Logging:
+- Payment Integration:
+- Event Management:

@@ -17,11 +17,16 @@ APIs List:
 1) User Register: 
 ![image](https://github.com/user-attachments/assets/08a37ca2-cc28-4b0a-bf74-171fd786fabe)
 
+![image](https://github.com/user-attachments/assets/d8b8b60b-d263-4ad9-8850-f25855c338ab)
+
+
 2) User Login:
 - First login:
+
 ![image](https://github.com/user-attachments/assets/e31765bd-ab2a-4a10-942a-af5b27bf2d17)
 
 - Second login to more:
+
 ![image](https://github.com/user-attachments/assets/99010346-c515-41ba-ae0b-e1768dba6e7e)
 
 

@@ -13,6 +13,26 @@ Quản Lý Gói Dịch Vụ và Lợi Ích: Thêm, sửa, hoặc xóa các gói 
 Quản Lý Giao Dịch: Theo dõi và quản lý các giao dịch mua hàng trong ứng dụng.
 Phân Tích và Báo Cáo: Theo dõi và phân tích dữ liệu người dùng và kết nối, quản lý quảng cáo và doanh thu.
 
+#Current Work-Flow:
+1. Đăng ký người dùng
+2. Đăng nhập người dùng
+Thay đổi mật khẩu
+Quên mật khẩu
+Cập nhật hồ sơ
+Gửi tin nhắn
+Hành động "quẹt"
+Tải lên ảnh
+Quản lý bạn bè
+10. Thông báo
+Tìm kiếm người dùng
+Quản lý hồ sơ
+13. Quản lý ảnh
+Báo cáo và chặn người dùng
+15. Lịch sử hoạt động
+16. Tích hợp thanh toán
+17. Quản lý sự kiện
+
+
 APIs List:
 1) User Register: 
 ![image](https://github.com/user-attachments/assets/08a37ca2-cc28-4b0a-bf74-171fd786fabe)

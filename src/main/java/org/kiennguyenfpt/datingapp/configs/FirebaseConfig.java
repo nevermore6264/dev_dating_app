@@ -17,7 +17,7 @@ public class FirebaseConfig {
     public FirebaseApp firebaseApp() throws IOException {
         FileInputStream serviceAccount =
                 // cap nhap duong dan file json cua ban
-                new FileInputStream("D:\\Kien FPT\\Semester 8\\EXE201\\DatingApp\\datingapp-f4ecb-firebase-adminsdk-moeb5-7529827c9d.json");
+                new FileInputStream("\"D:\\ki 8\\exe201\\Datingapp\\Dating-App\\datingapp-f4ecb-firebase-adminsdk-moeb5-7529827c9d.json\"");
 
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))

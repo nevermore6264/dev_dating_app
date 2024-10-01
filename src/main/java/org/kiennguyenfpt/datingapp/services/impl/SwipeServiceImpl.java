@@ -35,6 +35,11 @@ public class SwipeServiceImpl implements SwipeService {
             throw new IllegalArgumentException("User or Target User not found");
         }
 
+        // Kiểm tra người dùng không thể like chính mình
+        if (userId.equals(targetUserId)) {
+            throw new IllegalArgumentException("You can't like yourself.");
+        }
+
         // Kiểm tra xem targetUser có profile hay không
         if (targetUser.getProfile() == null) {
             throw new IllegalArgumentException("Target User does not have a profile.");

@@ -1,7 +1,9 @@
 package org.kiennguyenfpt.datingapp.controllers;
 
 import org.kiennguyenfpt.datingapp.entities.Match;
+import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.services.MatchService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,8 +22,18 @@ public class MatchController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Match>> getMatchesForUser(@PathVariable Long userId) {
-        List<Match> matches = matchService.getMatchesForUser(userId);
-        return ResponseEntity.ok(matches);
+    public ResponseEntity<CommonResponse<List<Match>>> getMatches(@PathVariable Long userId) {
+        CommonResponse<List<Match>> response = new CommonResponse<>();
+        try {
+            List<Match> matches = matchService.getMatchesForUser(userId);
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("Matches retrieved successfully.");
+            response.setData(matches);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage("Error retrieving matches: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 }

@@ -31,4 +31,11 @@ public class MatchServiceImpl implements MatchService {
     public List<Match> getMatchesForUser(Long userId) {
         return matchRepository.findByUser1_UserIdOrUser2_UserId(userId, userId);
     }
+
+    @Override
+    public boolean hasMatched(Long userId, Long targetUserId) {
+        return matchRepository.existsByUser1_UserIdAndUser2_UserId(userId, targetUserId)
+                || matchRepository.existsByUser1_UserIdAndUser2_UserId(targetUserId, userId);
+    }
+
 }

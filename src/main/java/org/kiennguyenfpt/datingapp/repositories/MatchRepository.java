@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface MatchRepository extends JpaRepository<Match, Long> {
     List<Match> findByUser1_UserIdOrUser2_UserId(Long user1Id, Long user2Id);
+    boolean existsByUser1_UserIdAndUser2_UserId(Long user1Id, Long user2Id);
 }

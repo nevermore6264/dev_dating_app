@@ -7,13 +7,16 @@ import org.kiennguyenfpt.datingapp.dtos.requests.UserLoginRequest;
 import org.kiennguyenfpt.datingapp.dtos.requests.UserRegistrationRequest;
 import org.kiennguyenfpt.datingapp.dtos.responses.UserResponse;
 import org.kiennguyenfpt.datingapp.entities.User;
+import org.kiennguyenfpt.datingapp.exceptions.InvalidEmailException;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.services.AuthService;
 import org.kiennguyenfpt.datingapp.services.EmailService;
 import org.kiennguyenfpt.datingapp.services.UserService;
 import org.kiennguyenfpt.datingapp.services.impl.AuthServiceImpl;
 import org.kiennguyenfpt.datingapp.utils.JwtUtil;
-import org.kiennguyenfpt.datingapp.utils.PasswordUtil;
+import org.kiennguyenfpt.datingapp.validation.EmailValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +30,7 @@ import java.util.ArrayList;
 @RestController
 @RequestMapping("api/v1/auth")
 public class AuthController {
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     private final AuthService authService;
     private final EmailService emailService;
@@ -48,7 +52,12 @@ public class AuthController {
     public ResponseEntity<CommonResponse<UserResponse>> register(@RequestBody UserRegistrationRequest userReq) {
         CommonResponse<UserResponse> response = new CommonResponse<>();
         try {
-            AuthServiceImpl.UserWithPassword userWithPassword = authService.register(userReq.getEmail(), userReq.getName());
+            // Kiểm tra định dạng email
+            if (!EmailValidator.validate(userReq.getEmail())) {
+                throw new InvalidEmailException();
+            }
+            // Đăng ký người dùng
+            AuthServiceImpl.UserWithPassword userWithPassword = authService.register(userReq.getEmail());
             if (userWithPassword != null) {
                 UserResponse userResponse = userMapper.userToUserResponse(userWithPassword.getUser(), userWithPassword.getRawPassword());
                 response.setStatus(HttpStatus.OK.value());
@@ -59,12 +68,22 @@ public class AuthController {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.setMessage("Error registering user.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        } catch (InvalidEmailException e) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        } catch (IllegalArgumentException e) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         } catch (Exception e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setMessage("Error during registration: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
+    /*
     @PostMapping("/login")
     public ResponseEntity<CommonResponse<String>> login(@RequestBody UserLoginRequest loginRequest) {
         CommonResponse<String> response = new CommonResponse<>();
@@ -93,42 +112,70 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/change-password")
-    public ResponseEntity<CommonResponse<String>> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+     */
+    @PostMapping("/login")
+    public ResponseEntity<CommonResponse<String>> login(@RequestBody UserLoginRequest loginRequest) {
         CommonResponse<String> response = new CommonResponse<>();
         try {
-            User user = userService.findByEmail(changePasswordRequest.getEmail());
-            if (user != null && passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPasswordHash())) {
-                user.setPasswordHash(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
-                user.setFirstLogin(false);
-                userService.save(user);
-                response.setStatus(HttpStatus.OK.value());
-                response.setMessage("Password changed successfully!");
-                return ResponseEntity.ok(response);
+            User user = userService.findByEmail(loginRequest.getEmail());
+            if (user != null && passwordEncoder.matches(loginRequest.getPassword(), user.getPasswordHash())) {
+                if (user.isFirstLogin()) {
+                    response.setStatus(HttpStatus.OK.value());
+                    response.setMessage("Please update your profile.");
+                    return ResponseEntity.ok(response);
+                } else {
+                    String token = jwtUtil.generateToken(new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPasswordHash(), new ArrayList<>()));
+                    response.setStatus(HttpStatus.OK.value());
+                    response.setMessage("Login successful.");
+                    response.setData(token);
+                    return ResponseEntity.ok(response);
+                }
             }
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.setMessage("Invalid email or password.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         } catch (Exception e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.setMessage("Error during password change: " + e.getMessage());
+            response.setMessage("Error during login: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
+    @PostMapping("/change-password")
+    public ResponseEntity<CommonResponse<String>> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+        CommonResponse<String> response = new CommonResponse<>();
+        try {
+            logger.info("Received change password request for email: {}", changePasswordRequest.getEmail());
+
+            User user = authService.changePassword(changePasswordRequest.getEmail(), changePasswordRequest.getOldPassword(), changePasswordRequest.getNewPassword());
+
+            if (user != null) {
+                logger.info("Password changed successfully for email: {}", changePasswordRequest.getEmail());
+                response.setStatus(HttpStatus.OK.value());
+                response.setMessage("Password changed successfully!");
+                return ResponseEntity.ok(response);
+            }
+
+            logger.warn("Invalid email or password for email: {}", changePasswordRequest.getEmail());
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setMessage("Invalid email or password.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        } catch (Exception e) {
+            logger.error("Error during password change for email: {}", changePasswordRequest.getEmail(), e);
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage("Error during password change: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
     @PostMapping("/forgot-password")
     public ResponseEntity<CommonResponse<User>> forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
         CommonResponse<User> response = new CommonResponse<>();
         try {
-            User user = userService.findByEmail(forgotPasswordRequest.getEmail());
+            User user = authService.forgotPassword(forgotPasswordRequest.getEmail());
             if (user != null) {
-                String newPassword = PasswordUtil.generateRandomPassword();
-                user.setPasswordHash(passwordEncoder.encode(newPassword)); // Cập nhật mật khẩu mới
-                userService.save(user); // Lưu user với mật khẩu mới
                 response.setStatus(HttpStatus.OK.value());
                 response.setMessage("Password reset successfully. Please check your email for the new password.");
                 response.setData(user);
-                emailService.sendEmail(user.getEmail(), "Your New Password", "Your new password is: " + newPassword); // Gửi email với mật khẩu mới
                 return ResponseEntity.ok(response);
             } else {
                 response.setStatus(HttpStatus.BAD_REQUEST.value());

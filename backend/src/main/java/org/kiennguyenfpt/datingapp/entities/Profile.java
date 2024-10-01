@@ -43,6 +43,9 @@ public class Profile {
     @Column(length = 500)
     private String bio;
 
+    private String avatar;
+    private String phone;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;

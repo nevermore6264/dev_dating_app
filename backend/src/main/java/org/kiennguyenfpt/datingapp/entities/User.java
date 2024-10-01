@@ -54,6 +54,12 @@ public class User {
     @Column(nullable = false)
     private String passwordHash;
 
+    @Column(nullable = true)
+    private String avatar;
+
+    @Column(nullable = true)
+    private String phone;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;

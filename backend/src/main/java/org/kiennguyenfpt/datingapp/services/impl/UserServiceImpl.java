@@ -167,6 +167,7 @@ public class UserServiceImpl implements UserService {
     }
 
      */
+    /*
     @Override
     public User updateProfile(String email, UpdateProfileRequest updateProfileRequest) {
         User user = userRepository.findByEmail(email);
@@ -203,6 +204,56 @@ public class UserServiceImpl implements UserService {
                 }
                 if (updateProfileRequest.getGender() != null) {
                     profile.setGender(updateProfileRequest.getGender());
+                }
+            }
+            userRepository.save(user);
+            return user;
+        }
+        return null;
+    }
+
+     */
+    @Override
+    public User updateProfile(String email, UpdateProfileRequest updateProfileRequest) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            Profile profile = user.getProfile();
+            if (profile == null) {
+                profile = new Profile();
+                profile.setUser(user);
+                user.setProfile(profile);
+            }
+
+            // Check if this is the first update
+            boolean isFirstUpdate = profile.getName() == null && profile.getAge() == null && profile.getBio() == null && profile.getGender() == null;
+
+            if (isFirstUpdate) {
+                // Require full update for the first time
+                if (updateProfileRequest.getName() == null || updateProfileRequest.getAge() == null || updateProfileRequest.getBio() == null || updateProfileRequest.getGender() == null || updateProfileRequest.getAvatar() == null || updateProfileRequest.getPhone() == null) {
+                    throw new IllegalArgumentException("All fields must be provided for the first update.");
+                }
+                profile.setName(updateProfileRequest.getName());
+                profile.setAge(updateProfileRequest.getAge());
+                profile.setBio(updateProfileRequest.getBio());
+                profile.setGender(updateProfileRequest.getGender());
+                profile.setAvatar(updateProfileRequest.getAvatar());
+                profile.setPhone(updateProfileRequest.getPhone());
+            } else {
+                // Allow partial update for subsequent updates, but not email and name
+                if (updateProfileRequest.getAge() != null) {
+                    profile.setAge(updateProfileRequest.getAge());
+                }
+                if (updateProfileRequest.getBio() != null) {
+                    profile.setBio(updateProfileRequest.getBio());
+                }
+                if (updateProfileRequest.getGender() != null) {
+                    profile.setGender(updateProfileRequest.getGender());
+                }
+                if (updateProfileRequest.getAvatar() != null) {
+                    profile.setAvatar(updateProfileRequest.getAvatar());
+                }
+                if (updateProfileRequest.getPhone() != null) {
+                    profile.setPhone(updateProfileRequest.getPhone());
                 }
             }
             userRepository.save(user);

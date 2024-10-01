@@ -13,113 +13,40 @@ Quản Lý Gói Dịch Vụ và Lợi Ích: Thêm, sửa, hoặc xóa các gói 
 Quản Lý Giao Dịch: Theo dõi và quản lý các giao dịch mua hàng trong ứng dụng.
 Phân Tích và Báo Cáo: Theo dõi và phân tích dữ liệu người dùng và kết nối, quản lý quảng cáo và doanh thu.
 
-#Current Work-Flow:
-
-1. Cải thiện Nghiệp Vụ Đăng Ký và Đăng Nhập
-Xác thực Email: Gửi email xác thực khi người dùng đăng ký.
-Đăng nhập bằng mạng xã hội: Cho phép người dùng đăng nhập bằng Google, Facebook, v.v.
-
-2. Cải thiện Hồ Sơ Người Dùng
-Cập nhật hồ sơ: Cho phép người dùng cập nhật hồ sơ với nhiều thông tin hơn như sở thích, nghề nghiệp, v.v.
-Ảnh hồ sơ: Cho phép người dùng tải lên nhiều ảnh và chọn ảnh chính.
-
-3. Cải thiện Tính Năng Tìm Kiếm và Gợi Ý
-Tìm kiếm nâng cao: Cho phép người dùng tìm kiếm theo nhiều tiêu chí như độ tuổi, khoảng cách, sở thích, v.v.
-Gợi ý thông minh: Sử dụng thuật toán học máy để gợi ý người dùng phù hợp dựa trên hành vi và sở thích.
-
-4. Cải thiện Tính Năng Nhắn Tin
-Nhắn tin thời gian thực: Sử dụng WebSocket để nhắn tin thời gian thực.
-Thông báo đẩy: Gửi thông báo đẩy khi có tin nhắn mới.
-
-5. Cải thiện Tính Năng Sự Kiện
-Tạo và tham gia sự kiện: Cho phép người dùng tạo và tham gia các sự kiện.
-Gợi ý sự kiện: Gợi ý sự kiện dựa trên sở thích và vị trí của người dùng.
-
-6. Cải thiện Tính Năng Swipe
-Swipe nâng cao: Cho phép người dùng xem thêm thông tin trước khi quyết định swipe.
-Super Like: Thêm tính năng Super Like để người dùng thể hiện sự quan tâm đặc biệt.
-
-7. Cải thiện Tính Năng Bảo Mật
-Xác thực hai yếu tố (2FA): Thêm tính năng xác thực hai yếu tố để tăng cường bảo mật.
-Báo cáo và chặn người dùng: Cho phép người dùng báo cáo và chặn người dùng khác.
-
-8. Cải thiện Giao Diện Người Dùng
-Giao diện thân thiện: Thiết kế giao diện thân thiện và dễ sử dụng.
-Đa ngôn ngữ: Hỗ trợ nhiều ngôn ngữ để phục vụ người dùng quốc tế.
-
-9. Cải thiện Hiệu Năng và Khả Năng Mở Rộng
-Tối ưu hóa cơ sở dữ liệu: Tối ưu hóa truy vấn và cấu trúc cơ sở dữ liệu.
-Sử dụng bộ nhớ đệm: Sử dụng Redis hoặc Memcached để tăng tốc độ truy xuất dữ liệu.
-
-10. Cải thiện Tính Năng Thanh Toán
-Thanh toán trực tuyến: Tích hợp các cổng thanh toán như PayPal, Stripe, v.v.
-Gói dịch vụ: Cung cấp các gói dịch vụ với các tính năng nâng cao.
-
-
 APIs List:
-1) User Register:
- 
-![image](https://github.com/user-attachments/assets/b9c21484-2cfb-4598-b390-d9faed6bce53)
-
-![image](https://github.com/user-attachments/assets/d8b8b60b-d263-4ad9-8850-f25855c338ab)
-
+1) User Register: 
+![image](https://github.com/user-attachments/assets/08a37ca2-cc28-4b0a-bf74-171fd786fabe)
 
 2) User Login:
 - First login:
-
-![image](https://github.com/user-attachments/assets/17441083-9d0c-4ada-8b22-cf38aa41d0e8)
+![image](https://github.com/user-attachments/assets/e31765bd-ab2a-4a10-942a-af5b27bf2d17)
 
 - Second login to more:
-
-![image](https://github.com/user-attachments/assets/72452cc6-dc2a-44dd-ac0d-4e24448aab98)
-
+![image](https://github.com/user-attachments/assets/99010346-c515-41ba-ae0b-e1768dba6e7e)
 
 
 3) User Change-password:
-
-![image](https://github.com/user-attachments/assets/89dfc9fc-eb1d-4096-8600-29959356fdc3)
-
+![image](https://github.com/user-attachments/assets/d05eecf9-e363-484e-834f-d15390c2f0fb)
 
 4) User Forgot-password:
 
-![image](https://github.com/user-attachments/assets/258dac0b-2b15-47ff-9213-c1519b1b4e01)
-
-5) Logout:
-
-![image](https://github.com/user-attachments/assets/39eb06c2-5830-4663-b01f-244635796070)
-
-6) View profile:
-
-![image](https://github.com/user-attachments/assets/8f8ad7d8-e55d-472b-8b08-11d07807659e)
-
-Handle Error:
-
-![image](https://github.com/user-attachments/assets/b746e059-22da-46d6-8659-39c5343cf8fc)
-
-7) Update profile:
-- First update: (update het)
-
-![image](https://github.com/user-attachments/assets/b4ee65f6-3727-4a5b-bd8b-e5be256a18af)
-
-- Second update to more: (update cai gi cung dc)
-
-![image](https://github.com/user-attachments/assets/f6f01050-42f1-4c8e-b5a5-6a00b966ae9e)
-
-8)
-
-9)
-
-10) Swipe:
-![image](https://github.com/user-attachments/assets/06b9ad9a-e885-42ed-8a6d-67e2ddf317a6)
 
 
-Task 29/9/24:
-- Friend Management:
-- Notification Management:
-- Search Friend:
-- Profile Management:
-- Photo Management:
-- Report and Ban user
-- Activity Logging:
-- Payment Integration:
-- Event Management:
+Workflow Tổng Quan
+Dưới đây là mô tả tổng quan về workflow của ứng dụng:
+1. Đăng Ký và Đăng Nhập:
+Người dùng đăng ký và xác nhận email.
+Người dùng đăng nhập và được chuyển hướng đến trang chính.
+Tạo và Quản Lý Hồ Sơ:
+Người dùng tạo và cập nhật hồ sơ.
+Người dùng tải lên và quản lý ảnh.
+3. Tương Tác Người Dùng:
+Người dùng thích và siêu thích hồ sơ của người khác.
+Khi hai người dùng thích nhau, họ kết nối và có thể gửi tin nhắn.
+Sử Dụng Các Tính Năng Cao Cấp:
+Người dùng đăng ký các gói dịch vụ và sử dụng các lợi ích như Super Like và Boost.
+5. Quản Lý Tài Khoản và Cài Đặt:
+Người dùng thiết lập tùy chọn và cài đặt.
+Người dùng gửi tài liệu xác minh hồ sơ.
+6. Phân Tích và Báo Cáo:
+Hệ thống thu thập và lưu trữ dữ liệu phân tích người dùng và kết nối.

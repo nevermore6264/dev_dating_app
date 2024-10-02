@@ -1,5 +1,6 @@
 package org.kiennguyenfpt.datingapp.services.impl;
 
+import org.kiennguyenfpt.datingapp.dtos.responses.MatchResponse;
 import org.kiennguyenfpt.datingapp.entities.Match;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.repositories.MatchRepository;
@@ -7,6 +8,7 @@ import org.kiennguyenfpt.datingapp.services.MatchService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MatchServiceImpl implements MatchService {
@@ -38,4 +40,22 @@ public class MatchServiceImpl implements MatchService {
                 || matchRepository.existsByUser1_UserIdAndUser2_UserId(targetUserId, userId);
     }
 
+    public List<MatchResponse> getMatchResponsesForUser(Long userId) {
+        List<Match> matches = getMatchesForUser(userId);
+
+        return matches.stream().map(match -> {
+            User targetUser = (match.getUser1().getUserId() == userId) ? match.getUser2() : match.getUser1();
+            String targetUserName = targetUser.getProfile().getName(); // Lấy tên từ Profile
+            String targetUserAvatar = targetUser.getProfile().getPhotos().isEmpty() ? "" : targetUser.getProfile().getPhotos().get(0).getUrl(); // Lấy avatar từ Photo
+            return new MatchResponse(
+                    match.getMatchId(),
+                    userId,
+                    targetUser.getUserId(),
+                    targetUserName,
+                    targetUserAvatar
+            );
+        }).collect(Collectors.toList());
+    }
 }
+
+

@@ -27,18 +27,10 @@ public class MatchController {
     public ResponseEntity<CommonResponse<List<MatchResponse>>> getMatches(@PathVariable Long userId) {
         CommonResponse<List<MatchResponse>> response = new CommonResponse<>();
         try {
-            // Get the list of matches for the user
-            List<Match> matches = matchService.getMatchesForUser(userId);
+            // Lấy danh sách các match cho người dùng
+            List<MatchResponse> matchResponses = matchService.getMatchResponsesForUser(userId);
 
-            // Map the list of Match entities to MatchResponse DTOs
-            List<MatchResponse> matchResponses = matches.stream()
-                    .map(match -> new MatchResponse(
-                            match.getMatchId(),            // matchId
-                            match.getUser2().getUserId(),      // userId
-                            match.getUser1().getUserId()       // targetUserId
-                    )).collect(Collectors.toList());
-
-            // Set response properties
+            // Thiết lập các thuộc tính phản hồi
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Matches retrieved successfully.");
             response.setData(matchResponses);
@@ -50,5 +42,4 @@ public class MatchController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-
 }

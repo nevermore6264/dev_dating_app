@@ -14,3 +14,4 @@ public class MatchResponse {
     private Long userId;  // ID của user
     private Long targetUserId; // ID của target user
 }
+

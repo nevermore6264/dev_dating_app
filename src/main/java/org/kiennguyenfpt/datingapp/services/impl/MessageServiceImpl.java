@@ -36,6 +36,12 @@ public class MessageServiceImpl implements MessageService {
         User receiver = userRepository.findById(receiverId)
                 .orElseThrow(() -> new RuntimeException("Receiver not found")); // Kiểm tra người nhận hợp lệ
 
+        if (!((match.getUser1().getUserId() == senderId && match.getUser2().getUserId() == receiverId) ||
+                (match.getUser1().getUserId() == receiverId && match.getUser2().getUserId() == senderId))) {
+            throw new IllegalArgumentException("Users are not matched, message cannot be sent.");       // Kiểm tra xem người gửi và người nhận có thuộc về match này hay không
+
+        }
+
         Message message = new Message();
         message.setMatch(match);
         message.setSender(sender);

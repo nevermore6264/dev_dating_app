@@ -46,7 +46,7 @@ public class MatchServiceImpl implements MatchService {
         return matches.stream().map(match -> {
             User targetUser = (match.getUser1().getUserId() == userId) ? match.getUser2() : match.getUser1();
             String targetUserName = targetUser.getProfile().getName(); // Lấy tên từ Profile
-            String targetUserAvatar = targetUser.getProfile().getPhotos().isEmpty() ? "" : targetUser.getProfile().getPhotos().get(0).getUrl(); // Lấy avatar từ Photo
+            String targetUserAvatar = targetUser.getProfile().getAvatar() != null ? targetUser.getProfile().getAvatar() : ""; // Lấy avatar từ Profile
             return new MatchResponse(
                     match.getMatchId(),
                     userId,

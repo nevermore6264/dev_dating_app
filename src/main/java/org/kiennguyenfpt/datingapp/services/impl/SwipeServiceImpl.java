@@ -18,11 +18,13 @@ public class SwipeServiceImpl implements SwipeService {
     private final SwipeRepository swipeRepository;
     private final UserRepository userRepository;
     private final MatchService matchService;
+    private final LikeRepository likeRepository;
 
-    public SwipeServiceImpl(SwipeRepository swipeRepository, UserRepository userRepository, MatchService matchService) {
+    public SwipeServiceImpl(SwipeRepository swipeRepository, UserRepository userRepository, MatchService matchService, LikeRepository likeRepository) {
         this.swipeRepository = swipeRepository;
         this.userRepository = userRepository;
         this.matchService = matchService;
+        this.likeRepository = likeRepository;
     }
 
     @Override
@@ -54,13 +56,27 @@ public class SwipeServiceImpl implements SwipeService {
         // Logic to handle swipe action
         boolean isMatch = false;
 
-            Swipe swipe = new Swipe();
-            swipe.setUser(user);
-            swipe.setTargetUser(targetUser);
-            swipe.setLike(isLike);
-            swipeRepository.save(swipe);    // Lưu lại swipe, dù là like hay dislike
+        // Lưu hành động swipe (cả like và dislike) vào bảng Swipe
+        Swipe swipe = new Swipe();
+        swipe.setUser(user);
+        swipe.setTargetUser(targetUser);
+        swipe.setLike(isLike);
+        swipeRepository.save(swipe);
 
+        // Nếu là like, lưu vào bảng Like
         if (isLike) {
+            // Kiểm tra xem người dùng đã like targetUser trước đó chưa
+            Like existingLike = likeRepository.findByUserAndProfile(user, targetUser.getProfile());
+            if (existingLike == null) {
+                // Nếu chưa like, lưu thông tin like vào bảng Like
+                Like like = new Like();
+                like.setUser(user);
+                like.setProfile(targetUser.getProfile());
+                likeRepository.save(like);
+            }
+
+
+
             // Kiểm tra nếu target user đã like user trước đó (reciprocal like)
             Swipe reciprocalSwipe = swipeRepository.findByUser_UserIdAndTargetUser_UserId(targetUserId, userId);
             if (reciprocalSwipe != null && reciprocalSwipe.isLike()) {

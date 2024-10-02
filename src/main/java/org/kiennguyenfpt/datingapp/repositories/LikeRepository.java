@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface LikeRepository extends JpaRepository<Like, Long> {
     // Tìm kiếm một lượt like bởi user và profile (tức là xem profile của targetUser đã được user like chưa)
-//    Like findByUserAndProfile(User user, Profile profile);
+    Like findByUserAndProfile(User user, Profile profile);
 
 }

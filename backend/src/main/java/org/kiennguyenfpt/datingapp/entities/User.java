@@ -71,6 +71,9 @@ public class User {
     @Column(name = "last_login")
     private Timestamp lastLogin;
 
+    @Column(name = "login_count", nullable = false)
+    private int loginCount = 0;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserStatus status;
@@ -127,4 +130,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "disliked_user_id")
     )
     private Set<User> dislikedUsers = new HashSet<>();
+
+    public boolean isSecondLogin() {
+        return loginCount == 1;
+    }
+
 }

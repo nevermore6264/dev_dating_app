@@ -4,9 +4,9 @@ import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.services.impl.AuthServiceImpl;
 
 public interface AuthService {
-    AuthServiceImpl.UserWithPassword register(String email);
+    User register(String email);
 
-    User login(String email, String password);
+    String login(String email, String password);
 
     User changePassword(String email, String oldPassword, String newPassword);
 

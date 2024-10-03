@@ -8,21 +8,14 @@ import java.util.List;
 
 public interface UserService {
 
-    User findByEmail(String email);
-
-    User register(String email);
-
-    User login(String email, String password);
-
-    User changePassword(String email, String oldPassword, String newPassword);
-
-    User forgotPassword(String email, String newPassword);
-
     User updateProfile(String email, UpdateProfileRequest updateProfileRequest);
+
+    User findByEmail(String email);
 
     User save(User user);
 
     List<User> searchUsers(String keyword);
-    Profile getProfile(Long userId);
+
+    //Profile getProfile(Long userId);
 
 }

@@ -1,38 +1,33 @@
 package org.kiennguyenfpt.datingapp.controllers;
 
-import org.kiennguyenfpt.datingapp.dtos.requests.UpdateProfileRequest;
+import org.kiennguyenfpt.datingapp.dtos.requests.UserIdRequest;
 import org.kiennguyenfpt.datingapp.entities.Profile;
-import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
-import org.kiennguyenfpt.datingapp.services.UserService;
-import org.kiennguyenfpt.datingapp.services.impl.UserServiceImpl;
+import org.kiennguyenfpt.datingapp.services.ProfileService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Supplier;
 
 @RestController
-@RequestMapping("api/v1/users")
-public class UserController {
-    private final UserService userService;
+@RequestMapping("api/v1/profiles")
+public class ProfileController {
+    private final ProfileService profileService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public ProfileController(ProfileService profileService) {
+        this.profileService = profileService;
     }
 
-    /*
-    @GetMapping("/profiles")
+    @GetMapping
     public ResponseEntity<CommonResponse<List<Profile>>> getAllProfiles() {
         CommonResponse<List<Profile>> response = new CommonResponse<>();
         try {
-            List<Profile> profiles = userService.getAllProfiles();
+            List<Profile> profiles = profileService.getAllProfiles();
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Profiles retrieved successfully.");
             response.setData(profiles);
@@ -44,11 +39,11 @@ public class UserController {
         }
     }
 
-    @GetMapping("/profile/me")
-    public ResponseEntity<CommonResponse<Profile>> getMyProfile(@RequestParam String email) {
+    @GetMapping("/me")
+    public ResponseEntity<CommonResponse<Profile>> getMyProfile(@AuthenticationPrincipal UserDetails userDetails) {
         CommonResponse<Profile> response = new CommonResponse<>();
         try {
-            Profile profile = userService.getProfileByEmail(email);
+            Profile profile = profileService.getProfileByEmail(userDetails.getUsername());
             if (profile != null) {
                 response.setStatus(HttpStatus.OK.value());
                 response.setMessage("Profile retrieved successfully.");
@@ -66,11 +61,15 @@ public class UserController {
         }
     }
 
-    @GetMapping("/profile/user")
-    public ResponseEntity<CommonResponse<Profile>> getUserProfile(@RequestParam Long userId) {
+    @GetMapping("/user")
+    public ResponseEntity<CommonResponse<Profile>> getUserProfile(@Valid @RequestBody UserIdRequest userIdRequest) {
+        return handleProfileResponse(() -> profileService.getProfileByUserId(userIdRequest.getUserId()));
+    }
+
+    private ResponseEntity<CommonResponse<Profile>> handleProfileResponse(Supplier<Profile> profileSupplier) {
         CommonResponse<Profile> response = new CommonResponse<>();
         try {
-            Profile profile = userService.getProfileByUserId(userId);
+            Profile profile = profileSupplier.get();
             if (profile != null) {
                 response.setStatus(HttpStatus.OK.value());
                 response.setMessage("Profile retrieved successfully.");
@@ -87,29 +86,4 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-
-     */
-
-    @PostMapping("/update-profile")
-    public ResponseEntity<CommonResponse<User>> updateProfile(@RequestBody UpdateProfileRequest updateProfileRequest) {
-        CommonResponse<User> response = new CommonResponse<>();
-        try {
-            User user = userService.updateProfile(updateProfileRequest.getEmail(), updateProfileRequest);
-            if (user != null) {
-                response.setStatus(HttpStatus.OK.value());
-                response.setMessage("Profile updated successfully.");
-                response.setData(user);
-                return ResponseEntity.ok(response);
-            } else {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                response.setMessage("Invalid email");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            }
-        } catch (Exception e) {
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.setMessage("Error updating profile: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-    }
-
 }

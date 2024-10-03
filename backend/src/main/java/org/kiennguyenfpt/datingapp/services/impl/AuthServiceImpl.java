@@ -1,13 +1,14 @@
 package org.kiennguyenfpt.datingapp.services.impl;
 
-import lombok.Getter;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.enums.UserStatus;
+import org.kiennguyenfpt.datingapp.security.JwtUtil;
 import org.kiennguyenfpt.datingapp.services.AuthService;
 import org.kiennguyenfpt.datingapp.services.UserService;
 import org.kiennguyenfpt.datingapp.utils.PasswordUtil;
 import org.kiennguyenfpt.datingapp.validation.EmailValidator;
 import org.kiennguyenfpt.datingapp.validation.PasswordValidator;
+import org.kiennguyenfpt.datingapp.validation.ValidationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,32 +16,22 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthServiceImpl implements AuthService {
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
 
     private final BCryptPasswordEncoder passwordEncoder;
     private final EmailServiceImpl emailService;
     private final UserService userService;
+    private final JwtUtil jwtUtil;
 
-
-    public AuthServiceImpl(BCryptPasswordEncoder passwordEncoder, EmailServiceImpl emailService, UserService userService) {
+    public AuthServiceImpl(BCryptPasswordEncoder passwordEncoder, EmailServiceImpl emailService, UserService userService, JwtUtil jwtUtil) {
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.userService = userService;
-    }
-
-    @Getter
-    public static class UserWithPassword {
-        private final User user;
-        private final String rawPassword;
-
-        public UserWithPassword(User user, String rawPassword) {
-            this.user = user;
-            this.rawPassword = rawPassword;
-        }
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
-    public UserWithPassword register(String email) {
+    public User register(String email) {
         validateEmail(email);
         checkEmailExists(email);
 
@@ -51,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
         try {
             User savedUser = userService.save(user);
             sendEmail(user, randomPassword);
-            return new UserWithPassword(savedUser, randomPassword);
+            return savedUser;
         } catch (Exception e) {
             logger.error("Error saving user", e);
             throw new RuntimeException("Error saving user", e);
@@ -59,32 +50,22 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public User login(String email, String password) {
-        validateEmail(email);
+    public String login(String email, String password) {
         User user = userService.findByEmail(email);
         if (user != null && passwordEncoder.matches(password, user.getPasswordHash())) {
-            logger.info("User logged in successfully: {}", email);
-            return user;
+            if (user.isFirstLogin()) {
+                return "First login, please change your password.";
+            } else {
+                String token = jwtUtil.generateToken(email);
+                logger.info("User logged in: {}", email);
+                logger.info(token);
+                user.setLoginCount(user.getLoginCount() + 1);
+                userService.save(user);
+                return token;
+            }
         }
-        logger.warn("Invalid login attempt for email: {}", email);
-        return null;
+        return "Invalid email or password.";
     }
-
-    /*
-    @Override
-    public User changePassword(String email, String oldPassword, String newPassword) {
-        validateEmail(email);
-        validatePassword(newPassword);
-
-        User user = userService.findByEmail(email);
-        if (user != null && passwordEncoder.matches(oldPassword, user.getPasswordHash())) {
-            user.setPasswordHash(passwordEncoder.encode(newPassword));
-            return userService.save(user);
-        }
-        return null;
-    }
-
-     */
 
     @Override
     public User forgotPassword(String email) {
@@ -93,6 +74,7 @@ public class AuthServiceImpl implements AuthService {
             String randomPassword = PasswordUtil.generateRandomPassword();
             user.setPasswordHash(passwordEncoder.encode(randomPassword));
             userService.save(user);
+            emailService.sendEmail(user.getEmail(), "Password Reset", "Your new password is: " + randomPassword);
             return user;
         }
         return null;
@@ -102,13 +84,16 @@ public class AuthServiceImpl implements AuthService {
     public User changePassword(String email, String oldPassword, String newPassword) {
         logger.info("Attempting to change password for email: {}", email);
 
-        if (!EmailValidator.validate(email)) {
+        ValidationResult emailValidationResult = EmailValidator.validate(email);
+        if (!emailValidationResult.valid()) {
             logger.warn("Invalid email format for email: {}", email);
-            throw new IllegalArgumentException("Invalid email format!");
+            throw new IllegalArgumentException(emailValidationResult.message());
         }
-        if (!PasswordValidator.validate(newPassword)) {
+
+        ValidationResult passwordValidationResult = PasswordValidator.validate(newPassword);
+        if (!passwordValidationResult.valid()) {
             logger.warn("Invalid new password format for email: {}", email);
-            throw new IllegalArgumentException("Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character! (Ex: Abcd@1234)");
+            throw new IllegalArgumentException(passwordValidationResult.message());
         }
 
         User user = userService.findByEmail(email);
@@ -125,14 +110,16 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private void validateEmail(String email) {
-        if (!EmailValidator.validate(email)) {
-            throw new IllegalArgumentException("Invalid email format!");
+        ValidationResult result = EmailValidator.validate(email);
+        if (!result.valid()) {
+            throw new IllegalArgumentException(result.message());
         }
     }
 
     private void validatePassword(String password) {
-        if (!PasswordValidator.validate(password)) {
-            throw new IllegalArgumentException("Invalid password format!");
+        ValidationResult result = PasswordValidator.validate(password);
+        if (!result.valid()) {
+            throw new IllegalArgumentException(result.message());
         }
     }
 

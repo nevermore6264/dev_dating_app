@@ -20,10 +20,16 @@ public class PasswordValidator {
 
     private static final Pattern PATTERN = Pattern.compile(PASSWORD_PATTERN);
 
-    public static boolean validate(String password) {
+    public static ValidationResult validate(String password) {
         if (password == null) {
-            return false;
+            return new ValidationResult(false, "Password cannot be null.");
         }
-        return PATTERN.matcher(password).matches();
+        if (password.length() < 8) {
+            return new ValidationResult(false, "Password must be at least 8 characters long.");
+        }
+        if (!PATTERN.matcher(password).matches()) {
+            return new ValidationResult(false, "Password must contain at least one digit, one lower case letter, one upper case letter, one special character, and no whitespace.");
+        }
+        return new ValidationResult(true, "Password is valid.");
     }
 }

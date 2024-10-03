@@ -9,10 +9,14 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
+    /*
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     @Mapping(source = "password", target = "password")
-    @Mapping(source = "user.userId", target = "userId") // Thêm ánh xạ cho id
-    @Mapping(source = "user.name", target = "name") // Thêm ánh xạ cho name
+    @Mapping(source = "user.userId", target = "userId")
+    @Mapping(source = "user.name", target = "name")
     UserResponse userToUserResponse(User user, String password);
+
+     */
+    UserResponse userToUserResponse(User user);
 }

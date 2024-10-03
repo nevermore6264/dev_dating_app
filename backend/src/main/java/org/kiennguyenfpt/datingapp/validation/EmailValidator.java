@@ -15,10 +15,13 @@ public class EmailValidator {
 
     private static final Pattern pattern = Pattern.compile(EMAIL_PATTERN);
 
-    public static boolean validate(String email) {
-        if(email == null) {
-            return false;
+    public static ValidationResult validate(String email) {
+        if (email == null) {
+            return new ValidationResult(false, "Email cannot be null.");
         }
-        return pattern.matcher(email).matches();
+        if (!pattern.matcher(email).matches()) {
+            return new ValidationResult(false, "Email must contain only allowed characters and include '@'.");
+        }
+        return new ValidationResult(true, "Email is valid.");
     }
 }

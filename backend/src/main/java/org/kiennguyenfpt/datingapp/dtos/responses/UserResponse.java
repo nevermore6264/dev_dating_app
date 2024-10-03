@@ -15,8 +15,8 @@ public class UserResponse {
     private long userId;
     private String email;
     private String name;
-    private String password;
-    private String passwordHash;
+    //private String password;
+    //private String passwordHash;
     private Timestamp createdAt;
     private boolean firstLogin;
     private Timestamp lastLogin;

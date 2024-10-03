@@ -74,13 +74,14 @@ public class CafeServiceImpl implements CafeService {
         return new CafeResponse(cafe.getCafeId(), cafe.getName(), cafe.getAddress(),
                 cafe.getBio(), cafe.getPriceRangeMin(), cafe.getPriceRangeMax(), cafe.getImageUrl());
     }
-//    public CafeResponse getCafeById(Long id) {
-//        Cafe cafe = cafeRepository.findById(id)
-//                .orElseThrow(() -> new CafeNotFoundException("Cafe not found")); // Sử dụng exception mới
-//        return new CafeResponse(cafe);
-//    }
-//    public Cafe getCafeById(Long id) {
-//        return cafeRepository.findById(id)
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cafe not found"));
-//    }
+
+    @Override
+    public List<CafeResponse> searchCafesByName(String name) {
+        return cafeRepository.findByNameContainingIgnoreCase(name).stream()
+                .map(cafe -> new CafeResponse(
+                        cafe.getCafeId(), cafe.getName(), cafe.getAddress(),
+                        cafe.getBio(), cafe.getPriceRangeMin(), cafe.getPriceRangeMax(), cafe.getImageUrl()))
+                .collect(Collectors.toList());
+    }
+
 }

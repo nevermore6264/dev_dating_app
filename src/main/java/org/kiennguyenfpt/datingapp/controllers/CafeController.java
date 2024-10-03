@@ -2,7 +2,9 @@ package org.kiennguyenfpt.datingapp.controllers;
 
 import org.kiennguyenfpt.datingapp.dtos.requests.CafeRequest; // Thêm import
 import org.kiennguyenfpt.datingapp.dtos.responses.CafeResponse; // Thêm import
+import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.services.CafeService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,4 +43,25 @@ public class CafeController {
     public ResponseEntity<CafeResponse> getCafeById(@PathVariable Long id) {
         return ResponseEntity.ok(cafeService.getCafeById(id));
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<CommonResponse<List<CafeResponse>>> searchCafes(@RequestParam String name) {
+        CommonResponse<List<CafeResponse>> response = new CommonResponse<>();
+        List<CafeResponse> cafes = cafeService.searchCafesByName(name);
+
+        if (cafes.isEmpty()) {
+            // Nếu không tìm thấy quán, trả về 200 và thông điệp "Không tìm thấy"
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("Không tìm thấy quán cà phê với tên: " + name);
+            response.setData(cafes);
+            return ResponseEntity.ok(response);
+        }
+
+        // Nếu tìm thấy, trả về danh sách quán
+        response.setStatus(HttpStatus.OK.value());
+        response.setMessage("Tìm kiếm thành công.");
+        response.setData(cafes);
+        return ResponseEntity.ok(response);
+    }
+
 }

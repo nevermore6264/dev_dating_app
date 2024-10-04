@@ -15,10 +15,12 @@ Phân Tích và Báo Cáo: Theo dõi và phân tích dữ liệu người dùng 
 
 APIs List:
 1) User Register: 
+
 ![image](https://github.com/user-attachments/assets/08a37ca2-cc28-4b0a-bf74-171fd786fabe)
 
 2) User Login:
 - First login:
+
 ![image](https://github.com/user-attachments/assets/e31765bd-ab2a-4a10-942a-af5b27bf2d17)
 
 - Second login to more:
@@ -26,11 +28,16 @@ APIs List:
 
 
 3) User Change-password:
+
 ![image](https://github.com/user-attachments/assets/d05eecf9-e363-484e-834f-d15390c2f0fb)
 
 4) User Forgot-password:
 
+![Uploading image.png…]()
+
+
 5) Update profile:
+
 ![image](https://github.com/user-attachments/assets/fd78ecc6-bdbb-4bd3-bb19-14dbeb02d038)
 
 ![image](https://github.com/user-attachments/assets/1b0bef4a-4848-40ab-ab8c-15e8078c5bf1)
@@ -38,10 +45,12 @@ APIs List:
 
 
 6) View my profile (xem profile cua minh khi login bang account cua minh)
+
 ![image](https://github.com/user-attachments/assets/0080b497-843e-449d-b825-cf7d9bdf6cee)
 
 
 7) View other's profile (xem profile cua nguoi khac bang account cua minh)
+
 ![image](https://github.com/user-attachments/assets/3e31990e-26d9-48d0-a043-88f5dc489395)
 
 ![image](https://github.com/user-attachments/assets/609c7afb-f605-400c-8a90-343f524bed1c)

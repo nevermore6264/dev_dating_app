@@ -45,6 +45,8 @@ public class Profile {
 
     @Column(length = 500)
     private String bio;
+    private String avatar;
+    private String phone;
 
     private String avatar;
 

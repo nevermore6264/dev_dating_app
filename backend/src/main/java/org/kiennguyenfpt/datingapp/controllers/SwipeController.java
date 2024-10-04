@@ -2,6 +2,7 @@ package org.kiennguyenfpt.datingapp.controllers;
 
 import org.kiennguyenfpt.datingapp.dtos.requests.SwipeRequest;
 import org.kiennguyenfpt.datingapp.dtos.responses.SwipeResponse;
+import org.kiennguyenfpt.datingapp.exceptions.AlreadyMatchedException;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.services.SwipeService;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,12 @@ public class SwipeController {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.setMessage(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        } catch (Exception e) {
+        } catch (AlreadyMatchedException e) { // Bắt ngoại lệ AlreadyMatchedException riêng
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+        catch (Exception e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setMessage("Error performing swipe action: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
@@ -50,5 +56,12 @@ public class SwipeController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    @ExceptionHandler(AlreadyMatchedException.class)
+    public ResponseEntity<CommonResponse<String>> handleAlreadyMatchedException(AlreadyMatchedException e) {
+        CommonResponse<String> response = new CommonResponse<>();
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        response.setMessage(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
 
 }

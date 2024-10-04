@@ -80,6 +80,7 @@ public class User {
     private Profile profile; // Một người dùng chỉ có một hồ sơ
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Like> likes; // Danh sách các lượt thích của người dùng
 
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

@@ -30,6 +30,30 @@ APIs List:
 
 4) User Forgot-password:
 
+5) Update profile:
+![image](https://github.com/user-attachments/assets/fd78ecc6-bdbb-4bd3-bb19-14dbeb02d038)
+
+![image](https://github.com/user-attachments/assets/1b0bef4a-4848-40ab-ab8c-15e8078c5bf1)
+
+
+
+6) View my profile (xem profile cua minh khi login bang account cua minh)
+![image](https://github.com/user-attachments/assets/0080b497-843e-449d-b825-cf7d9bdf6cee)
+
+
+7) View other's profile (xem profile cua nguoi khac bang account cua minh)
+![image](https://github.com/user-attachments/assets/3e31990e-26d9-48d0-a043-88f5dc489395)
+
+![image](https://github.com/user-attachments/assets/609c7afb-f605-400c-8a90-343f524bed1c)
+
+
+8) View all profiles of users
+
+![Uploading image.png…]()
+
+
+
+
 
 
 Workflow Tổng Quan

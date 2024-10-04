@@ -53,7 +53,11 @@ public class AuthServiceImpl implements AuthService {
     public String login(String email, String password) {
         User user = userService.findByEmail(email);
         if (user != null && passwordEncoder.matches(password, user.getPasswordHash())) {
-            String token = jwtUtil.generateToken(email);
+            //String token = jwtUtil.generateToken(email);
+            //logger.info("User logged in: {}", email);
+            //logger.info(token);
+
+            String token = jwtUtil.generateToken(email, user.getUserId());
             logger.info("User logged in: {}", email);
             logger.info(token);
 

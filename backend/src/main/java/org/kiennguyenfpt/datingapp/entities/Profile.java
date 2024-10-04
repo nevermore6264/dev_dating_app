@@ -48,7 +48,7 @@ public class Profile {
     private String avatar;
     private String phone;
 
-    private String avatar;
+    //private String avatar;
 
     @PostLoad
     @PostPersist
@@ -59,7 +59,7 @@ public class Profile {
         }
     }
 
-    private String phone;
+    //private String phone;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

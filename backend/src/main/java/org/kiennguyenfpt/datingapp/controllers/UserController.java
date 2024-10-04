@@ -71,6 +71,8 @@ public class UserController {
 
      */
 
+    /*
+
     @PostMapping(value = "/update-profile", consumes = "multipart/form-data")
     public ResponseEntity<CommonResponse<Map<String, Object>>> updateProfile(
             @RequestPart("updateProfileRequest") String updateProfileRequestJson,
@@ -103,6 +105,86 @@ public class UserController {
             return createErrorResponseMap(response, HttpStatus.INTERNAL_SERVER_ERROR, "Error updating profile: " + e.getMessage());
         }
     }
+
+     */
+    /*
+    @PostMapping(value = "/update-profile", consumes = "multipart/form-data")
+    public ResponseEntity<CommonResponse<Map<String, Object>>> updateProfile(
+            @RequestPart("updateProfileRequest") String updateProfileRequestJson,
+            @RequestPart("files") List<MultipartFile> files,
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        CommonResponse<Map<String, Object>> response = new CommonResponse<>();
+
+        try {
+            UpdateProfileRequest updateProfileRequest = new ObjectMapper().readValue(updateProfileRequestJson, UpdateProfileRequest.class);
+            String email = validateJwt(authorizationHeader, response);
+            if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+
+            User user = userService.updateProfile(email, updateProfileRequest, files);
+
+            if (user != null) {
+                Map<String, Object> responseData = createResponseData(user);
+                response.setStatus(HttpStatus.OK.value());
+                response.setMessage("Profile updated successfully.");
+                response.setData(responseData);
+                return ResponseEntity.ok(response);
+            } else {
+                return createErrorResponseMap(response, HttpStatus.NOT_FOUND, "User not found.");
+            }
+        } catch (Exception e) {
+            return createErrorResponseMap(response, HttpStatus.INTERNAL_SERVER_ERROR, "Error updating profile: " + e.getMessage());
+        }
+    }
+
+     */
+    @PostMapping(value = "/update-profile", consumes = "multipart/form-data")
+    public ResponseEntity<CommonResponse<Map<String, Object>>> updateProfile(
+            @RequestPart("updateProfileRequest") String updateProfileRequestJson,
+            @RequestPart("files") List<MultipartFile> files,
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        CommonResponse<Map<String, Object>> response = new CommonResponse<>();
+
+        try {
+            // Parse the JSON string to UpdateProfileRequest object
+            UpdateProfileRequest updateProfileRequest = new ObjectMapper().readValue(updateProfileRequestJson, UpdateProfileRequest.class);
+            String email = validateJwt(authorizationHeader, response);
+            if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+
+            User user = userService.updateProfile(email, updateProfileRequest, files);
+
+            if (user != null) {
+                Map<String, Object> responseData = createResponseData(user);
+                response.setStatus(HttpStatus.OK.value());
+                response.setMessage("Profile updated successfully.");
+                response.setData(responseData);
+                return ResponseEntity.ok(response);
+            } else {
+                return createErrorResponseMap(response, HttpStatus.NOT_FOUND, "User not found.");
+            }
+        } catch (Exception e) {
+            return createErrorResponseMap(response, HttpStatus.INTERNAL_SERVER_ERROR, "Error updating profile: " + e.getMessage());
+        }
+    }
+
+
+
+    /*
+    private void updateProfileWithImages(User user, List<String> imageUrls) {
+        if (!imageUrls.isEmpty()) {
+            user.getProfile().setAvatar(imageUrls.get(0));
+        }
+        List<Photo> photos = photoService.getPhotos(user.getProfile().getProfileId());
+        for (Photo photo : photos) {
+            photo.setProfile(user.getProfile()); // Ensure the profile field is set
+        }
+        user.getProfile().setPhotos(photos);
+        userService.save(user); // Save the user to persist changes
+    }
+
+     */
+
 
 
     @PostMapping("/update-avatar")
@@ -178,12 +260,20 @@ public class UserController {
         return true;
     }
 
+
+
+
+
     private void updateProfileWithImages(User user, List<String> imageUrls) {
         if (!imageUrls.isEmpty()) {
             user.getProfile().setAvatar(imageUrls.get(0));
         }
         List<Photo> photos = photoService.getPhotos(user.getProfile().getProfileId());
+        for (Photo photo : photos) {
+            photo.setProfile(user.getProfile()); // Ensure the profile field is set
+        }
         user.getProfile().setPhotos(photos);
+        userService.save(user); // Save the user to persist changes
     }
 
 

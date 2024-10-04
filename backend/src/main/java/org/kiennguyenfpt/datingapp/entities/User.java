@@ -128,6 +128,9 @@ public class User {
     )
     private Set<User> dislikedUsers = new HashSet<>();
 
+    //@Column(name = "profile_updated", nullable = false)
+    //private boolean profileUpdated = false;
+
     public boolean isSecondLogin() {
         return loginCount == 1;
     }

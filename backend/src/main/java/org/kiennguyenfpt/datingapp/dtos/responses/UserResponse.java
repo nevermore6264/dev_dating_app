@@ -14,7 +14,7 @@ import lombok.Setter;
 public class UserResponse {
     private long userId;
     private String email;
-    private String name;
+    //private String name;
     //private String password;
     //private String passwordHash;
     private Timestamp createdAt;

@@ -1,42 +1,32 @@
 package org.kiennguyenfpt.datingapp.services.impl;
 
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
-import com.google.firebase.cloud.StorageClient;
-import org.kiennguyenfpt.datingapp.entities.Photo;
-import org.kiennguyenfpt.datingapp.entities.Profile;
-import org.kiennguyenfpt.datingapp.entities.User;
-import org.kiennguyenfpt.datingapp.repositories.PhotoRepository;
-import org.kiennguyenfpt.datingapp.repositories.UserRepository;
-import org.kiennguyenfpt.datingapp.services.PhotoService;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.kiennguyenfpt.datingapp.entities.Photo;
+import org.kiennguyenfpt.datingapp.entities.User;
+import org.kiennguyenfpt.datingapp.repositories.PhotoRepository;
+import org.kiennguyenfpt.datingapp.repositories.UserRepository;
+import org.kiennguyenfpt.datingapp.services.PhotoService;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Bucket;
+import com.google.firebase.cloud.StorageClient;
+
 @Service
-public class PhotoServiceImpl implements PhotoService  {
+public class PhotoServiceImpl implements PhotoService {
 
     private final UserRepository userRepository;
     private final PhotoRepository photoRepository;
-
-    //@Value("${cloud.storage.bucket-name}")
-    //private String bucketName;
 
     public PhotoServiceImpl(UserRepository userRepository, PhotoRepository photoRepository) {
         this.userRepository = userRepository;
         this.photoRepository = photoRepository;
     }
-
-
-
-
 
     /*
     @Override
@@ -55,7 +45,7 @@ public class PhotoServiceImpl implements PhotoService  {
     }
 
      */
-    /*
+ /*
     @Override
     public List<String> uploadPhotos(String email, List<MultipartFile> files) throws IOException {
         List<String> imageUrls = new ArrayList<>();
@@ -87,7 +77,7 @@ public class PhotoServiceImpl implements PhotoService  {
 
      */
 
-    /*
+ /*
     @Override
     public Profile updateProfile(Long profileId, MultipartFile file) throws IOException {
         Profile profile = profileRepository.findById(profileId)
@@ -106,7 +96,6 @@ public class PhotoServiceImpl implements PhotoService  {
     }
 
      */
-
     @Override
     public List<String> uploadPhotos(String email, List<MultipartFile> files) throws IOException {
         List<String> imageUrls = new ArrayList<>();
@@ -124,14 +113,17 @@ public class PhotoServiceImpl implements PhotoService  {
             // Save photo to the database
             Photo photo = new Photo();
             photo.setUrl(imageUrl);
-            photo.setProfile(user.getProfile());
+            photo.setProfile(user.getProfile()); // Ensure the profile field is set
             photoRepository.save(photo);
         }
 
         return imageUrls;
     }
 
-
+    @Override
+    public void savePhoto(Photo photo) {
+        photoRepository.save(photo);
+    }
 
     @Override
     public List<Photo> getPhotos(Long profileId) {

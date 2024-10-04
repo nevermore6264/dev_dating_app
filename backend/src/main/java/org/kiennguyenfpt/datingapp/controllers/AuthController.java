@@ -52,7 +52,7 @@ public class AuthController {
 
             User user = authService.register(userReq.getEmail());
             if (user != null) {
-                UserResponse userResponse = userMapper.userToUserResponse   (user);
+                UserResponse userResponse = userMapper.userToUserResponse(user);
                 response.setStatus(HttpStatus.OK.value());
                 response.setMessage("User registered successfully!");
                 response.setData(userResponse);

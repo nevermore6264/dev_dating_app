@@ -11,5 +11,4 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserRegistrationRequest {
     private String email;
-    //private String name;
 }

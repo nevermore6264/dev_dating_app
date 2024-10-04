@@ -3,6 +3,7 @@ package org.kiennguyenfpt.datingapp.entities;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -66,7 +67,9 @@ public class Profile {
     @Column(name = "updated_at", nullable = false)
     private Timestamp updatedAt;
 
+
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
     private List<Photo> photos; // Danh sách ảnh của hồ sơ
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

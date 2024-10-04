@@ -44,8 +44,8 @@ public class AuthServiceImpl implements AuthService {
             sendEmail(user, randomPassword);
             return savedUser;
         } catch (Exception e) {
-            logger.error("Error saving user", e);
-            throw new RuntimeException("Error saving user", e);
+            logger.error("Error during registration: {}", e.getMessage(), e);
+            throw new RuntimeException("Error during registration: " + e.getMessage(), e);
         }
     }
 
@@ -53,10 +53,6 @@ public class AuthServiceImpl implements AuthService {
     public String login(String email, String password) {
         User user = userService.findByEmail(email);
         if (user != null && passwordEncoder.matches(password, user.getPasswordHash())) {
-            //String token = jwtUtil.generateToken(email);
-            //logger.info("User logged in: {}", email);
-            //logger.info(token);
-
             String token = jwtUtil.generateToken(email, user.getUserId());
             logger.info("User logged in: {}", email);
             logger.info(token);
@@ -65,13 +61,24 @@ public class AuthServiceImpl implements AuthService {
                 user.setFirstLogin(false);
                 user.setLoginCount(user.getLoginCount() + 1);
                 userService.save(user);
-                return "First login, please update your profile. Token: " + token;
+                return "First login, please update your password. Token: " + token;
+
+
             } else if (user.getLoginCount() == 1) {
                 // Second login, require profile update
                 user.setLoginCount(user.getLoginCount() + 1);
                 userService.save(user);
                 return "Second login, please update your profile. Token: " + token;
-            } else {
+            }
+            /*
+            else if (user.getLoginCount() > 1 && !user.isProfileUpdated()) {
+                // Prevent login if profile is not updated after second login
+                return "Profile update required. Please update your profile.";
+
+            }
+            */
+             else {
+
                 user.setLoginCount(user.getLoginCount() + 1);
                 userService.save(user);
                 return token;

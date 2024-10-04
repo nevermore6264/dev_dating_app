@@ -53,12 +53,21 @@ public class AuthServiceImpl implements AuthService {
     public String login(String email, String password) {
         User user = userService.findByEmail(email);
         if (user != null && passwordEncoder.matches(password, user.getPasswordHash())) {
+            String token = jwtUtil.generateToken(email);
+            logger.info("User logged in: {}", email);
+            logger.info(token);
+
             if (user.isFirstLogin()) {
-                return "First login, please change your password.";
+                user.setFirstLogin(false);
+                user.setLoginCount(user.getLoginCount() + 1);
+                userService.save(user);
+                return "First login, please update your profile. Token: " + token;
+            } else if (user.getLoginCount() == 1) {
+                // Second login, require profile update
+                user.setLoginCount(user.getLoginCount() + 1);
+                userService.save(user);
+                return "Second login, please update your profile. Token: " + token;
             } else {
-                String token = jwtUtil.generateToken(email);
-                logger.info("User logged in: {}", email);
-                logger.info(token);
                 user.setLoginCount(user.getLoginCount() + 1);
                 userService.save(user);
                 return token;
@@ -133,7 +142,6 @@ public class AuthServiceImpl implements AuthService {
     private User createUser(String email) {
         User user = new User();
         user.setEmail(email);
-        user.setName("Default Name");
         user.setStatus(UserStatus.ACTIVE);
         user.setFirstLogin(true);
         return user;

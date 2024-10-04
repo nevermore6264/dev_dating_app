@@ -3,10 +3,11 @@ package org.kiennguyenfpt.datingapp.services;
 import org.kiennguyenfpt.datingapp.entities.Photo;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface PhotoService {
-    Photo uploadPhoto(String email, MultipartFile file);
-    List<Photo> getPhotos(Long userId);
+    List<String> uploadPhotos(String email, List<MultipartFile> files) throws IOException;
+    List<Photo> getPhotos(Long profileId);
     void deletePhoto(Long photoId);
 }

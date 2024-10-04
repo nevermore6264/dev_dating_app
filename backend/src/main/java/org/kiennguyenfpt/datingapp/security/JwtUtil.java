@@ -69,6 +69,15 @@ public class JwtUtil {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token) && !isTokenBlacklisted(token));
     }
 
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(Base64.getEncoder().encodeToString(secret.getBytes())).parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public void invalidateToken(String token) {
         tokenBlacklist.put(token, true);
     }

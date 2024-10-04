@@ -59,8 +59,11 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/api/v1/profiles").permitAll()
-                        //.requestMatchers("/api/v1/profiles/me").authenticated()
+                        //.requestMatchers("/api/v1/profiles/**").permitAll()
+                        //.requestMatchers("api/v1/users/**").permitAll()
+                        .requestMatchers("/api/v1/profiles/me").authenticated()
+                        .requestMatchers("/api/v1/users/update-profile").authenticated()
+                        //.requestMatchers("/api/v1/users/update-profile").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

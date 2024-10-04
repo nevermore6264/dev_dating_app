@@ -11,7 +11,7 @@ public class DatingAppApplication {
    // private JwtUtil jwtUtil;
     public static void main(String[] args) {
         SpringApplication.run(DatingAppApplication.class, args);
-        JwtUtil jwtUtil = new JwtUtil();
+        //JwtUtil jwtUtil = new JwtUtil();
         //System.out.println("JWT Secret: " + jwtUtil.getSecret());
     }
 }

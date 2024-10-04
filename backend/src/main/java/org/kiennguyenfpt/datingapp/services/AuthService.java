@@ -1,7 +1,6 @@
 package org.kiennguyenfpt.datingapp.services;
 
 import org.kiennguyenfpt.datingapp.entities.User;
-import org.kiennguyenfpt.datingapp.services.impl.AuthServiceImpl;
 
 public interface AuthService {
     User register(String email);

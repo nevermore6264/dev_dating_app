@@ -15,6 +15,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.annotation.PostConstruct;
+
 @Entity
 @Getter
 @Setter
@@ -44,6 +46,16 @@ public class Profile {
     private String bio;
 
     private String avatar;
+
+    @PostLoad
+    @PostPersist
+    @PostConstruct
+    private void setAvatar() {
+        if(photos != null && !photos.isEmpty()) {
+            this.avatar = photos.get(0).getUrl();
+        }
+    }
+
     private String phone;
 
     @CreationTimestamp
@@ -54,8 +66,8 @@ public class Profile {
     @Column(name = "updated_at", nullable = false)
     private Timestamp updatedAt;
 
-    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Photo> photos; // Danh sách ảnh liên kết với hồ sơ
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Photo> photos; // Danh sách ảnh của hồ sơ
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonBackReference

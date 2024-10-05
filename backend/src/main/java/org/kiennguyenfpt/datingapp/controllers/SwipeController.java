@@ -13,6 +13,8 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("api/v1/swipes")
+@CrossOrigin
+
 public class SwipeController {
     private final SwipeService swipeService;
 

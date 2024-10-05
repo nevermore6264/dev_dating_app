@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v1/messages")
+@CrossOrigin
+
 public class MessageController {
     private final MessageService messageService;
     private final MatchService matchService;

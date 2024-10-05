@@ -19,5 +19,6 @@ public interface UserService {
     User save(User user);
 
     List<User> searchUsers(String keyword);
+    List<User> findAllUsersExcept(Long userId);
 
 }

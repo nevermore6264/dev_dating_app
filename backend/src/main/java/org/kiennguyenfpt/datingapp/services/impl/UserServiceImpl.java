@@ -2,6 +2,7 @@ package org.kiennguyenfpt.datingapp.services.impl;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.kiennguyenfpt.datingapp.dtos.requests.UpdateProfileRequest;
 import org.kiennguyenfpt.datingapp.entities.Photo;
@@ -101,5 +102,13 @@ public class UserServiceImpl implements UserService {
     public void updateAvatar(User user, String imageUrl) {
         user.getProfile().setAvatar(imageUrl);
         userRepository.save(user);
+    }
+
+    @Override
+    public List<User> findAllUsersExcept(Long userId) {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .filter(user -> user.getUserId() != userId)
+                .collect(Collectors.toList());
     }
 }

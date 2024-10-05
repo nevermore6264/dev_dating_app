@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v1/profiles")
+@CrossOrigin(origins = "http://localhost:8080")
+
 public class ProfileController {
     private final ProfileService profileService;
     private final ProfileMapper profileMapper;

@@ -18,9 +18,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 @RestController
 @RequestMapping("api/v1/users")
+@CrossOrigin
+
+//@CrossOrigin(origins = "http://localhost:8081")
 public class UserController {
     private final UserService userService;
     private final PhotoService photoService;
@@ -35,109 +39,29 @@ public class UserController {
         this.profileMapper = profileMapper;
     }
 
-    /*
-    @PostMapping(value = "/update-profile", consumes = "multipart/form-data")
-    public ResponseEntity<CommonResponse<Map<String, Object>>> updateProfile(
-            @RequestPart("updateProfileRequest") String updateProfileRequestJson,
-            @RequestPart("files") List<MultipartFile> files,
-            @RequestHeader("Authorization") String authorizationHeader) {
-
-        CommonResponse<Map<String, Object>> response = new CommonResponse<>();
-
+    @GetMapping("/random")
+    public ResponseEntity<CommonResponse<User>> getRandomUser(@RequestParam Long userId) {
+        CommonResponse<User> response = new CommonResponse<>();
         try {
-            UpdateProfileRequest updateProfileRequest = new ObjectMapper().readValue(updateProfileRequestJson, UpdateProfileRequest.class);
-            String email = validateJwt(authorizationHeader, response);
-            if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-
-            if (!validateImages(files, response)) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-
-            List<String> imageUrls = photoService.uploadPhotos(email, files);
-            User user = userService.updateProfile(email, updateProfileRequest);
-
-            if (user != null) {
-                updateProfileWithImages(user, imageUrls);
-                Map<String, Object> responseData = createResponseData(user);
-                response.setStatus(HttpStatus.OK.value());
-                response.setMessage("Profile updated successfully.");
-                response.setData(responseData);
-                return ResponseEntity.ok(response);
-            } else {
-                return createErrorResponse(response, HttpStatus.NOT_FOUND, "User not found.");
+            List<User> users = userService.findAllUsersExcept(userId);
+            if (users.isEmpty()) {
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+                response.setMessage("No users found.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             }
+            Random random = new Random();
+            User randomUser = users.get(random.nextInt(users.size()));
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("Random user retrieved successfully.");
+            response.setData(randomUser);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return createErrorResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, "Error updating profile: " + e.getMessage());
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage("Error retrieving users: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
-     */
-
-    /*
-
-    @PostMapping(value = "/update-profile", consumes = "multipart/form-data")
-    public ResponseEntity<CommonResponse<Map<String, Object>>> updateProfile(
-            @RequestPart("updateProfileRequest") String updateProfileRequestJson,
-            @RequestPart("files") List<MultipartFile> files,
-            @RequestHeader("Authorization") String authorizationHeader) {
-
-        CommonResponse<Map<String, Object>> response = new CommonResponse<>();
-
-        try {
-            UpdateProfileRequest updateProfileRequest = new ObjectMapper().readValue(updateProfileRequestJson, UpdateProfileRequest.class);
-            String email = validateJwt(authorizationHeader, response);
-            if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-
-            if (!validateImages(files, response)) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-
-            List<String> imageUrls = photoService.uploadPhotos(email, files);
-            User user = userService.updateProfile(email, updateProfileRequest);
-
-            if (user != null) {
-                updateProfileWithImages(user, imageUrls);
-                Map<String, Object> responseData = createResponseData(user);
-                response.setStatus(HttpStatus.OK.value());
-                response.setMessage("Profile updated successfully.");
-                response.setData(responseData);
-                return ResponseEntity.ok(response);
-            } else {
-                return createErrorResponseMap(response, HttpStatus.NOT_FOUND, "User not found.");
-            }
-        } catch (Exception e) {
-            return createErrorResponseMap(response, HttpStatus.INTERNAL_SERVER_ERROR, "Error updating profile: " + e.getMessage());
-        }
-    }
-
-     */
-    /*
-    @PostMapping(value = "/update-profile", consumes = "multipart/form-data")
-    public ResponseEntity<CommonResponse<Map<String, Object>>> updateProfile(
-            @RequestPart("updateProfileRequest") String updateProfileRequestJson,
-            @RequestPart("files") List<MultipartFile> files,
-            @RequestHeader("Authorization") String authorizationHeader) {
-
-        CommonResponse<Map<String, Object>> response = new CommonResponse<>();
-
-        try {
-            UpdateProfileRequest updateProfileRequest = new ObjectMapper().readValue(updateProfileRequestJson, UpdateProfileRequest.class);
-            String email = validateJwt(authorizationHeader, response);
-            if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-
-            User user = userService.updateProfile(email, updateProfileRequest, files);
-
-            if (user != null) {
-                Map<String, Object> responseData = createResponseData(user);
-                response.setStatus(HttpStatus.OK.value());
-                response.setMessage("Profile updated successfully.");
-                response.setData(responseData);
-                return ResponseEntity.ok(response);
-            } else {
-                return createErrorResponseMap(response, HttpStatus.NOT_FOUND, "User not found.");
-            }
-        } catch (Exception e) {
-            return createErrorResponseMap(response, HttpStatus.INTERNAL_SERVER_ERROR, "Error updating profile: " + e.getMessage());
-        }
-    }
-
-     */
     @PostMapping(value = "/update-profile", consumes = "multipart/form-data")
     public ResponseEntity<CommonResponse<Map<String, Object>>> updateProfile(
             @RequestPart("updateProfileRequest") String updateProfileRequestJson,
@@ -167,25 +91,6 @@ public class UserController {
             return createErrorResponseMap(response, HttpStatus.INTERNAL_SERVER_ERROR, "Error updating profile: " + e.getMessage());
         }
     }
-
-
-
-    /*
-    private void updateProfileWithImages(User user, List<String> imageUrls) {
-        if (!imageUrls.isEmpty()) {
-            user.getProfile().setAvatar(imageUrls.get(0));
-        }
-        List<Photo> photos = photoService.getPhotos(user.getProfile().getProfileId());
-        for (Photo photo : photos) {
-            photo.setProfile(user.getProfile()); // Ensure the profile field is set
-        }
-        user.getProfile().setPhotos(photos);
-        userService.save(user); // Save the user to persist changes
-    }
-
-     */
-
-
 
     @PostMapping("/update-avatar")
     public ResponseEntity<CommonResponse<String>> updateAvatar(

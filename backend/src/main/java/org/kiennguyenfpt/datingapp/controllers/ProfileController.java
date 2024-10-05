@@ -77,8 +77,8 @@ public class ProfileController {
         }
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<CommonResponse<Profile>> getUserProfile(@RequestParam Long userId) {
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<CommonResponse<Profile>> getUserProfile(@PathVariable Long userId) {
         return handleProfileResponse(() -> profileService.getProfileByUserId(userId));
     }
 

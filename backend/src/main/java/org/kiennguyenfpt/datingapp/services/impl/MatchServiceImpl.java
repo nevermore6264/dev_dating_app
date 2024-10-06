@@ -57,6 +57,26 @@ public class MatchServiceImpl implements MatchService {
         }).collect(Collectors.toList());
     }
 
+    @Override
+    public Long getReceiverIdFromMatch(Long matchId, Long senderId) {
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new RuntimeException("Match not found")); // Kiểm tra match hợp lệ
+
+        if (match.getUser1().getUserId() == senderId) {
+            return match.getUser2().getUserId(); // Trả về receiverId nếu sender là user1
+        } else if (match.getUser2().getUserId() == senderId) {
+            return match.getUser1().getUserId(); // Trả về receiverId nếu sender là user2
+        } else {
+            throw new IllegalArgumentException("Sender is not part of the match."); // Nếu sender không thuộc về match
+        }
+    }
+
+    @Override
+    public Match getMatchById(Long matchId) {
+        return matchRepository.findById(matchId)
+                .orElseThrow(() -> new IllegalArgumentException("Match not found with id: " + matchId));
+    }
+
 }
 
 

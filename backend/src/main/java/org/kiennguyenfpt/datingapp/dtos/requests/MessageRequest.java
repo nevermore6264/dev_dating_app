@@ -11,7 +11,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MessageRequest {
     private Long matchId;       // ID của match
-    private Long senderId;      // ID của người gửi
-    private Long receiverId;    // ID của người nhận
     private String content;     // Nội dung tin nhắn
 }

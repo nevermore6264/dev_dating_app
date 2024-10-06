@@ -11,4 +11,6 @@ public interface MatchService {
     List<Match> getMatchesForUser(Long userId);
     List<MatchResponse> getMatchResponsesForUser(Long userId);
     boolean hasMatched(Long userId, Long targetUserId); // Thêm phương thức kiểm tra match
+    Long getReceiverIdFromMatch(Long matchId, Long senderId);
+    Match getMatchById(Long matchId);
 }

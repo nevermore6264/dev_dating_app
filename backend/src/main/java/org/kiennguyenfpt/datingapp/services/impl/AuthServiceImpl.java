@@ -2,6 +2,7 @@ package org.kiennguyenfpt.datingapp.services.impl;
 
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.enums.UserStatus;
+import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.security.JwtUtil;
 import org.kiennguyenfpt.datingapp.services.AuthService;
 import org.kiennguyenfpt.datingapp.services.UserService;
@@ -11,8 +12,11 @@ import org.kiennguyenfpt.datingapp.validation.PasswordValidator;
 import org.kiennguyenfpt.datingapp.validation.ValidationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
+
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -50,42 +54,43 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String login(String email, String password) {
+    public ResponseEntity<CommonResponse<String>> login(String email, String password) {
+        CommonResponse<String> response = new CommonResponse<>();
         User user = userService.findByEmail(email);
         if (user != null && passwordEncoder.matches(password, user.getPasswordHash())) {
             String token = jwtUtil.generateToken(email, user.getUserId());
             logger.info("User logged in: {}", email);
-            logger.info(token);
 
             if (user.isFirstLogin()) {
                 user.setFirstLogin(false);
                 user.setLoginCount(user.getLoginCount() + 1);
                 userService.save(user);
-                return "First login, please update your password. Token: " + token;
-
-
+                response.setStatus(HttpStatus.OK.value());
+                response.setMessage("First login");
+                response.setData(token);
+                return ResponseEntity.ok(response);
             } else if (user.getLoginCount() == 1) {
-                // Second login, require profile update
                 user.setLoginCount(user.getLoginCount() + 1);
                 userService.save(user);
-                return "Second login, please update your profile. Token: " + token;
-            }
-            /*
-            else if (user.getLoginCount() > 1 && !user.isProfileUpdated()) {
-                // Prevent login if profile is not updated after second login
-                return "Profile update required. Please update your profile.";
-
-            }
-            */
-             else {
-
+                response.setStatus(HttpStatus.OK.value());
+                response.setMessage("Second login");
+                response.setData(token);
+                return ResponseEntity.ok(response);
+            } else {
                 user.setLoginCount(user.getLoginCount() + 1);
                 userService.save(user);
-                return token;
+                response.setStatus(HttpStatus.OK.value());
+                response.setMessage("Login successful");
+                response.setData(token);
+                return ResponseEntity.ok(response);
             }
         }
-        return "Invalid email or password.";
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        response.setMessage("Invalid email or password");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+
 
     @Override
     public User forgotPassword(String email) {

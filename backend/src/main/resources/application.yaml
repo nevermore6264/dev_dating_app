@@ -1,7 +1,8 @@
 spring:
   application:
     name: DatingApp
-
+  main:
+    allow-bean-definition-overriding: true
   #Email:
   mail:
     host: smtp.gmail.com

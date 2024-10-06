@@ -64,6 +64,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/profiles/me").authenticated()
                         .requestMatchers("/api/v1/users/update-profile").authenticated()
                         //.requestMatchers("/api/v1/users/update-profile").authenticated()
+                        .requestMatchers("/api/v1/swipes/swipe").authenticated()
+                        .requestMatchers("/api/v1/matches").authenticated()
+
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

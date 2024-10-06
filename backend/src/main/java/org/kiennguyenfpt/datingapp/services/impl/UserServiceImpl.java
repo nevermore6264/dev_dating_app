@@ -102,4 +102,5 @@ public class UserServiceImpl implements UserService {
         user.getProfile().setAvatar(imageUrl);
         userRepository.save(user);
     }
+
 }

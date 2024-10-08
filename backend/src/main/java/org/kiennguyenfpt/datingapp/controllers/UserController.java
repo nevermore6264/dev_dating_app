@@ -12,6 +12,8 @@ import org.kiennguyenfpt.datingapp.services.PhotoService;
 import org.kiennguyenfpt.datingapp.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,27 +42,24 @@ public class UserController {
     }
 
     @GetMapping("/random")
-    public ResponseEntity<CommonResponse<User>> getRandomUser(@RequestParam Long userId) {
-        CommonResponse<User> response = new CommonResponse<>();
+    public ResponseEntity<Long> getRandomUserId() {
         try {
-            List<User> users = userService.findAllUsersExcept(userId);
-            if (users.isEmpty()) {
-                response.setStatus(HttpStatus.NOT_FOUND.value());
-                response.setMessage("No users found.");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
-            Random random = new Random();
-            User randomUser = users.get(random.nextInt(users.size()));
-            response.setStatus(HttpStatus.OK.value());
-            response.setMessage("Random user retrieved successfully.");
-            response.setData(randomUser);
-            return ResponseEntity.ok(response);
+
+            Long randomUserId = userService.getRandomUserId();
+            if (randomUserId == null) {
+                return ResponseEntity.noContent().build(); // No other users available
+            }
+            return ResponseEntity.ok(randomUserId);
         } catch (Exception e) {
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.setMessage("Error retrieving users: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+
 
     @PostMapping(value = "/update-profile", consumes = "multipart/form-data")
     public ResponseEntity<CommonResponse<Map<String, Object>>> updateProfile(

@@ -8,4 +8,6 @@ public interface ProfileService {
     List<Profile> getAllProfiles();
     Profile getProfileByEmail(String email);
     Profile getProfileByUserId(Long userId);
+    Profile getRandomUserProfileExcludingCurrentUser(String email);
+
 }

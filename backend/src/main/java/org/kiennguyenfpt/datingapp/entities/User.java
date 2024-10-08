@@ -1,10 +1,7 @@
 package org.kiennguyenfpt.datingapp.entities;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -136,4 +133,16 @@ public class User {
         return loginCount == 1;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return userId == user.userId && firstLogin == user.firstLogin && loginCount == user.loginCount && Objects.equals(email, user.email) && Objects.equals(passwordHash, user.passwordHash) && Objects.equals(avatar, user.avatar) && Objects.equals(phone, user.phone) && Objects.equals(createdAt, user.createdAt) && Objects.equals(lastLogin, user.lastLogin) && status == user.status && Objects.equals(profile, user.profile) && Objects.equals(likes, user.likes) && Objects.equals(messages, user.messages) && Objects.equals(userRoles, user.userRoles) && Objects.equals(friends, user.friends) && Objects.equals(blockedUsers, user.blockedUsers) && Objects.equals(likedUsers, user.likedUsers) && Objects.equals(matches, user.matches) && Objects.equals(dislikedUsers, user.dislikedUsers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, email, passwordHash, avatar, phone, createdAt, firstLogin, lastLogin, loginCount, status, profile, likes, messages, userRoles, friends, blockedUsers, likedUsers, matches, dislikedUsers);
+    }
 }

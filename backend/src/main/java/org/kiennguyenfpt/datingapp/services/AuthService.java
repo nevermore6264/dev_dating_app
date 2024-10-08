@@ -12,4 +12,7 @@ public interface AuthService {
     User changePassword(String email, String oldPassword, String newPassword);
 
     User forgotPassword(String email);
+
+    void validateEmail(String email);
+
 }

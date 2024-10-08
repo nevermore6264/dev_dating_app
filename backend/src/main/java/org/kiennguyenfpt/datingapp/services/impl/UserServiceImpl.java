@@ -43,6 +43,7 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    /*
     @Override
     public User updateProfile(String email, UpdateProfileRequest updateProfileRequest, List<MultipartFile> files) throws IOException {
         User user = userRepository.findByEmail(email);
@@ -61,6 +62,51 @@ public class UserServiceImpl implements UserService {
                         || updateProfileRequest.getPhone() == null) {
                     throw new IllegalArgumentException("All fields must be provided for the second login update.");
                 }
+            }
+
+            // Update profile fields
+            profile.setName(updateProfileRequest.getName());
+            profile.setAge(updateProfileRequest.getAge());
+            profile.setBio(updateProfileRequest.getBio());
+            profile.setGender(updateProfileRequest.getGender());
+            profile.setAvatar(updateProfileRequest.getAvatar());
+            profile.setPhone(updateProfileRequest.getPhone());
+
+            // Save the profile first to avoid transient property exception
+            userRepository.save(user);
+
+            // Handle photo uploads
+            List<String> imageUrls = photoService.uploadPhotos(email, files);
+            if (!imageUrls.isEmpty()) {
+                profile.setAvatar(imageUrls.get(0));
+            }
+            List<Photo> photos = photoService.getPhotos(profile.getProfileId());
+            for (Photo photo : photos) {
+                photo.setProfile(profile); // Ensure the profile field is set
+                photoService.savePhoto(photo); // Save each photo to persist changes
+            }
+
+            // Update the existing photos list instead of replacing it
+            profile.getPhotos().clear();
+            profile.getPhotos().addAll(photos);
+
+            // Save the user again to persist changes
+            userRepository.save(user);
+            return user;
+        }
+        return null;
+    }
+
+     */
+    @Override
+    public User updateProfile(String email, UpdateProfileRequest updateProfileRequest, List<MultipartFile> files) throws IOException {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            Profile profile = user.getProfile();
+            if (profile == null) {
+                profile = new Profile();
+                profile.setUser(user);
+                user.setProfile(profile);
             }
 
             // Update profile fields

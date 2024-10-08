@@ -11,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SimpleProfileResponse {
     private long profileId;
+    private Long userId;
     private String avatar;
     private String name;
     private Integer age;

@@ -19,19 +19,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("api/v1/auth")
-@CrossOrigin
 
 public class AuthController {
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     private final AuthService authService;
-    //private final EmailService emailService;
-    //private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
-    //private final UserService userService;
     private final JwtUtil jwtUtil;
 
     public AuthController(AuthService authService, UserMapper userMapper, JwtUtil jwtUtil) {
@@ -78,9 +73,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<CommonResponse<String>> login(@RequestBody UserLoginRequest loginRequest) {
+        authService.validateEmail(loginRequest.getEmail());
         return authService.login(loginRequest.getEmail(), loginRequest.getPassword());
     }
-
 
     @PostMapping("/logout")
     public ResponseEntity<CommonResponse<String>> logout(@RequestBody String token) {
@@ -102,6 +97,7 @@ public class AuthController {
             @RequestBody ChangePasswordRequest changePasswordRequest) {
         CommonResponse<String> response = new CommonResponse<>();
         try {
+            authService.validateEmail(changePasswordRequest.getEmail());
             logger.info("Received change password request for email: {}", changePasswordRequest.getEmail());
 
             User user = authService.changePassword(changePasswordRequest.getEmail(),
@@ -118,6 +114,10 @@ public class AuthController {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.setMessage("Invalid email or password.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        } catch (InvalidEmailException e) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         } catch (Exception e) {
             logger.error("Error during password change for email: {}", changePasswordRequest.getEmail(), e);
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -130,7 +130,9 @@ public class AuthController {
     public ResponseEntity<CommonResponse<User>> forgotPassword(
             @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
         CommonResponse<User> response = new CommonResponse<>();
+
         try {
+            authService.validateEmail(forgotPasswordRequest.getEmail());
             User user = authService.forgotPassword(forgotPasswordRequest.getEmail());
             if (user != null) {
                 response.setStatus(HttpStatus.OK.value());
@@ -142,6 +144,14 @@ public class AuthController {
                 response.setMessage("Invalid email");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
+        } catch (InvalidEmailException e) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        } catch (IllegalArgumentException e) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         } catch (Exception e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setMessage("Error resetting password: " + e.getMessage());

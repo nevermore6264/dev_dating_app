@@ -1,6 +1,7 @@
 package org.kiennguyenfpt.datingapp.entities;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -80,4 +81,13 @@ public class Profile {
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProfileVerification> verifications; // Danh sách xác minh của hồ sơ
+
+    public List<Photo> getPhotos() {
+        if (photos == null) {
+            photos = new ArrayList<>();
+        }
+        return photos;
+    }
+
+
 }

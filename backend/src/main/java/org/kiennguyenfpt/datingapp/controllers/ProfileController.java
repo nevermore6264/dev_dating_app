@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v1/profiles")
-@CrossOrigin(origins = "http://localhost:8081")
 
 public class ProfileController {
     private final ProfileService profileService;
@@ -108,27 +107,6 @@ public class ProfileController {
         }
     }
 
-    /*
-    @GetMapping("/random")
-    public ResponseEntity<Profile> getRandomUserProfile(@AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            if (userDetails == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            }
-
-            String email = userDetails.getUsername();
-            Profile randomUserProfile = profileService.getRandomUserProfileExcludingCurrentUser(email);
-            if (randomUserProfile == null) {
-                return ResponseEntity.noContent().build(); // No other profiles available
-            }
-            return ResponseEntity.ok(randomUserProfile);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-     */
-    /*
     @GetMapping("/random")
     public ResponseEntity<SimpleProfileResponse> getRandomUserProfile(@AuthenticationPrincipal UserDetails userDetails) {
         try {
@@ -139,27 +117,7 @@ public class ProfileController {
             String email = userDetails.getUsername();
             Profile randomUserProfile = profileService.getRandomUserProfileExcludingCurrentUser(email);
             if (randomUserProfile == null) {
-                return ResponseEntity.noContent().build(); // No other profiles available
-            }
-            SimpleProfileResponse response = profileMapper.profileToSimpleProfileResponse(randomUserProfile);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-     */
-    @GetMapping("/random")
-    public ResponseEntity<SimpleProfileResponse> getRandomUserProfile(@AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            if (userDetails == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            }
-
-            String email = userDetails.getUsername();
-            Profile randomUserProfile = profileService.getRandomUserProfileExcludingCurrentUser(email);
-            if (randomUserProfile == null) {
-                return ResponseEntity.noContent().build(); // No other profiles available
+                return ResponseEntity.noContent().build();
             }
             SimpleProfileResponse response = profileMapper.profileToSimpleProfileResponse(randomUserProfile);
             return ResponseEntity.ok(response);

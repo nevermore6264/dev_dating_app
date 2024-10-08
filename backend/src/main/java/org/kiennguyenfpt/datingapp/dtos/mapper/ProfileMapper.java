@@ -14,6 +14,7 @@ public interface ProfileMapper {
     ProfileResponse profileToProfileResponse(Profile profile);
 
     @Mapping(source = "profileId", target = "profileId")
+    @Mapping(source = "user.userId", target = "userId")
     @Mapping(source = "avatar", target = "avatar")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "age", target = "age")

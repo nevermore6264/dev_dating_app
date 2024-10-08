@@ -11,7 +11,7 @@ public class EmailValidator {
         @                 # must contain the '@' character
         For example, the email kiennguyenfpt2711@gmail.com is valid because it contains only the characters A-Z, a-z, 0-9, +, _, ., -, and the '@' character.
      */
-    private static final String EMAIL_PATTERN = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+    private static final String EMAIL_PATTERN = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 
     private static final Pattern pattern = Pattern.compile(EMAIL_PATTERN);
 

@@ -3,7 +3,6 @@ package org.kiennguyenfpt.datingapp.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kiennguyenfpt.datingapp.dtos.mapper.ProfileMapper;
 import org.kiennguyenfpt.datingapp.dtos.requests.UpdateProfileRequest;
-import org.kiennguyenfpt.datingapp.dtos.responses.ProfileResponse;
 import org.kiennguyenfpt.datingapp.entities.Photo;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
@@ -12,27 +11,22 @@ import org.kiennguyenfpt.datingapp.services.PhotoService;
 import org.kiennguyenfpt.datingapp.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 @RestController
 @RequestMapping("api/v1/users")
 @CrossOrigin
 
-//@CrossOrigin(origins = "http://localhost:8081")
 public class UserController {
     private final UserService userService;
     private final PhotoService photoService;
     private final JwtUtil jwtUtil;
     private final ProfileMapper profileMapper;
-
 
     public UserController(UserService userService, PhotoService photoService, JwtUtil jwtUtil, ProfileMapper profileMapper) {
         this.userService = userService;
@@ -40,29 +34,6 @@ public class UserController {
         this.jwtUtil = jwtUtil;
         this.profileMapper = profileMapper;
     }
-
-    /*
-    @GetMapping("/random")
-    public ResponseEntity<Long> getRandomUserId() {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication == null || !authentication.isAuthenticated()) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            }
-
-            Long randomUserId = userService.getRandomUserId();
-            if (randomUserId == null) {
-                return ResponseEntity.noContent().build(); // No other users available
-            }
-            return ResponseEntity.ok(randomUserId);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-     */
-
-
 
     @PostMapping(value = "/update-profile", consumes = "multipart/form-data")
     public ResponseEntity<CommonResponse<Map<String, Object>>> updateProfile(
@@ -167,10 +138,6 @@ public class UserController {
         return true;
     }
 
-
-
-
-
     private void updateProfileWithImages(User user, List<String> imageUrls) {
         if (!imageUrls.isEmpty()) {
             user.getProfile().setAvatar(imageUrls.get(0));
@@ -182,11 +149,4 @@ public class UserController {
         user.getProfile().setPhotos(photos);
         userService.save(user); // Save the user to persist changes
     }
-
-
-
-
-
-
-
 }

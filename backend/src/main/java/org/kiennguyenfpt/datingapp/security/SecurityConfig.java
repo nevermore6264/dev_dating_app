@@ -73,6 +73,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/matches").authenticated()
                         .requestMatchers("/api/v1/messages/send").authenticated()
                         .requestMatchers("/api/v1/messages/match/{matchId}").authenticated()
+                        .requestMatchers("/ws/**").permitAll() // Cho phép truy cập công khai đến WebSocket endpoint
 
                         .anyRequest().authenticated()
                 )

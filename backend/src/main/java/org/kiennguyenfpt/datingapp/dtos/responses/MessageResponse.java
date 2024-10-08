@@ -17,4 +17,15 @@ public class MessageResponse {
     private String content;       // Nội dung tin nhắn
     private String timestamp;     // Thời gian tin nhắn được gửi
     private boolean isSent;       // Trạng thái gửi tin nhắn
+
+    @Override
+    public String toString() {
+        return "MessageResponse{" +
+                "messageId=" + messageId +
+                ", matchId=" + matchId +
+                ", senderId=" + senderId +
+                ", receiverId=" + receiverId +
+                ", content='" + content + '\'' +
+                '}';
+    }
 }

@@ -33,22 +33,13 @@ public class ProfileController {
     }
 
     @GetMapping
-    public ResponseEntity<CommonResponse<List<ProfileResponse>>> getAllProfiles(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<CommonResponse<List<ProfileResponse>>> getAllProfiles() {
         CommonResponse<List<ProfileResponse>> response = new CommonResponse<>();
         try {
-            if (userDetails == null) {
-                response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                response.setMessage("User is not authenticated.");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-            }
-
-            String email = userDetails.getUsername();
-            List<Profile> profiles = profileService.getAllProfilesExcludingCurrentUserAndSwiped(email);
-
+            List<Profile> profiles = profileService.getAllProfiles();
             List<ProfileResponse> profileResponses = profiles.stream()
                     .map(profileMapper::profileToProfileResponse)
                     .collect(Collectors.toList());
-
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Profiles retrieved successfully.");
             response.setData(profileResponses);
@@ -59,7 +50,6 @@ public class ProfileController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-
 
     @GetMapping("/me")
     public ResponseEntity<CommonResponse<ProfileResponse>> getMyProfile(@AuthenticationPrincipal UserDetails userDetails) {

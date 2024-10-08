@@ -9,6 +9,6 @@ public interface ProfileService {
     Profile getProfileByEmail(String email);
     Profile getProfileByUserId(Long userId);
     Profile getRandomUserProfileExcludingCurrentUser(String email);
-    List<Profile> getAllProfilesExcludingCurrentUserAndSwiped(String email);
+
 
 }

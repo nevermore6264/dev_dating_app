@@ -67,33 +67,4 @@ public class ProfileServiceImpl implements ProfileService {
         }
     }
 
-    @Override
-    public List<Profile> getAllProfilesExcludingCurrentUserAndSwiped(String email) {
-        try {
-            // Lấy profile của người dùng hiện tại
-            Profile currentUserProfile = profileRepository.findByUser_Email(email);
-            if (currentUserProfile == null) {
-                logger.warning("Current user profile not found");
-                return List.of(); // Trả về danh sách rỗng nếu không tìm thấy profile
-            }
-
-            Long currentUserId = currentUserProfile.getUser().getUserId();
-
-            // Lấy danh sách ID của những người mà current user đã swipe
-            List<Long> swipedUserIds = profileRepository.findSwipedUserIdsByUserId(currentUserId);
-
-            // Lấy tất cả profile không phải của current user và không nằm trong danh sách đã swipe
-            List<Profile> profiles = profileRepository.findAllByUser_UserIdNotInAndUser_UserIdNot(
-                    swipedUserIds,
-                    currentUserId
-            );
-
-            return profiles; // Trả về danh sách profile đã được lọc
-        } catch (Exception e) {
-            logger.severe("Error in getAllProfilesExcludingCurrentUserAndSwiped: " + e.getMessage());
-            throw e; // Ném lại exception nếu có lỗi
-        }
-    }
-
-
 }

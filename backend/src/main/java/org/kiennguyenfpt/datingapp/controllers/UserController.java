@@ -35,11 +35,8 @@ public class UserController {
         this.profileMapper = profileMapper;
     }
 
-    @PostMapping(value = "/update-profile", consumes = "multipart/form-data")
-    public ResponseEntity<CommonResponse<Map<String, Object>>> updateProfile(
-            @RequestPart("updateProfileRequest") String updateProfileRequestJson,
-            @RequestPart("files") List<MultipartFile> files,
-            @RequestHeader("Authorization") String authorizationHeader) {
+    private ResponseEntity<CommonResponse<Map<String, Object>>> handleUpdateProfile(
+            String updateProfileRequestJson, List<MultipartFile> files, String authorizationHeader) {
 
         CommonResponse<Map<String, Object>> response = new CommonResponse<>();
 
@@ -64,6 +61,23 @@ public class UserController {
             return createErrorResponseMap(response, HttpStatus.INTERNAL_SERVER_ERROR, "Error updating profile: " + e.getMessage());
         }
     }
+
+    @PostMapping(value = "/update-profile", consumes = "multipart/form-data")
+    public ResponseEntity<CommonResponse<Map<String, Object>>> updateProfile(
+            @RequestPart("updateProfileRequest") String updateProfileRequestJson,
+            @RequestPart("files") List<MultipartFile> files,
+            @RequestHeader("Authorization") String authorizationHeader) {
+        return handleUpdateProfile(updateProfileRequestJson, files, authorizationHeader);
+    }
+
+    @PutMapping(value = "/update-profile", consumes = "multipart/form-data")
+    public ResponseEntity<CommonResponse<Map<String, Object>>> updateProfilePut(
+            @RequestPart("updateProfileRequest") String updateProfileRequestJson,
+            @RequestPart("files") List<MultipartFile> files,
+            @RequestHeader("Authorization") String authorizationHeader) {
+        return handleUpdateProfile(updateProfileRequestJson, files, authorizationHeader);
+    }
+
 
     @PostMapping("/update-avatar")
     public ResponseEntity<CommonResponse<String>> updateAvatar(

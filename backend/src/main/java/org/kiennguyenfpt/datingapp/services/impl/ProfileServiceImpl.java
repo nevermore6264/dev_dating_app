@@ -46,8 +46,13 @@ public class ProfileServiceImpl implements ProfileService {
                 throw new IllegalStateException("Current user profile not found");
             }
 
-            List<Profile> profiles = profileRepository.findAll();
-            profiles.removeIf(profile -> profile.getUser().getEmail().equals(email));
+            Long currentUserId = currentUserProfile.getUser().getUserId();
+
+            // Lấy tất cả các profile chưa được swipe bởi current user
+            List<Profile> profiles = profileRepository.findAllByUser_UserIdNotInAndUser_UserIdNot(
+                    profileRepository.findSwipedUserIdsByUserId(currentUserId),
+                    currentUserId
+            );
 
             if (profiles.isEmpty()) {
                 logger.info("No other profiles found");
@@ -61,4 +66,5 @@ public class ProfileServiceImpl implements ProfileService {
             throw e;
         }
     }
+
 }

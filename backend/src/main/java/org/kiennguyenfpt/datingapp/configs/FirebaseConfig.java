@@ -19,7 +19,8 @@ public class FirebaseConfig {
 
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setStorageBucket("datingapp-f4ecb.appspot.com")
+                //.setStorageBucket("datingapp-f4ecb.appspot.com")
+                .setStorageBucket("datingwebexe")
                 .build();
 
         return FirebaseApp.initializeApp(options);

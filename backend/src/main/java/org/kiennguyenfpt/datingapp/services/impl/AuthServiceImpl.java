@@ -2,6 +2,7 @@ package org.kiennguyenfpt.datingapp.services.impl;
 
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.enums.UserStatus;
+import org.kiennguyenfpt.datingapp.exceptions.InvalidEmailException;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.security.JwtUtil;
 import org.kiennguyenfpt.datingapp.services.AuthService;
@@ -95,14 +96,14 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public User forgotPassword(String email) {
         User user = userService.findByEmail(email);
-        if (user != null) {
-            String randomPassword = PasswordUtil.generateRandomPassword();
-            user.setPasswordHash(passwordEncoder.encode(randomPassword));
-            userService.save(user);
-            emailService.sendEmail(user.getEmail(), "Password Reset", "Your new password is: " + randomPassword);
-            return user;
+        if (user == null) {
+            throw new InvalidEmailException("Email not found.");
         }
-        return null;
+        String randomPassword = PasswordUtil.generateRandomPassword();
+        user.setPasswordHash(passwordEncoder.encode(randomPassword));
+        userService.save(user);
+        emailService.sendEmail(user.getEmail(), "Password Reset", "Your new password is: " + randomPassword);
+        return user;
     }
 
     @Override
@@ -122,27 +123,23 @@ public class AuthServiceImpl implements AuthService {
         }
 
         User user = userService.findByEmail(email);
-        if (user != null && passwordEncoder.matches(oldPassword, user.getPasswordHash())) {
-            user.setPasswordHash(passwordEncoder.encode(newPassword));
-            user.setFirstLogin(false);
-            User updatedUser = userService.save(user);
-            logger.info("Password changed successfully for email: {}", email);
-            return updatedUser;
+        if (user == null) {
+            throw new InvalidEmailException("Email not found.");
+        }
+        if (!passwordEncoder.matches(oldPassword, user.getPasswordHash())) {
+            throw new IllegalArgumentException("Invalid old password.");
         }
 
-        logger.warn("Invalid old password for email: {}", email);
-        return null;
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        user.setFirstLogin(false);
+        User updatedUser = userService.save(user);
+        logger.info("Password changed successfully for email: {}", email);
+        return updatedUser;
     }
 
-    private void validateEmail(String email) {
+    @Override
+    public void validateEmail(String email) {
         ValidationResult result = EmailValidator.validate(email);
-        if (!result.valid()) {
-            throw new IllegalArgumentException(result.message());
-        }
-    }
-
-    private void validatePassword(String password) {
-        ValidationResult result = PasswordValidator.validate(password);
         if (!result.valid()) {
             throw new IllegalArgumentException(result.message());
         }

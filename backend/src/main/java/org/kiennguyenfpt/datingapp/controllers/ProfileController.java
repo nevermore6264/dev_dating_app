@@ -3,12 +3,15 @@ package org.kiennguyenfpt.datingapp.controllers;
 import org.kiennguyenfpt.datingapp.dtos.mapper.ProfileMapper;
 import org.kiennguyenfpt.datingapp.dtos.requests.UserIdRequest;
 import org.kiennguyenfpt.datingapp.dtos.responses.ProfileResponse;
+import org.kiennguyenfpt.datingapp.dtos.responses.SimpleProfileResponse;
 import org.kiennguyenfpt.datingapp.entities.Profile;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.services.ProfileService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v1/profiles")
+
 public class ProfileController {
     private final ProfileService profileService;
     private final ProfileMapper profileMapper;
@@ -77,8 +81,8 @@ public class ProfileController {
         }
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<CommonResponse<Profile>> getUserProfile(@PathVariable Long userId) {
+    @GetMapping("/user")
+    public ResponseEntity<CommonResponse<Profile>> getUserProfile(@RequestParam Long userId) {
         return handleProfileResponse(() -> profileService.getProfileByUserId(userId));
     }
 
@@ -90,6 +94,48 @@ public class ProfileController {
                 response.setStatus(HttpStatus.OK.value());
                 response.setMessage("Profile retrieved successfully.");
                 response.setData(profile);
+                return ResponseEntity.ok(response);
+            } else {
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+                response.setMessage("Profile not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage("Error retrieving profile: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @GetMapping("/random")
+    public ResponseEntity<SimpleProfileResponse> getRandomUserProfile(@AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            if (userDetails == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            String email = userDetails.getUsername();
+            Profile randomUserProfile = profileService.getRandomUserProfileExcludingCurrentUser(email);
+            if (randomUserProfile == null) {
+                return ResponseEntity.noContent().build();
+            }
+            SimpleProfileResponse response = profileMapper.profileToSimpleProfileResponse(randomUserProfile);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/{profileId}")
+    public ResponseEntity<CommonResponse<ProfileResponse>> getProfileById(@PathVariable Long profileId) {
+        CommonResponse<ProfileResponse> response = new CommonResponse<>();
+        try {
+            Profile profile = profileService.getProfileByUserId(profileId);
+            if (profile != null) {
+                ProfileResponse profileResponse = profileMapper.profileToProfileResponse(profile);
+                response.setStatus(HttpStatus.OK.value());
+                response.setMessage("Profile retrieved successfully.");
+                response.setData(profileResponse);
                 return ResponseEntity.ok(response);
             } else {
                 response.setStatus(HttpStatus.NOT_FOUND.value());

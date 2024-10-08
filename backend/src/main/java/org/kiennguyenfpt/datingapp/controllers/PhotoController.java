@@ -11,6 +11,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/photos")
+@CrossOrigin
+
 public class PhotoController {
 
     private final PhotoService photoService;
@@ -18,32 +20,6 @@ public class PhotoController {
     public PhotoController(PhotoService photoService) {
         this.photoService = photoService;
     }
-
-    /*
-    @PostMapping("/upload")
-    public ResponseEntity<CommonResponse<Photo>> uploadPhoto(@RequestParam String email, @RequestParam("file") MultipartFile file) {
-        CommonResponse<Photo> response = new CommonResponse<>();
-        try {
-            Photo photo = photoService.uploadPhoto(email, file);
-            if (photo != null) {
-                response.setStatus(HttpStatus.OK.value());
-                response.setMessage("Photo uploaded successfully");
-                response.setData(photo);
-                return ResponseEntity.ok(response);
-            } else {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                response.setMessage("Invalid email or file");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            }
-        } catch (Exception e) {
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.setMessage("Error uploading photo: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-    }
-
-
-     */
 
     @GetMapping("/list")
     public ResponseEntity<CommonResponse<List<Photo>>> getPhotos(@RequestParam Long userId) {

@@ -53,11 +53,6 @@ public class SwipeServiceImpl implements SwipeService {
             throw new AlreadyMatchedException("You have already matched with this user.");
         }
 
-        Swipe existingSwipe = swipeRepository.findByUser_UserIdAndTargetUser_UserId(userId, targetUserId);
-        if (existingSwipe != null) {
-            throw new IllegalArgumentException("You have already swiped on this user.");
-        }
-
         // Logic to handle swipe action
         boolean isMatch = false;
 

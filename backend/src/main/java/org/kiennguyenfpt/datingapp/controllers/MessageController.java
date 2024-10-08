@@ -2,13 +2,20 @@ package org.kiennguyenfpt.datingapp.controllers;
 
 import org.kiennguyenfpt.datingapp.dtos.requests.MessageRequest;
 import org.kiennguyenfpt.datingapp.dtos.responses.MessageResponse;
+import org.kiennguyenfpt.datingapp.entities.Match;
 import org.kiennguyenfpt.datingapp.entities.Message;
+import org.kiennguyenfpt.datingapp.repositories.UserRepository;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.services.MatchService;
 import org.kiennguyenfpt.datingapp.services.MessageService;
 import org.kiennguyenfpt.datingapp.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -23,11 +30,15 @@ public class MessageController {
     private final MessageService messageService;
     private final MatchService matchService;
     private final UserService userService;
+    private final UserRepository userRepository;
+    private final SimpMessagingTemplate brokerMessagingTemplate;
 
-    public MessageController(MessageService messageService, MatchService matchService, UserService userService) {
+    public MessageController(MessageService messageService, MatchService matchService, UserService userService, UserRepository userRepository, SimpMessagingTemplate brokerMessagingTemplate) {
         this.messageService = messageService;
         this.matchService = matchService;
         this.userService = userService;
+        this.userRepository = userRepository;
+        this.brokerMessagingTemplate = brokerMessagingTemplate;
     }
 
     // Gửi tin nhắn
@@ -35,11 +46,18 @@ public class MessageController {
     public ResponseEntity<CommonResponse<MessageResponse>> sendMessage(@RequestBody MessageRequest messageRequest) {
         CommonResponse<MessageResponse> response = new CommonResponse<>();
         try {
+            // Lấy thông tin user từ JWT token (Authentication)
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();  // Username từ JWT
+            Long senderId = userRepository.findByEmail(username).getUserId();  // Lấy senderId từ repository qua username (email)
+            // Lấy thông tin người nhận từ match
+            Long receiverId = matchService.getReceiverIdFromMatch(messageRequest.getMatchId(), senderId);
+
             // Gửi tin nhắn và lưu trong database
             Message message = messageService.sendMessage(
                     messageRequest.getMatchId(),
-                    messageRequest.getSenderId(),
-                    messageRequest.getReceiverId(),
+                    senderId,
+                    receiverId,
                     messageRequest.getContent()
             );
 
@@ -53,6 +71,9 @@ public class MessageController {
                     message.getCreatedAt().toString(),  // Thời gian gửi tin nhắn
                     true  // Trạng thái tin nhắn gửi thành công
             );
+
+            brokerMessagingTemplate.convertAndSend("/topic/messages/" + messageRequest.getMatchId(), messageResponse);
+            System.out.println("Message sent to WebSocket topic: " + messageResponse);
 
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Message sent successfully.");
@@ -77,6 +98,18 @@ public class MessageController {
     public ResponseEntity<CommonResponse<List<MessageResponse>>> getMessages(@PathVariable Long matchId) {
         CommonResponse<List<MessageResponse>> response = new CommonResponse<>();
         try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();  // Username từ JWT
+            Long userId = userRepository.findByEmail(username).getUserId();
+
+            // Kiểm tra xem user có thuộc về matchId này không
+            Match match = matchService.getMatchById(matchId);
+            if (!((match.getUser1().getUserId() == userId) || (match.getUser2().getUserId() == userId))) {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                response.setMessage("User does not have access to these messages.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+
             // Lấy danh sách tin nhắn theo matchId
             List<Message> messages = messageService.getMessages(matchId);
 

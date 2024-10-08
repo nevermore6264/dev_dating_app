@@ -1,12 +1,15 @@
 package org.kiennguyenfpt.datingapp.controllers;
 
+import org.springframework.security.core.Authentication;
 import org.kiennguyenfpt.datingapp.dtos.requests.SwipeRequest;
 import org.kiennguyenfpt.datingapp.dtos.responses.SwipeResponse;
 import org.kiennguyenfpt.datingapp.exceptions.AlreadyMatchedException;
+import org.kiennguyenfpt.datingapp.repositories.UserRepository;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.services.SwipeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -17,9 +20,11 @@ import javax.validation.Valid;
 
 public class SwipeController {
     private final SwipeService swipeService;
+    private final UserRepository userRepository;
 
-    public SwipeController(SwipeService swipeService) {
+    public SwipeController(SwipeService swipeService, UserRepository userRepository) {
         this.swipeService = swipeService;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/swipe")
@@ -29,7 +34,14 @@ public class SwipeController {
             if (swipeRequest.getIsLike() == null) {
                 throw new IllegalArgumentException("Like status cannot be null");
             }
-            SwipeResponse swipeResponse = swipeService.swipe(swipeRequest.getUserId(), swipeRequest.getTargetUserId(), swipeRequest.getIsLike());
+
+            // Lấy thông tin user từ JWT token (Authentication)
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();  // Username từ JWT
+            Long userId = userRepository.findByEmail(username).getUserId();  // Lấy userId từ repository qua username (email)
+
+            SwipeResponse swipeResponse = swipeService.swipe(userId, swipeRequest.getTargetUserId(), swipeRequest.getIsLike());
+
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Swipe action completed successfully.");
             response.setData(swipeResponse);

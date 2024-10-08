@@ -11,8 +11,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SwipeRequest {
-    @NotNull(message = "User ID cannot be null")
-    private Long userId;
+//    @NotNull(message = "User ID cannot be null")
+//    private Long userId;
 
     @NotNull(message = "Target User ID cannot be null")
     private Long targetUserId;

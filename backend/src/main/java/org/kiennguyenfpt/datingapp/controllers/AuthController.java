@@ -78,28 +78,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<CommonResponse<String>> login(@RequestBody UserLoginRequest loginRequest) {
-        CommonResponse<String> response = new CommonResponse<>();
-        try {
-            String result = authService.login(loginRequest.getEmail(), loginRequest.getPassword());
-            if ("First login, please change your password.".equals(result)) {
-                response.setStatus(HttpStatus.OK.value());
-                response.setMessage(result);
-                return ResponseEntity.ok(response);
-            } else if (!"Invalid email or password.".equals(result)) {
-                response.setStatus(HttpStatus.OK.value());
-                response.setMessage("Login successful.");
-                response.setData(result);
-                return ResponseEntity.ok(response);
-            }
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            response.setMessage(result);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        } catch (Exception e) {
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.setMessage("Error during login: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
+        return authService.login(loginRequest.getEmail(), loginRequest.getPassword());
     }
+
 
     @PostMapping("/logout")
     public ResponseEntity<CommonResponse<String>> logout(@RequestBody String token) {

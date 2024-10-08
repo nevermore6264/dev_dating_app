@@ -1,9 +1,11 @@
 package org.kiennguyenfpt.datingapp.controllers;
 
+import org.springframework.security.core.Authentication;
 import org.kiennguyenfpt.datingapp.dtos.responses.MatchResponse;
 import org.kiennguyenfpt.datingapp.entities.Match;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.services.MatchService;
+import org.kiennguyenfpt.datingapp.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,15 +19,23 @@ import java.util.stream.Collectors;
 
 public class MatchController {
     private final MatchService matchService;
+    private final UserService userService;
 
-    public MatchController(final MatchService matchService) {
+    public MatchController(final MatchService matchService, UserService userService) {
         this.matchService = matchService;
+        this.userService = userService;
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<CommonResponse<List<MatchResponse>>> getMatches(@PathVariable Long userId) {
+    @GetMapping
+    public ResponseEntity<CommonResponse<List<MatchResponse>>> getMatches(Authentication authentication) {
         CommonResponse<List<MatchResponse>> response = new CommonResponse<>();
         try {
+            // Lấy email từ Authentication
+            String email = authentication.getName();
+
+            // Tìm user dựa vào email từ JWT
+            Long userId = userService.findByEmail(email).getUserId();
+
             // Lấy danh sách các match cho người dùng
             List<MatchResponse> matchResponses = matchService.getMatchResponsesForUser(userId);
 

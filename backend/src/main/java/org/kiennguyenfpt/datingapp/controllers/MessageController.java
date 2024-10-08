@@ -11,6 +11,7 @@ import org.kiennguyenfpt.datingapp.services.MessageService;
 import org.kiennguyenfpt.datingapp.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -64,6 +65,8 @@ public class MessageController {
                     message.getCreatedAt().toString(),  // Thời gian gửi tin nhắn
                     true  // Trạng thái tin nhắn gửi thành công
             );
+
+
 
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Message sent successfully.");

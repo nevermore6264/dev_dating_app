@@ -41,6 +41,7 @@ public class UserController {
         this.profileMapper = profileMapper;
     }
 
+    /*
     @GetMapping("/random")
     public ResponseEntity<Long> getRandomUserId() {
         try {
@@ -58,6 +59,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+     */
 
 
 

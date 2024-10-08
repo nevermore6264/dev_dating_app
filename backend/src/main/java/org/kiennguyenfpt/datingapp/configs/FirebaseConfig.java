@@ -15,7 +15,7 @@ public class FirebaseConfig {
     @Bean
     public FirebaseApp initializeFirebase() throws IOException {
         FileInputStream serviceAccount =
-                new FileInputStream("D:\\DatingWeb\\FE Dating-App\\Dating-app\\datingapp-f4ecb-firebase-adminsdk-moeb5-7529827c9d.json");
+                new FileInputStream("D:\\Kien FPT\\datingapp-f4ecb-firebase-adminsdk-moeb5-7529827c9d.json");
 
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))

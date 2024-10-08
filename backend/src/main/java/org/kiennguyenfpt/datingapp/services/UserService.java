@@ -15,7 +15,6 @@ public interface UserService {
     User findByEmail(String email);
     User save(User user);
     List<User> searchUsers(String keyword);
-    Long getRandomUserId();
 
 
 }

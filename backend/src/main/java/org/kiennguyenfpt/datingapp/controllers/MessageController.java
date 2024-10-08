@@ -11,6 +11,9 @@ import org.kiennguyenfpt.datingapp.services.MessageService;
 import org.kiennguyenfpt.datingapp.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -26,12 +29,14 @@ public class MessageController {
     private final MatchService matchService;
     private final UserService userService;
     private final UserRepository userRepository;
+    private final SimpMessagingTemplate brokerMessagingTemplate;
 
-    public MessageController(MessageService messageService, MatchService matchService, UserService userService, UserRepository userRepository) {
+    public MessageController(MessageService messageService, MatchService matchService, UserService userService, UserRepository userRepository, SimpMessagingTemplate brokerMessagingTemplate) {
         this.messageService = messageService;
         this.matchService = matchService;
         this.userService = userService;
         this.userRepository = userRepository;
+        this.brokerMessagingTemplate = brokerMessagingTemplate;
     }
 
     // Gửi tin nhắn
@@ -64,6 +69,9 @@ public class MessageController {
                     message.getCreatedAt().toString(),  // Thời gian gửi tin nhắn
                     true  // Trạng thái tin nhắn gửi thành công
             );
+
+            brokerMessagingTemplate.convertAndSend("/topic/messages/" + messageRequest.getMatchId(), messageResponse);
+            System.out.println("Message sent to WebSocket topic: " + messageResponse);
 
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Message sent successfully.");

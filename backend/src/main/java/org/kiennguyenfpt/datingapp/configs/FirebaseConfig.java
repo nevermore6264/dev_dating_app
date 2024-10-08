@@ -15,11 +15,12 @@ public class FirebaseConfig {
     @Bean
     public FirebaseApp initializeFirebase() throws IOException {
         FileInputStream serviceAccount =
-                new FileInputStream("D:\\Kien FPT\\datingapp-f4ecb-firebase-adminsdk-moeb5-7529827c9d.json");
+                new FileInputStream("D:\\Kien FPT\\datingwebfpt-firebase-adminsdk-grvca-d65d9a7351.json");
 
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setStorageBucket("datingapp-f4ecb.appspot.com")
+                //.setStorageBucket("datingapp-f4ecb.appspot.com")
+                .setStorageBucket("datingwebexe")
                 .build();
 
         return FirebaseApp.initializeApp(options);

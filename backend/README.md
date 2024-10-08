@@ -33,7 +33,7 @@ APIs List:
 
 4) User Forgot-password:
 
-![Uploading image.png…]()
+![image](https://github.com/user-attachments/assets/2e82efb2-9166-4c2e-8922-d1c7dc5c8289)
 
 
 5) Update profile:
@@ -58,7 +58,17 @@ APIs List:
 
 8) View all profiles of users
 
+![image](https://github.com/user-attachments/assets/8986599c-493b-4585-b50f-e6edfbc2b759)
+
+9) View Profile random in UI
+
 ![Uploading image.png…]()
+
+10) View Detail Profile:
+
+![Uploading image.png…]()
+
+
 
 
 

@@ -10,6 +10,6 @@ public interface PhotoService {
     List<String> uploadPhotos(String email, List<MultipartFile> files) throws IOException;
     List<Photo> getPhotos(Long profileId);
     void savePhoto(Photo photo);
-
-    void deletePhoto(Long photoId);
+    Photo findById(Long photoId);
+    boolean deletePhoto(Long photoId);
 }

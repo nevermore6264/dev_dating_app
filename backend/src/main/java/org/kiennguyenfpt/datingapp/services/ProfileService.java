@@ -1,10 +1,7 @@
 package org.kiennguyenfpt.datingapp.services;
 
-import org.kiennguyenfpt.datingapp.dtos.requests.UpdateProfileRequest;
 import org.kiennguyenfpt.datingapp.entities.Profile;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface ProfileService {
@@ -12,5 +9,6 @@ public interface ProfileService {
     Profile getProfileByEmail(String email);
     Profile getProfileByUserId(Long userId);
     Profile getRandomUserProfileExcludingCurrentUser(String email);
-    Profile updateProfile(String email, UpdateProfileRequest updateProfileRequest, List<MultipartFile> files) throws IOException;
+
+
 }

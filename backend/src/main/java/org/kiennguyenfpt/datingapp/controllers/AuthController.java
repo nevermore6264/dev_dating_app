@@ -50,6 +50,8 @@ public class AuthController {
                 response.setStatus(HttpStatus.OK.value());
                 response.setMessage("User registered successfully!");
                 response.setData(userResponse);
+                //System.out.println("Registered password: " + user.getPasswordHash());
+
                 return ResponseEntity.ok(response);
             }
 

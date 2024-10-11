@@ -22,7 +22,12 @@ public class FirebaseStorageServiceImpl implements FirebaseStorageService {
     @Override
     public List<String> uploadImages(List<MultipartFile> files) throws IOException {
         List<String> urls = new ArrayList<>();
+
         for (MultipartFile file : files) {
+            if (file.isEmpty()) {
+                logger.warn("File is empty: {}", file.getOriginalFilename());
+                continue;
+            }
             try {
                 String fileName = file.getOriginalFilename();
                 BlobInfo blobInfo = storage.create(

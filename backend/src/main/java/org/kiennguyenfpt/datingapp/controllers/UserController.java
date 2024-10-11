@@ -35,6 +35,7 @@ public class UserController {
         this.profileMapper = profileMapper;
     }
 
+    /*
     private ResponseEntity<CommonResponse<Map<String, Object>>> handleUpdateProfile(
             String updateProfileRequestJson, List<MultipartFile> files, String authorizationHeader) {
 
@@ -77,6 +78,8 @@ public class UserController {
             @RequestHeader("Authorization") String authorizationHeader) {
         return handleUpdateProfile(updateProfileRequestJson, files, authorizationHeader);
     }
+
+     */
 
 
     @PostMapping("/update-avatar")

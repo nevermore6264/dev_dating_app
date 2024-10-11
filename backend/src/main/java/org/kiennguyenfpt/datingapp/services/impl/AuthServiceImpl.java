@@ -42,6 +42,8 @@ public class AuthServiceImpl implements AuthService {
 
         User user = createUser(email);
         String randomPassword = PasswordUtil.generateRandomPassword();
+        System.out.println("Generated plain text password: " + randomPassword);
+
         user.setPasswordHash(passwordEncoder.encode(randomPassword));
 
         try {

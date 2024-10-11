@@ -66,8 +66,14 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Thêm cấu hình CORS
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
+                        //.requestMatchers("/api/v1/profiles/**").permitAll()
                         .requestMatchers("/api/v1/profiles/me").authenticated()
-                        .requestMatchers("/api/v1/users/update-profile").authenticated()
+                        .requestMatchers("/api/v1/profiles/create").authenticated()
+                        .requestMatchers("/api/v1/profiles/update").authenticated()
+                        .requestMatchers("/api/v1/profiles/user").authenticated()
+                        .requestMatchers("/api/v1/profiles/random").authenticated()
+
+                        //.requestMatchers("/api/v1/users/update-profile").authenticated()
                         //.requestMatchers("/api/v1/users/update-profile").authenticated()
                         .requestMatchers("/api/v1/swipes/swipe").authenticated()
                         .requestMatchers("/api/v1/matches").authenticated()

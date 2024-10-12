@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,18 +44,35 @@ public class AdminCafeController {
     }
 
     @PostMapping
-    public ResponseEntity<CafeResponse> createCafe(@RequestBody CafeRequest cafeRequest) {
-        return ResponseEntity.ok(cafeService.createCafe(cafeRequest));
+    public ResponseEntity createCafe(@RequestBody CafeRequest cafeRequest) {
+        CommonResponse response = new CommonResponse<>();
+        try {
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("Cafe created successfully!");
+            response.setData(cafeService.createCafe(cafeRequest));
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage("Error: " + e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CafeResponse> updateCafe(@PathVariable Long id, @RequestBody CafeRequest cafeRequest) {
-        return ResponseEntity.ok(cafeService.updateCafe(id, cafeRequest));
-    }
+    public ResponseEntity updateCafe(@PathVariable Long id, @RequestBody CafeRequest cafeRequest) {
+        CommonResponse response = new CommonResponse<>();
+        try {
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("Cafe created successfully!");
+            response.setData(cafeService.updateCafe(id, cafeRequest));
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage("Error: " + e.getMessage());
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCafe(@PathVariable Long id) {
-        return ResponseEntity.ok(cafeService.deleteCafe(id)); // Thay đổi để trả về String
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
     @GetMapping("/{id}")

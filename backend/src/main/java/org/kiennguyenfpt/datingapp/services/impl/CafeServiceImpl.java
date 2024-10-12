@@ -1,7 +1,7 @@
 package org.kiennguyenfpt.datingapp.services.impl;
 
-import org.kiennguyenfpt.datingapp.dtos.requests.CafeRequest; // Thêm import
-import org.kiennguyenfpt.datingapp.dtos.responses.CafeResponse; // Thêm import
+import org.kiennguyenfpt.datingapp.dtos.requests.CafeRequest;
+import org.kiennguyenfpt.datingapp.dtos.responses.CafeResponse;
 import org.kiennguyenfpt.datingapp.entities.Cafe;
 import org.kiennguyenfpt.datingapp.repositories.CafeRepository;
 import org.kiennguyenfpt.datingapp.services.CafeService;
@@ -23,6 +23,10 @@ public class CafeServiceImpl implements CafeService {
 
     @Override
     public CafeResponse createCafe(CafeRequest cafeRequest) {
+        if (cafeRepository.findByName(cafeRequest.getName()).isPresent() ||
+                cafeRepository.findByAddress(cafeRequest.getAddress()).isPresent()) {
+            throw new IllegalArgumentException("Cafe with the same name or address already exists");
+        }
         Cafe cafe = new Cafe();
         cafe.setName(cafeRequest.getName());
         cafe.setAddress(cafeRequest.getAddress());
@@ -37,6 +41,10 @@ public class CafeServiceImpl implements CafeService {
 
     @Override
     public CafeResponse updateCafe(Long id, CafeRequest cafeRequest) {
+        if (cafeRepository.findByName(cafeRequest.getName()).isPresent() ||
+                cafeRepository.findByAddress(cafeRequest.getAddress()).isPresent()) {
+            throw new IllegalArgumentException("Cafe with the same name or address already exists");
+        }
         Optional<Cafe> existingCafe = cafeRepository.findById(id);
         if (existingCafe.isPresent()) {
             Cafe updatedCafe = existingCafe.get();

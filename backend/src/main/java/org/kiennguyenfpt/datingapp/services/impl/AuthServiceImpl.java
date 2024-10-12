@@ -1,8 +1,13 @@
 package org.kiennguyenfpt.datingapp.services.impl;
 
+import org.kiennguyenfpt.datingapp.entities.Role;
 import org.kiennguyenfpt.datingapp.entities.User;
+import org.kiennguyenfpt.datingapp.entities.UserRole;
+import org.kiennguyenfpt.datingapp.enums.ROLE;
 import org.kiennguyenfpt.datingapp.enums.UserStatus;
 import org.kiennguyenfpt.datingapp.exceptions.InvalidEmailException;
+import org.kiennguyenfpt.datingapp.repositories.RoleRepository;
+import org.kiennguyenfpt.datingapp.repositories.UserRoleRepository;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.security.JwtUtil;
 import org.kiennguyenfpt.datingapp.services.AuthService;
@@ -24,15 +29,31 @@ public class AuthServiceImpl implements AuthService {
     private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
 
     private final BCryptPasswordEncoder passwordEncoder;
+
     private final EmailServiceImpl emailService;
+
     private final UserService userService;
+
+    private final RoleRepository roleRepository;
+
+    private final UserRoleRepository userRoleRepository;
+
     private final JwtUtil jwtUtil;
 
-    public AuthServiceImpl(BCryptPasswordEncoder passwordEncoder, EmailServiceImpl emailService, UserService userService, JwtUtil jwtUtil) {
+    public AuthServiceImpl(
+            BCryptPasswordEncoder passwordEncoder,
+            EmailServiceImpl emailService,
+            UserService userService,
+            JwtUtil jwtUtil,
+            RoleRepository roleRepository,
+            UserRoleRepository userRoleRepository
+    ) {
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.userService = userService;
         this.jwtUtil = jwtUtil;
+        this.roleRepository = roleRepository;
+        this.userRoleRepository = userRoleRepository;
     }
 
     @Override
@@ -45,7 +66,15 @@ public class AuthServiceImpl implements AuthService {
         user.setPasswordHash(passwordEncoder.encode(randomPassword));
 
         try {
+            // Lưu user
             User savedUser = userService.save(user);
+
+            // Lưu UserRole
+            UserRole userRole = new UserRole();
+            userRole.setRole(getUserRole());
+            userRole.setUser(user);
+            userRoleRepository.save(userRole);
+
             sendEmail(user, randomPassword);
             return savedUser;
         } catch (Exception e) {
@@ -62,35 +91,29 @@ public class AuthServiceImpl implements AuthService {
             String token = jwtUtil.generateToken(email, user.getUserId());
             logger.info("User logged in: {}", email);
 
+            user.setLoginCount(user.getLoginCount() + 1);
+            userService.save(user);
+
+            // Tạo thông điệp dựa trên số lần đăng nhập
+            String message;
             if (user.isFirstLogin()) {
                 user.setFirstLogin(false);
-                user.setLoginCount(user.getLoginCount() + 1);
-                userService.save(user);
-                response.setStatus(HttpStatus.OK.value());
-                response.setMessage("First login");
-                response.setData(token);
-                return ResponseEntity.ok(response);
+                message = "First login";
             } else if (user.getLoginCount() == 1) {
-                user.setLoginCount(user.getLoginCount() + 1);
-                userService.save(user);
-                response.setStatus(HttpStatus.OK.value());
-                response.setMessage("Second login");
-                response.setData(token);
-                return ResponseEntity.ok(response);
+                message = "Second login";
             } else {
-                user.setLoginCount(user.getLoginCount() + 1);
-                userService.save(user);
-                response.setStatus(HttpStatus.OK.value());
-                response.setMessage("Login successful");
-                response.setData(token);
-                return ResponseEntity.ok(response);
+                message = "Login successful";
             }
+
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage(message);
+            response.setData(token);
+            return ResponseEntity.ok(response);
         }
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         response.setMessage("Invalid email or password");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
-
 
     @Override
     public User forgotPassword(String email) {
@@ -175,5 +198,9 @@ public class AuthServiceImpl implements AuthService {
                 "</html>";
 
         emailService.sendEmail(user.getEmail(), subject, htmlContent);
+    }
+
+    private Role getUserRole() {
+        return roleRepository.findByRoleName(ROLE.USER.value());
     }
 }

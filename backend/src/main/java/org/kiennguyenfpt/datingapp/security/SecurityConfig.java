@@ -13,9 +13,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.session.SessionManagementFilter;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
@@ -74,7 +73,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/messages/send").authenticated()
                         .requestMatchers("/api/v1/messages/match/{matchId}").authenticated()
                         .requestMatchers("/ws/**").permitAll() // Cho phép truy cập công khai đến WebSocket endpoint
-
+                        .requestMatchers("/api/v1/admin/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -104,6 +103,7 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
         return new CustomUserDetailsService(userRepository);
     }
+
     @Bean
     public JwtRequestFilter jwtRequestFilter() {
         return new JwtRequestFilter(jwtUtil(), userDetailsService());
@@ -114,4 +114,3 @@ public class SecurityConfig {
         return new JwtUtil();
     }
 }
-

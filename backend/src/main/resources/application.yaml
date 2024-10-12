@@ -1,4 +1,10 @@
+server:
+  port: 8088
+
 spring:
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog.xml
+    enabled: true
   application:
     name: DatingApp
   main:
@@ -28,7 +34,7 @@ spring:
     #password: huongntn04
     url: jdbc:mysql://localhost:3306/datingapp
     username: root
-    password: 12345
+    password: 12345678
 
   jpa:
     hibernate:

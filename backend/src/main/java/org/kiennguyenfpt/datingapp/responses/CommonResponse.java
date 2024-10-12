@@ -11,6 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CommonResponse<T> {
     private int status;
+
     private String message;
+
     private T data;
 }

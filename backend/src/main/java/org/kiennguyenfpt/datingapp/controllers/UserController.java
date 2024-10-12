@@ -11,11 +11,22 @@ import org.kiennguyenfpt.datingapp.services.PhotoService;
 import org.kiennguyenfpt.datingapp.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("api/v1/users")
@@ -107,8 +118,6 @@ public class UserController {
             return createErrorResponseMap(response, HttpStatus.INTERNAL_SERVER_ERROR, "Error updating profile: " + e.getMessage());
         }
     }
-
-
 
     @PostMapping("/update-avatar")
     public ResponseEntity<CommonResponse<String>> updateAvatar(
@@ -214,7 +223,4 @@ public class UserController {
         userService.save(user); // Lưu người dùng để lưu các thay đổi
     }
 
-
-
 }
-

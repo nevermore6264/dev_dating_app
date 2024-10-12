@@ -1,5 +1,6 @@
 package org.kiennguyenfpt.datingapp.services.impl;
 
+import org.kiennguyenfpt.datingapp.dtos.responses.LoginSuccessfulResponse;
 import org.kiennguyenfpt.datingapp.entities.Role;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.entities.UserRole;
@@ -84,8 +85,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity<CommonResponse<String>> login(String email, String password) {
-        CommonResponse<String> response = new CommonResponse<>();
+    public ResponseEntity login(String email, String password) {
+        CommonResponse response = new CommonResponse<>();
         User user = userService.findByEmail(email);
         if (user != null && passwordEncoder.matches(password, user.getPasswordHash())) {
             String token = jwtUtil.generateToken(email, user.getUserId());
@@ -107,7 +108,14 @@ public class AuthServiceImpl implements AuthService {
 
             response.setStatus(HttpStatus.OK.value());
             response.setMessage(message);
-            response.setData(token);
+
+            LoginSuccessfulResponse successfulResponse = new LoginSuccessfulResponse(
+                    user.getEmail(),
+                    token,
+                    user.getUserRoles().get(0).getRole().getRoleName()
+            );
+
+            response.setData(successfulResponse);
             return ResponseEntity.ok(response);
         }
         response.setStatus(HttpStatus.BAD_REQUEST.value());

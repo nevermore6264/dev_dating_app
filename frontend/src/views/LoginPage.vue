@@ -118,6 +118,8 @@ export default {
       this.$router.push("/UpdateProfileFirstLogin"); // Chuyển hướng tới trang cập nhật hồ sơ
     } else if (loginStatus === "Login successful") {
       this.$router.push("/homePage"); // Chuyển hướng tới trang homePage
+    } else if (loginStatus === "Admin login") {
+        this.$router.push("/admin/dashboard"); // Chuyển hướng tới layout admin
     }
   } catch (error) {
     console.error("Login failed:", error);

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.kiennguyenfpt.datingapp.entities.Role;
 
 import java.sql.Timestamp;
 
@@ -11,11 +12,17 @@ import java.sql.Timestamp;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdminUserReponse {
+public class AdminUserResponse {
     private long userId;
+
     private String email;
+
     private String phone;
-    private String roleName;
-    private String status;
+
     private Timestamp createdAt;
+
+    private String status;
+
+    private Role role;
+    
 }

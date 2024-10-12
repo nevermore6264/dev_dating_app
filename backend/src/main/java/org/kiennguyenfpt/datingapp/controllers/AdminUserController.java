@@ -1,14 +1,17 @@
 package org.kiennguyenfpt.datingapp.controllers;
 
 import org.kiennguyenfpt.datingapp.dtos.mapper.UserMapper;
-import org.kiennguyenfpt.datingapp.dtos.responses.AdminUserReponse;
+import org.kiennguyenfpt.datingapp.dtos.responses.AdminUserResponse;
 import org.kiennguyenfpt.datingapp.entities.User;
+import org.kiennguyenfpt.datingapp.entities.UserRole;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +40,7 @@ public class AdminUserController {
         CommonResponse response = new CommonResponse<>();
         try {
             List<User> users = userService.searchUsers(keyword);
-            List<AdminUserReponse> userResponse = users.stream().map(userMapper::userToAdminUserResponse).toList();
+            List<AdminUserResponse> userResponse = users.stream().map(this::userToAdminUserResponse).toList();
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Get list user successfully!");
             response.setData(userResponse);
@@ -51,12 +54,13 @@ public class AdminUserController {
         }
     }
 
-//    // 2. Khóa hoặc xóa tài khoản người dùng
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity deleteUser(@PathVariable Long id) {
-//        userService.deleteUser(id);
-//        return ResponseEntity.ok("User deleted successfully.");
-//    }
+    // 2. Khóa hoặc xóa tài khoản người dùng
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok("User deleted successfully.");
+    }
+    
 //
 //    @PostMapping("/block/{id}")
 //    public ResponseEntity blockUser(@PathVariable Long id) {
@@ -77,5 +81,27 @@ public class AdminUserController {
 //        List<String> history = userService.getUserHistory(id);
 //        return ResponseEntity.ok(history);
 //    }
+
+    private AdminUserResponse userToAdminUserResponse(User user) {
+        if (user == null) {
+            return null;
+        }
+
+        AdminUserResponse adminUserResponse = new AdminUserResponse();
+
+        adminUserResponse.setUserId(user.getUserId());
+        adminUserResponse.setEmail(user.getEmail());
+        adminUserResponse.setPhone(user.getPhone());
+        adminUserResponse.setCreatedAt(user.getCreatedAt());
+        if (user.getStatus() != null) {
+            adminUserResponse.setStatus(user.getStatus().name());
+        }
+        List<UserRole> list = user.getUserRoles();
+        if (list != null) {
+            adminUserResponse.setRole(list.get(0).getRole());
+        }
+
+        return adminUserResponse;
+    }
 
 }

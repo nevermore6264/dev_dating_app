@@ -13,7 +13,7 @@ export const loginUser = async (email, password) => {
     // Nếu trạng thái từ server trả về là 200 (đăng nhập thành công)
     if (response.data.status === 200) {
       const resultMessage = response.data.message;
-      const token = response.data.data; // Token sẽ chứa trong `data`
+      const token = response?.data?.data?.token; // Token sẽ chứa trong `data`
 
       console.log("🚀 ~ loginUser ~ response.data.data:", response.data.data);
       // Xử lý các trường hợp từ server

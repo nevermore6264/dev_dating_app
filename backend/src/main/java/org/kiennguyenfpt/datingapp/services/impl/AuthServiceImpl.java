@@ -13,10 +13,10 @@ import org.kiennguyenfpt.datingapp.validation.PasswordValidator;
 import org.kiennguyenfpt.datingapp.validation.ValidationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.http.HttpStatus;
 
 
 @Service
@@ -92,7 +92,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
 
-
     @Override
     public User forgotPassword(String email) {
         User user = userService.findByEmail(email);
@@ -161,6 +160,20 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private void sendEmail(User user, String randomPassword) {
-        emailService.sendEmail(user.getEmail(), "Your Temporary Password from our dating system", "Your temporary password is: " + randomPassword);
+        String subject = "Your Temporary Password from our dating system";
+        String htmlContent = "<html>" +
+                "<body>" +
+                "<div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px;'>" +
+                "<h2 style='color: #333;'>Hello, " + user.getEmail() + "!</h2>" +
+                "<p style='font-size: 16px; color: #555;'>You have requested a temporary password. Here is your temporary password:</p>" +
+                "<p style='font-size: 18px; font-weight: bold; color: #333;'> " + randomPassword + " </p>" +
+                "<p style='font-size: 14px; color: #777;'>Please use this password to log in and don't forget to change it after logging in.</p>" +
+                "<br>" +
+                "<p style='font-size: 14px; color: #777;'>Regards,<br>The Dating App Team</p>" +
+                "</div>" +
+                "</body>" +
+                "</html>";
+
+        emailService.sendEmail(user.getEmail(), subject, htmlContent);
     }
 }

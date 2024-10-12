@@ -3,7 +3,7 @@ server:
 
 spring:
   liquibase:
-    change-log: classpath:db/changelog/db.changelog.xml
+    change-log: classpath:db/changelog.xml
     enabled: true
   application:
     name: DatingApp

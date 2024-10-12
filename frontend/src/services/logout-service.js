@@ -7,6 +7,8 @@ export const logoutUser = async (token) => {
         'Content-Type': 'application/json'
       }
     });
+    localStorage.clear();
+
     return response.data;
   } catch (error) {
     throw new Error('Error during logout: ' + error.message);

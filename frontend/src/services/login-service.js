@@ -13,7 +13,8 @@ export const loginUser = async (email, password) => {
     // Nếu trạng thái từ server trả về là 200 (đăng nhập thành công)
     if (response.data.status === 200) {
       const resultMessage = response.data.message;
-      const token = response?.data?.data?.token; // Token sẽ chứa trong `data`
+      const data = response?.data?.data;
+      const token = data?.token; // Token sẽ chứa trong `data`
 
       console.log("🚀 ~ loginUser ~ response.data.data:", response.data.data);
       // Xử lý các trường hợp từ server
@@ -24,7 +25,7 @@ export const loginUser = async (email, password) => {
         if (token) {
           localStorage.setItem("userToken", token);
           localStorage.setItem("email", email);
-
+          localStorage.setItem("role", data?.role);
           // Giải mã token để lấy userId
           const decodedToken = jwtDecode(token);
           const userId = decodedToken.userId;
@@ -43,6 +44,7 @@ export const loginUser = async (email, password) => {
         if (token) {
           localStorage.setItem("userToken", token);
           localStorage.setItem("email", email);
+          localStorage.setItem("role", data?.role);
 
           // Giải mã token để lấy userId
           const decodedToken = jwtDecode(token);
@@ -62,6 +64,7 @@ export const loginUser = async (email, password) => {
         if (token) {
           localStorage.setItem("userToken", token);
           localStorage.setItem("email", email);
+          localStorage.setItem("role", data?.role);
 
           // Giải mã token để lấy userId
           const decodedToken = jwtDecode(token);

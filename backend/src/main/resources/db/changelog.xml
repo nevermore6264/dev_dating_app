@@ -7,5 +7,6 @@
     <include file="scripts/changelog_dml_roles_1.xml" relativeToChangelogFile="true"/>
     <include file="scripts/changelog_dml_users_2.xml" relativeToChangelogFile="true"/>
     <include file="scripts/changelog_dml_users_roles_3.xml" relativeToChangelogFile="true"/>
+    <include file="scripts/changelog_dml_cafes_4.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

@@ -85,7 +85,7 @@ public class User {
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Message> messages; // Danh sách tin nhắn của người dùng
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<UserRole> userRoles; // Danh sách vai trò của người dùng
 
     @ManyToMany

@@ -54,7 +54,7 @@ public class AdminUserController {
         }
     }
 
-    // 2. Khóa hoặc xóa tài khoản người dùng
+    // 2. Khóa tài khoản người dùng
     @PutMapping("/{id}/lockOrUnLock")
     public ResponseEntity lockOrUnLockUser(@PathVariable Long id) {
         CommonResponse response = new CommonResponse<>();
@@ -78,34 +78,8 @@ public class AdminUserController {
         }
     }
 
-//
-//    @PostMapping("/block/{id}")
-//    public ResponseEntity blockUser(@PathVariable Long id) {
-//        userService.blockUser(id);
-//        return ResponseEntity.ok("User blocked successfully.");
-//    }
-//
-//    // 3. Cập nhật thông tin người dùng
-//    @PutMapping("/{id}")
-//    public ResponseEntity updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
-//        UserDTO updatedUser = userService.updateUser(id, userDTO);
-//        return ResponseEntity.ok(updatedUser);
-//    }
-//
-//    // 4. Xem lịch sử hoạt động của người dùng
-//    @GetMapping("/{id}/history")
-//    public ResponseEntity<List<String>> getUserHistory(@PathVariable Long id) {
-//        List<String> history = userService.getUserHistory(id);
-//        return ResponseEntity.ok(history);
-//    }
-
     private AdminUserResponse userToAdminUserResponse(User user) {
-        if (user == null) {
-            return null;
-        }
-
         AdminUserResponse adminUserResponse = new AdminUserResponse();
-
         adminUserResponse.setUserId(user.getUserId());
         adminUserResponse.setEmail(user.getEmail());
         adminUserResponse.setPhone(user.getPhone());

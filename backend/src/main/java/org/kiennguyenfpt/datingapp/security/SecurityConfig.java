@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -61,23 +62,22 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+        http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Thêm cấu hình CORS
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/api/v1/profiles/me").authenticated()
-                        .requestMatchers("/api/v1/users/update-profile").authenticated()
-                        //.requestMatchers("/api/v1/users/update-profile").authenticated()
-                        .requestMatchers("/api/v1/swipes/swipe").authenticated()
-                        .requestMatchers("/api/v1/matches").authenticated()
-                        .requestMatchers("/api/v1/messages/send").authenticated()
-                        .requestMatchers("/api/v1/messages/match/{matchId}").authenticated()
+                        .requestMatchers("/api/v1/auth/**").permitAll() // Cho phép tất cả truy cập vào auth
+                        .requestMatchers("/api/v1/profiles/me").authenticated() // Cần xác thực
+                        .requestMatchers("/api/v1/users/update-profile").authenticated() // Cần xác thực
+                        .requestMatchers("/api/v1/swipes/swipe").authenticated() // Cần xác thực
+                        .requestMatchers("/api/v1/matches").authenticated() // Cần xác thực
+                        .requestMatchers("/api/v1/messages/send").authenticated() // Cần xác thực
+                        .requestMatchers("/api/v1/messages/match/{matchId}").authenticated() // Cần xác thực
                         .requestMatchers("/ws/**").permitAll() // Cho phép truy cập công khai đến WebSocket endpoint
-                        .requestMatchers("/api/v1/admin/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/v1/admin/**").hasRole("Admin") // Chỉ cho phép người dùng có vai trò ADMIN truy cập
+                        .anyRequest().authenticated() // Tất cả các yêu cầu khác đều cần xác thực
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Không giữ phiên
                 );
 
         http.addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class);

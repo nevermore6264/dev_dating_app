@@ -43,6 +43,16 @@ public class UserServiceImpl implements UserService {
         return userRepository.searchUsersByKeyword(keyword);
     }
 
+    @Override
+    public int lockOrUnLockUser(Long id) {
+        return userRepository.lockOrUnLockUser(id);
+    }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.getReferenceById(id);
+    }
+
     /*
     @Override
     public User updateProfile(String email, UpdateProfileRequest updateProfileRequest, List<MultipartFile> files) throws IOException {

@@ -9,9 +9,9 @@ import org.kiennguyenfpt.datingapp.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,19 +48,36 @@ public class AdminUserController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.setMessage("Error adding friend: " + e.getMessage());
+            response.setMessage("Error: " + e.getMessage());
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
     // 2. Khóa hoặc xóa tài khoản người dùng
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.ok("User deleted successfully.");
+    @PutMapping("/{id}/lockOrUnLock")
+    public ResponseEntity lockOrUnLockUser(@PathVariable Long id) {
+        CommonResponse response = new CommonResponse<>();
+        try {
+            int result = userService.lockOrUnLockUser(id);
+            if (result == 1) {
+                response.setStatus(HttpStatus.OK.value());
+                response.setMessage("Update user successfully");
+                User user = userService.findById(id);
+                response.setData(userMapper.userToUserResponse(user));
+                return ResponseEntity.ok(response);
+            } else {
+                response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                response.setMessage("Failed to update user status");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            }
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage("Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
-    
+
 //
 //    @PostMapping("/block/{id}")
 //    public ResponseEntity blockUser(@PathVariable Long id) {

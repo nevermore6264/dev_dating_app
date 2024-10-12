@@ -19,4 +19,8 @@ public interface UserService {
 
     List<User> searchUsers(String keyword);
 
+    int lockOrUnLockUser(Long id);
+
+    User findById(Long id);
+
 }

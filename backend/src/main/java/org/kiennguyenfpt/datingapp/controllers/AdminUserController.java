@@ -1,7 +1,7 @@
 package org.kiennguyenfpt.datingapp.controllers;
 
 import org.kiennguyenfpt.datingapp.dtos.mapper.UserMapper;
-import org.kiennguyenfpt.datingapp.dtos.responses.UserResponse;
+import org.kiennguyenfpt.datingapp.dtos.responses.AdminUserReponse;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.services.UserService;
@@ -37,7 +37,7 @@ public class AdminUserController {
         CommonResponse response = new CommonResponse<>();
         try {
             List<User> users = userService.searchUsers(keyword);
-            List<UserResponse> userResponse = users.stream().map(userMapper::userToUserResponse).toList();
+            List<AdminUserReponse> userResponse = users.stream().map(userMapper::userToAdminUserResponse).toList();
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Get list user successfully!");
             response.setData(userResponse);

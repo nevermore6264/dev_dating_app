@@ -15,7 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "JOIN u.userRoles ur " +
             "JOIN ur.role r " +
             "WHERE r.roleName = 'User' " +
-            "AND (u.email LIKE %:keyword% OR u.phone LIKE %:keyword%)")
+            "AND (:keyword IS NULL OR :keyword = '' OR u.email LIKE %:keyword% OR u.phone LIKE %:keyword%)")
     List<User> searchUsersByKeyword(@Param("keyword") String keyword);
 
 }

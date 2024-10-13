@@ -1,7 +1,7 @@
 <template>
   <div class="admin-dashboard">
     <aside class="sidebar">
-      <h2>Admin Dashboard</h2>
+      <h2>Bảng điều khiển Quản trị</h2>
       <nav>
         <ul>
           <li @click="navigateTo('Home')">Home</li>
@@ -12,57 +12,54 @@
     </aside>
 
     <main class="main-content">
-      <component :is="currentComponent" />
+      <router-view /> <!-- Dùng router-view để hiển thị các thành phần con -->
     </main>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-const currentComponent = ref('Home'); // Default component
 const router = useRouter();
 
 const navigateTo = (component) => {
-  currentComponent.value = component;
-  // Use Vue Router to navigate if necessary
+  // Điều hướng đến trang tương ứng với tên thành phần
   router.push(`/admin/${component.toLowerCase()}`);
 };
 </script>
 
 <style>
 .admin-dashboard {
-  display: flex; /* Use flexbox for layout */
+  display: flex;
 }
 
 .sidebar {
-  width: 200px; /* Set width for sidebar */
-  background-color: #f8f9fa; /* Light background color */
-  padding: 20px; /* Add some padding */
-  border-right: 1px solid #ddd; /* Right border for separation */
+  width: 200px;
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-right: 1px solid #ddd;
 }
 
 .sidebar h2 {
-  margin-bottom: 20px; /* Space below the title */
+  margin-bottom: 20px;
 }
 
 .sidebar nav ul {
-  list-style: none; /* Remove default list styles */
-  padding: 0; /* Remove padding */
+  list-style: none;
+  padding: 0;
 }
 
 .sidebar nav li {
-  cursor: pointer; /* Change cursor to pointer */
-  margin: 10px 0; /* Space between items */
+  cursor: pointer;
+  margin: 10px 0;
 }
 
 .sidebar nav li:hover {
-  text-decoration: underline; /* Underline on hover */
+  text-decoration: underline;
 }
 
 .main-content {
-  flex: 1; /* Allow main content to fill the remaining space */
-  padding: 20px; /* Add some padding */
+  flex: 1;
+  padding: 20px;
 }
 </style>

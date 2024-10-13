@@ -19,9 +19,7 @@ import Home from "@/views/admin/Home.vue";
 import Users from "@/views/admin/Users.vue";
 import Settings from "@/views/admin/Settings.vue";
 
-const router = createRouter({
-  history: createWebHistory(process.env.VITE_PUBLIC_BASE_URL),
-  routes: [
+const routes = [
     {
       path: "/",
       name: "Login",
@@ -98,7 +96,7 @@ const router = createRouter({
       component: SuccessToast,
     },
     {
-      path: '/admin/dashboard',
+      path: '/admin',
       name: 'AdminDashboard',
       component: AdminDashboard,
       children: [
@@ -107,8 +105,11 @@ const router = createRouter({
         { path: 'users', component: Users },
         { path: 'settings', component: Settings },
       ],
-    }
-  ],
+    }];
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
 });
 
 export default router;

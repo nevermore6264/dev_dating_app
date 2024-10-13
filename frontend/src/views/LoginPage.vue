@@ -119,7 +119,7 @@ export default {
     } else if (loginStatus === "Login successful") {
       this.$router.push("/homePage"); // Chuyển hướng tới trang homePage
     } else if (loginStatus === "Admin login") {
-        this.$router.push("/admin/dashboard"); // Chuyển hướng tới layout admin
+        this.$router.push("/admin"); // Chuyển hướng tới layout admin
     }
   } catch (error) {
     console.error("Login failed:", error);

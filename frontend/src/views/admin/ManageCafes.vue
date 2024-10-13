@@ -1,20 +1,31 @@
 <template>
   <div>
     <h1>Quản Lý Quán Cafe</h1>
-    <button @click="fetchCafes">Tải danh sách quán cafe</button>
 
     <h2>Tạo Quán Cafe</h2>
     <input v-model="newCafeName" placeholder="Nhập tên quán cafe" />
     <button @click="addCafe">Thêm Quán Cafe</button>
 
     <h2>Các Quán Cafe</h2>
-    <ul>
-      <li v-for="cafe in cafes" :key="cafe.id">
-        {{ cafe.name }}
-        <button @click="setCafeToEdit(cafe)">Sửa</button>
-        <button @click="removeCafe(cafe.id)">Xóa</button>
-      </li>
-    </ul>
+    <table>
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Tên Quán Cafe</th>
+        <th>Thao Tác</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr v-for="cafe in cafes" :key="cafe.id">
+        <td>{{ cafe.id }}</td>
+        <td>{{ cafe.name }}</td>
+        <td>
+          <button @click="setCafeToEdit(cafe)">Sửa</button>
+          <button @click="removeCafe(cafe.id)">Xóa</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
 
     <h2>Cập Nhật Quán Cafe</h2>
     <input v-model="cafeToEdit.name" placeholder="Tên quán cafe" />
@@ -23,14 +34,19 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { getAllCafes, createCafe, updateCafe as updateCafeAPI, deleteCafe as deleteCafeAPI } from '@/services/admin/admin-cafe-service';
 
 const cafes = ref([]);
 const newCafeName = ref('');
 const cafeToEdit = ref({});
 
-// Hàm để lấy danh sách quán cafe
+// Automatically fetch cafes when component is mounted
+onMounted(async () => {
+  await fetchCafes();
+});
+
+// Function to fetch cafes
 const fetchCafes = async () => {
   try {
     cafes.value = await getAllCafes();
@@ -39,7 +55,7 @@ const fetchCafes = async () => {
   }
 };
 
-// Hàm để tạo mới quán cafe
+// Function to add a new cafe
 const addCafe = async () => {
   if (!newCafeName.value) {
     alert('Vui lòng nhập tên quán cafe.');
@@ -49,18 +65,18 @@ const addCafe = async () => {
     const cafeRequest = { name: newCafeName.value };
     await createCafe(cafeRequest);
     newCafeName.value = ''; // Reset input
-    await fetchCafes(); // Tải lại danh sách quán cafe
+    await fetchCafes(); // Reload the cafe list
   } catch (error) {
     console.error(error);
   }
 };
 
-// Hàm để thiết lập quán cafe cần chỉnh sửa
+// Function to set cafe to edit
 const setCafeToEdit = (cafe) => {
-  cafeToEdit.value = { ...cafe }; // Sao chép thông tin quán cafe vào biến cafeToEdit
+  cafeToEdit.value = { ...cafe };
 };
 
-// Hàm để cập nhật quán cafe
+// Function to update cafe details
 const updateCafeDetails = async () => {
   if (!cafeToEdit.value.name) {
     alert('Vui lòng nhập tên quán cafe cần cập nhật.');
@@ -69,19 +85,19 @@ const updateCafeDetails = async () => {
   try {
     const cafeRequest = { name: cafeToEdit.value.name };
     await updateCafeAPI(cafeToEdit.value.id, cafeRequest);
-    cafeToEdit.value = {}; // Reset biến cafeToEdit
-    await fetchCafes(); // Tải lại danh sách quán cafe
+    cafeToEdit.value = {}; // Reset the edit form
+    await fetchCafes(); // Reload the cafe list
   } catch (error) {
     console.error(error);
   }
 };
 
-// Hàm để xóa quán cafe
+// Function to delete a cafe
 const removeCafe = async (id) => {
   if (confirm('Bạn có chắc chắn muốn xóa quán cafe này?')) {
     try {
       await deleteCafeAPI(id);
-      await fetchCafes(); // Tải lại danh sách quán cafe
+      await fetchCafes(); // Reload the cafe list
     } catch (error) {
       console.error(error);
     }
@@ -89,6 +105,52 @@ const removeCafe = async (id) => {
 };
 </script>
 
-<style>
-/* Thêm CSS tùy chỉnh nếu cần */
+<style scoped>
+h1 {
+  color: #2c3e50;
+}
+
+input {
+  margin: 10px 0;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  padding: 8px 12px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table th, table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+table th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table tr:hover {
+  background-color: #f1f1f1;
+}
 </style>

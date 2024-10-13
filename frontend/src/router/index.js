@@ -15,6 +15,9 @@ import ViewProfilePage from "@/views/ViewProfilePage.vue";
 import NotificationPage from "@/views/NotificationPage.vue";
 import SuccessToast from "@/views/Test.vue";
 import AdminDashboard from "@/views/admin/AdminDashboard.vue";
+import Home from "@/views/admin/Home.vue";
+import Users from "@/views/admin/Users.vue";
+import Settings from "@/views/admin/Settings.vue";
 
 const router = createRouter({
   history: createWebHistory(process.env.VITE_PUBLIC_BASE_URL),
@@ -97,7 +100,13 @@ const router = createRouter({
     {
       path: '/admin/dashboard',
       name: 'AdminDashboard',
-      component: AdminDashboard
+      component: AdminDashboard,
+      children: [
+        { path: '', component: Home },  // Default to Home
+        { path: 'home', component: Home }, // Explicit Home route
+        { path: 'users', component: Users },
+        { path: 'settings', component: Settings },
+      ],
     }
   ],
 });

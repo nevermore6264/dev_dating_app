@@ -18,6 +18,7 @@ import AdminDashboard from "@/views/admin/AdminDashboard.vue";
 import Home from "@/views/admin/Home.vue";
 import Users from "@/views/admin/Users.vue";
 import Settings from "@/views/admin/Settings.vue";
+import ManageCafes from "@/views/admin/ManageCafes.vue";
 
 const routes = [
     {
@@ -104,6 +105,10 @@ const routes = [
         { path: 'home', component: Home }, // Explicit Home route
         { path: 'users', component: Users },
         { path: 'settings', component: Settings },
+      {
+          path: 'cafes',
+          component: ManageCafes, // Đường dẫn đến component quản lý quán cafe
+      },
       ],
     }];
 

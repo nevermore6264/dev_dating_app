@@ -16,6 +16,9 @@
           <li @click="navigateTo('Settings')">
             <el-icon><Setting /></el-icon> Settings
           </li>
+          <li @click="navigateTo('Cafes')">
+            <el-icon><CoffeeCup /></el-icon> Manage Cafes
+          </li>
         </ul>
       </nav>
     </aside>

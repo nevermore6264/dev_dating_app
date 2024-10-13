@@ -14,6 +14,7 @@ import UpdateProfileFirstLogin from "@/views/UpdateProfileFirstLogin.vue";
 import ViewProfilePage from "@/views/ViewProfilePage.vue";
 import NotificationPage from "@/views/NotificationPage.vue";
 import SuccessToast from "@/views/Test.vue";
+import AdminDashboard from "@/views/admin/AdminDashboard.vue";
 
 const router = createRouter({
   history: createWebHistory(process.env.VITE_PUBLIC_BASE_URL),
@@ -93,6 +94,11 @@ const router = createRouter({
       name: "a",
       component: SuccessToast,
     },
+    {
+      path: '/admin/dashboard',
+      name: 'AdminDashboard',
+      component: AdminDashboard
+    }
   ],
 });
 

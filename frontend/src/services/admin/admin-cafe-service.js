@@ -1,9 +1,9 @@
-import {instance} from './api-instance-provider';
+import {instance} from '../api-instance-provider';
 
 // Hàm lấy danh sách tất cả các quán cafe
 export const getAllCafes = async () => {
     try {
-        const response = await instance.get('/api/v1/admin/cafes', {
+        const response = await instance.get('/admin/cafes', {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('userToken')}`, // Gửi token trong header
             },

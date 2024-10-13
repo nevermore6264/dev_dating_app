@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Quản Lý Quán Cafe</h1>
+    <h1>Manager Cafes</h1>
 
     <h2>Tạo Quán Cafe</h2>
     <input v-model="newCafeName" placeholder="Nhập tên quán cafe" />
@@ -11,17 +11,24 @@
       <thead>
       <tr>
         <th>ID</th>
-        <th>Tên Quán Cafe</th>
+        <th>Cafe Name</th>
+        <th>Address</th>
+        <th>Bio</th>
+        <th>Price Fluctuation</th>
         <th>Thao Tác</th>
       </tr>
       </thead>
       <tbody>
-      <tr v-for="cafe in cafes" :key="cafe.id">
-        <td>{{ cafe.id }}</td>
+      <tr v-for="cafe in cafes" :key="cafe.cafeId">
+        <td>{{ cafe.cafeId }}</td>
         <td>{{ cafe.name }}</td>
+        <td>{{ cafe.address }}</td>
+        <td>{{ cafe.bio }}</td>
+        <td>{{ formatCurrency(cafe.priceRangeMin * 1000) }} - {{ formatCurrency(cafe.priceRangeMax * 1000) }}</td>
+
         <td>
           <button @click="setCafeToEdit(cafe)">Sửa</button>
-          <button @click="removeCafe(cafe.id)">Xóa</button>
+          <button @click="removeCafe(cafe.cafeId)">Xóa</button>
         </td>
       </tr>
       </tbody>
@@ -103,6 +110,11 @@ const removeCafe = async (id) => {
     }
   }
 };
+
+// Function to format currency in VND
+const formatCurrency = (amount) => {
+  return amount.toLocaleString('vi-VN') + ' VNĐ';
+};
 </script>
 
 <style scoped>
@@ -124,7 +136,17 @@ button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin-right: 10px;
 }
+
+button:nth-child(1) {
+  background-color: #ff4b4b;
+}
+
+button:nth-child(2) {
+  background-color: #666666;
+}
+
 
 button:hover {
   background-color: #2980b9;

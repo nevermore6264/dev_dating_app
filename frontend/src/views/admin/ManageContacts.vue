@@ -23,7 +23,11 @@
         <td>{{ form.phoneNumber }}</td>
         <td>{{ form.message }}</td>
         <td>{{ formatSubmissionDate(form?.submissionDate) }}</td>
-        <td>{{ form.responseStatus }}</td>
+        <td>
+          <el-tag :type="getTagType(form.responseStatus)">
+            {{ form.responseStatus }}
+          </el-tag>
+        </td>
         <td>
           <el-button type="primary" @click="replyToForm(form.id)" :disabled="form.responseStatus === 'Replied'">
             {{ form.responseStatus === 'Replied' ? 'Replied' : 'Reply' }}
@@ -84,5 +88,17 @@ const replyToForm = async (id) => {
 const formatSubmissionDate = (dateString) => {
   if (!dateString) return 'Not available'; // Handle null or undefined dates
   return format(new Date(dateString), 'MMMM dd, yyyy HH:mm'); // Format: October 15, 2024 14:30
+};
+
+// Get tag type based on response status
+const getTagType = (status) => {
+  switch (status) {
+    case 'Responded':
+      return 'success'; // Green
+    case 'Not Responded':
+      return 'warning'; // Yellow
+    default:
+      return 'default'; // Gray
+  }
 };
 </script>

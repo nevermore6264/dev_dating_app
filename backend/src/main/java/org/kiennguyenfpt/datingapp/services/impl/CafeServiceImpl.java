@@ -34,7 +34,7 @@ public class CafeServiceImpl implements CafeService {
         cafe.setPriceRangeMin(cafeRequest.getPriceRangeMin());
         cafe.setPriceRangeMax(cafeRequest.getPriceRangeMax());
         cafe.setImageUrl(cafeRequest.getImageUrl());
-        cafe.setStatus(cafeRequest.getStatus());
+        cafe.setStatus(cafeRequest.getStatus() == null ? "ACTIVE" : cafeRequest.getStatus());
         Cafe savedCafe = cafeRepository.save(cafe);
         return new CafeResponse(
                 savedCafe.getCafeId(),
@@ -63,7 +63,7 @@ public class CafeServiceImpl implements CafeService {
             updatedCafe.setPriceRangeMin(cafeRequest.getPriceRangeMin());
             updatedCafe.setPriceRangeMax(cafeRequest.getPriceRangeMax());
             updatedCafe.setImageUrl(cafeRequest.getImageUrl());
-            updatedCafe.setStatus(cafeRequest.getStatus());
+            updatedCafe.setStatus(cafeRequest.getStatus() == null ? "ACTIVE" : cafeRequest.getStatus());
 
             Cafe savedCafe = cafeRepository.save(updatedCafe);
             return new CafeResponse(

@@ -3,7 +3,7 @@
     <h1>Manager Cafes</h1>
 
     <!-- Nút mở modal để thêm quán cafe -->
-    <el-button type="primary" @click="showAddModal" class="btn-add-new">Add New Cafe</el-button>
+    <el-button type="primary" @click="showAddModal">Add New Cafe</el-button>
 
     <table>
       <thead>
@@ -32,34 +32,75 @@
     </table>
 
     <!-- Dialog cho thêm quán cafe -->
-    <el-dialog v-model="isAddModalVisible" title="Add new Cafe">
+    <el-dialog v-model="isAddModalVisible" title="Add New Cafe">
       <div>
-        <el-input v-model="newCafe.name" placeholder="Nhập tên quán cafe"></el-input>
-        <el-input v-model="newCafe.address" placeholder="Nhập địa chỉ"></el-input>
-        <el-input v-model="newCafe.bio" placeholder="Nhập mô tả"></el-input>
+        <el-form label-position="top">
+          <!-- Cafe Name -->
+          <el-form-item label="Cafe Name">
+            <el-input v-model="newCafe.name" placeholder="Enter cafe name"></el-input>
+          </el-form-item>
 
-        <el-input v-model="newCafe.priceRangeMin" type="number" placeholder="Giá thấp nhất"></el-input>
-        <el-input v-model="newCafe.priceRangeMax" type="number" placeholder="Giá cao nhất"></el-input>
+          <!-- Address -->
+          <el-form-item label="Address">
+            <el-input v-model="newCafe.address" placeholder="Enter address"></el-input>
+          </el-form-item>
+
+          <!-- Bio -->
+          <el-form-item label="Description">
+            <el-input v-model="newCafe.bio" type="textarea" placeholder="Enter description"></el-input>
+          </el-form-item>
+
+          <!-- Price Range -->
+          <el-form-item label="Price Range (Min)">
+            <el-input v-model="newCafe.priceRangeMin" type="number" placeholder="Minimum price"></el-input>
+          </el-form-item>
+
+          <el-form-item label="Price Range (Max)">
+            <el-input v-model="newCafe.priceRangeMax" type="number" placeholder="Maximum price"></el-input>
+          </el-form-item>
+        </el-form>
       </div>
+
+      <!-- Footer Buttons -->
       <span class="dialog-footer">
+        <el-button type="primary" @click="addCafe">Add</el-button>
         <el-button @click="isAddModalVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="addCafe">Thêm</el-button>
       </span>
     </el-dialog>
+
 
     <!-- Dialog cho cập nhật quán cafe -->
     <el-dialog v-model="isEditModalVisible" title="Cập Nhật Quán Cafe">
       <div>
-        <el-input v-model="cafeToEdit.name" placeholder="Tên quán cafe"></el-input>
-        <el-input v-model="cafeToEdit.address" placeholder="Địa chỉ"></el-input>
-        <el-input v-model="cafeToEdit.bio" placeholder="Mô tả"></el-input>
+        <el-form label-position="top">
+          <!-- Cafe Name -->
+          <el-form-item label="Cafe Name">
+            <el-input v-model="newCafe.name" placeholder="Enter cafe name"></el-input>
+          </el-form-item>
 
-        <el-input v-model="cafeToEdit.priceRangeMin" type="number" placeholder="Giá thấp nhất"></el-input>
-        <el-input v-model="cafeToEdit.priceRangeMax" type="number" placeholder="Giá cao nhất"></el-input>
+          <!-- Address -->
+          <el-form-item label="Address">
+            <el-input v-model="newCafe.address" placeholder="Enter address"></el-input>
+          </el-form-item>
+
+          <!-- Bio -->
+          <el-form-item label="Description">
+            <el-input v-model="newCafe.bio" type="textarea" placeholder="Enter description"></el-input>
+          </el-form-item>
+
+          <!-- Price Range -->
+          <el-form-item label="Price Range (Min)">
+            <el-input v-model="newCafe.priceRangeMin" type="number" placeholder="Minimum price"></el-input>
+          </el-form-item>
+
+          <el-form-item label="Price Range (Max)">
+            <el-input v-model="newCafe.priceRangeMax" type="number" placeholder="Maximum price"></el-input>
+          </el-form-item>
+        </el-form>
       </div>
       <span class="dialog-footer">
-        <el-button @click="isEditModalVisible = false">Cancel</el-button>
         <el-button type="primary" @click="updateCafeDetails">Cập Nhật</el-button>
+        <el-button @click="isEditModalVisible = false">Cancel</el-button>
       </span>
     </el-dialog>
   </div>
@@ -191,17 +232,6 @@ button {
   cursor: pointer;
 }
 
-button:nth-child(1) {
-  background-color: #ff4b4b;
-  margin-right: 10px;
-
-}
-
-button:nth-child(2) {
-  background-color: #666666;
-}
-
-
 button:hover {
   background-color: #2980b9;
 }
@@ -230,18 +260,12 @@ table tr:hover {
   background-color: #f1f1f1;
 }
 
-.btn-add-new {
-  background-color: #007ecb !important;
-}
-
-/* Custom styling for the modal */
 .el-dialog {
   width: 500px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Styling for the modal content */
 .el-dialog__body {
   padding: 20px;
   background-color: #fafafa;
@@ -269,9 +293,9 @@ table tr:hover {
 /* Customizing buttons in the modal footer */
 .dialog-footer {
   text-align: right;
-  padding: 10px 20px;
-  background-color: #f9f9f9;
-  border-top: 1px solid #ebebeb;
+  padding: 5px 0;
+  display: block;
+  width: 100%;
 }
 
 .el-button {

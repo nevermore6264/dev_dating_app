@@ -3,7 +3,7 @@
     <h1>Manager Cafes</h1>
 
     <!-- Nút mở modal để thêm quán cafe -->
-    <el-button type="primary" @click="showAddModal">Add New Cafe</el-button>
+    <el-button type="success" @click="showAddModal">Add New Cafe</el-button>
 
     <table>
       <thead>
@@ -50,21 +50,33 @@
             <el-input v-model="newCafe.bio" type="textarea" placeholder="Enter description"></el-input>
           </el-form-item>
 
-          <!-- Price Range -->
-          <el-form-item label="Price Range (Min)">
-            <el-input v-model="newCafe.priceRangeMin" type="number" placeholder="Minimum price"></el-input>
-          </el-form-item>
+          <!-- Price Range Row -->
+          <el-row :gutter="20">
+            <!-- Price Range (Min) -->
+            <el-col :span="12">
+              <el-form-item label="Price Range (Min)">
+                <el-input v-model="newCafe.priceRangeMin" type="number" placeholder="Minimum price">
+                  <template #append>VNĐ</template>
+                </el-input>
+              </el-form-item>
+            </el-col>
 
-          <el-form-item label="Price Range (Max)">
-            <el-input v-model="newCafe.priceRangeMax" type="number" placeholder="Maximum price"></el-input>
-          </el-form-item>
+            <!-- Price Range (Max) -->
+            <el-col :span="12">
+              <el-form-item label="Price Range (Max)">
+                <el-input v-model="newCafe.priceRangeMax" type="number" placeholder="Maximum price">
+                  <template #append>VNĐ</template>
+                </el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
       </div>
 
       <!-- Footer Buttons -->
       <span class="dialog-footer">
-        <el-button type="primary" @click="addCafe">Add</el-button>
-        <el-button @click="isAddModalVisible = false">Cancel</el-button>
+        <el-button type="success" @click="addCafe">Add</el-button>
+        <el-button type="danger" @click="isAddModalVisible = false">Cancel</el-button>
       </span>
     </el-dialog>
 
@@ -115,6 +127,7 @@ import {
   getAllCafes,
   updateCafe as updateCafeAPI
 } from '@/services/admin/admin-cafe-service';
+import router from "@/router";
 
 const cafes = ref([]);
 const newCafe = ref({
@@ -146,6 +159,14 @@ const fetchCafes = async () => {
     cafes.value = await getAllCafes();
   } catch (error) {
     console.error(error);
+
+    // Check if error is due to authentication (401 Unauthorized)
+    if (error.response && error.response.status === 401) {
+      ElMessage.error('Session expired. Redirecting to login.');
+      await router.push('/');  // Redirect to the login page
+    } else {
+      ElMessage.error('Failed to fetch cafes. Please try again later.');
+    }
   }
 };
 
@@ -212,83 +233,7 @@ const showAddModal = () => {
 </script>
 
 <style scoped>
-h1 {
-  color: #2c3e50;
-}
 
-input {
-  margin: 10px 0;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-button {
-  padding: 4px 20px;
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #2980b9;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-table th, table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-table th {
-  background-color: #f2f2f2;
-  text-align: left;
-}
-
-table tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-table tr:hover {
-  background-color: #f1f1f1;
-}
-
-.el-dialog {
-  width: 500px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.el-dialog__body {
-  padding: 20px;
-  background-color: #fafafa;
-}
-
-/* Input field styling */
-.el-input {
-  margin-bottom: 15px;
-  width: 100%;
-}
-
-.el-input input {
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  transition: border-color 0.3s ease;
-}
-
-.el-input input:focus {
-  border-color: #3498db;
-  outline: none;
-}
 
 /* Customizing buttons in the modal footer */
 .dialog-footer {
@@ -296,56 +241,6 @@ table tr:hover {
   padding: 5px 0;
   display: block;
   width: 100%;
-}
-
-.el-button {
-  border-radius: 6px;
-  padding: 8px 20px;
-  font-size: 14px;
-}
-
-.el-button--primary {
-  background-color: #3498db;
-  border-color: #3498db;
-}
-
-.el-button--primary:hover {
-  background-color: #2980b9;
-}
-
-.el-button--primary:focus {
-  outline: none;
-}
-
-.el-button--danger {
-  background-color: #e74c3c;
-  border-color: #e74c3c;
-}
-
-.el-button--danger:hover {
-  background-color: #c0392b;
-}
-
-/* Hover and focus effects */
-.el-button:hover {
-  background-color: #2980b9;
-  color: white;
-}
-
-.el-dialog__header {
-  background-color: #3498db;
-  color: white;
-  padding: 15px;
-  border-bottom: 1px solid #ddd;
-}
-
-.el-dialog__title {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.el-button + .el-button {
-  margin-left: 10px;
 }
 
 </style>

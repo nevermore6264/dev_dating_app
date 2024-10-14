@@ -19,6 +19,9 @@
           <li @click="navigateTo('Cafes')">
             <el-icon><HomeFilled /></el-icon> Manage Cafes
           </li>
+          <li @click="navigateTo('Users')">
+            <el-icon><HomeFilled /></el-icon> Manage Users
+          </li>
         </ul>
       </nav>
     </aside>
@@ -109,6 +112,7 @@ const navigateTo = (component) => {
   background-color: #ffffff; /* White background for main content */
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Light shadow for main content */
+  overflow: scroll;
 }
 
 .main-content h1 {

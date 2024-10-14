@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import {createRouter, createWebHistory} from "vue-router";
 import LoginPage from "../views/LoginPage.vue";
 import RegisterPage from "@/views/RegisterPage.vue";
 import ForgotPasswordPage from "@/views/ForgotPasswordPage.vue";
@@ -19,98 +19,102 @@ import Home from "@/views/admin/Home.vue";
 import Users from "@/views/admin/Users.vue";
 import Settings from "@/views/admin/Settings.vue";
 import ManageCafes from "@/views/admin/ManageCafes.vue";
+import ManageUsers from "@/views/admin/ManageUsers.vue";
 
 const routes = [
-    {
-      path: "/",
-      name: "Login",
-      component: LoginPage, // Trang Login sẽ là trang mặc định
-    },
-    {
-      path: "/changePassFirstLogin",
-      name: "ChangePassFirstLogin",
-      component: ChangePassFirstLogin,
-    },
-    {
-      path: "/forgotPasswordPage",
-      name: "ForgotPasswordPage",
-      component: ForgotPasswordPage,
-    },
-    {
-      path: "/registerPage",
-      name: "Register",
-      component: RegisterPage,
-    },
-    {
-      path: "/youAreSafePage",
-      name: "youAreSafePage",
-      component: YouAreSafePage,
-    },
-    {
-      path: "/chattingPage",
-      name: "chattingPage",
-      component: ChattingPage,
-    },
-    {
-      path: "/homePage",
-      name: "homePage",
-      component: HomePage,
-    },
-    {
-      path: "/cafePage",
-      name: "cafePage",
-      component: CafePage,
-    },
-    {
-      path: "/criteriaPage",
-      name: "criteriaPage",
-      component: CriteriaPage,
-    },
-    {
-      path: "/editProfilePage",
-      name: "editProfilePage",
-      component: EditProfilePage,
-    },
-    {
-      path: "/updateProfileFirstLogin",
-      name: "updateProfileFirstLogin",
-      component: UpdateProfileFirstLogin,
-    },
-    {
-      path: "/mapPage",
-      name: "mapPage",
-      component: MapPage,
-    },
-    {
-      path: "/profile",
-      name: "profile",
-      component: ViewProfilePage,
-    },
-    {
-      path: "/notification",
-      name: "notification",
-      component: NotificationPage,
-    },
-    {
-      path: "/a",
-      name: "a",
-      component: SuccessToast,
-    },
-    {
-      path: '/admin',
-      name: 'AdminDashboard',
-      component: AdminDashboard,
-      children: [
-        { path: '', component: Home },  // Default to Home
-        { path: 'home', component: Home }, // Explicit Home route
-        { path: 'users', component: Users },
-        { path: 'settings', component: Settings },
+  {
+    path: "/",
+    name: "Login",
+    component: LoginPage, // Trang Login sẽ là trang mặc định
+  },
+  {
+    path: "/changePassFirstLogin",
+    name: "ChangePassFirstLogin",
+    component: ChangePassFirstLogin,
+  },
+  {
+    path: "/forgotPasswordPage",
+    name: "ForgotPasswordPage",
+    component: ForgotPasswordPage,
+  },
+  {
+    path: "/registerPage",
+    name: "Register",
+    component: RegisterPage,
+  },
+  {
+    path: "/youAreSafePage",
+    name: "youAreSafePage",
+    component: YouAreSafePage,
+  },
+  {
+    path: "/chattingPage",
+    name: "chattingPage",
+    component: ChattingPage,
+  },
+  {
+    path: "/homePage",
+    name: "homePage",
+    component: HomePage,
+  },
+  {
+    path: "/cafePage",
+    name: "cafePage",
+    component: CafePage,
+  },
+  {
+    path: "/criteriaPage",
+    name: "criteriaPage",
+    component: CriteriaPage,
+  },
+  {
+    path: "/editProfilePage",
+    name: "editProfilePage",
+    component: EditProfilePage,
+  },
+  {
+    path: "/updateProfileFirstLogin",
+    name: "updateProfileFirstLogin",
+    component: UpdateProfileFirstLogin,
+  },
+  {
+    path: "/mapPage",
+    name: "mapPage",
+    component: MapPage,
+  },
+  {
+    path: "/profile",
+    name: "profile",
+    component: ViewProfilePage,
+  },
+  {
+    path: "/notification",
+    name: "notification",
+    component: NotificationPage,
+  },
+  {
+    path: "/a",
+    name: "a",
+    component: SuccessToast,
+  },
+  {
+    path: '/admin',
+    name: 'AdminDashboard',
+    component: AdminDashboard,
+    children: [
+      {path: '', component: Home},  // Default to Home
+      {path: 'home', component: Home}, // Explicit Home route
+      {path: 'settings', component: Settings},
       {
-          path: 'cafes',
-          component: ManageCafes, // Đường dẫn đến component quản lý quán cafe
+        path: 'cafes',
+        component: ManageCafes, // Đường dẫn đến component quản lý quán cafe
       },
-      ],
-    }];
+      {
+        path: 'users',
+        component: ManageUsers, // Đường dẫn đến component quản lý users
+      },
+    ],
+  }];
 
 const router = createRouter({
   history: createWebHistory(),

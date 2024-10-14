@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h1>Manager Cafes</h1>
+    <h1>Manage Cafes</h1>
 
-    <!-- Nút mở modal để thêm quán cafe -->
+    <!-- Button to open modal for adding a new cafe -->
     <el-button type="success" @click="showAddModal">Add New Cafe</el-button>
 
     <table>
@@ -11,10 +11,10 @@
         <th>ID</th>
         <th>Cafe Name</th>
         <th>Address</th>
-        <th>Bio</th>
-        <th>Price Fluctuation</th>
+        <th>Description</th>
+        <th>Price Range</th>
         <th>Status</th>
-        <th>Operations</th>
+        <th style="width: 170px">Operations</th>
       </tr>
       </thead>
       <tbody>
@@ -23,7 +23,7 @@
         <td>{{ cafe.name }}</td>
         <td>{{ cafe.address }}</td>
         <td>{{ cafe.bio }}</td>
-        <td>{{ formatCurrency(cafe.priceRangeMin * 1000) }} - {{ formatCurrency(cafe.priceRangeMax * 1000) }}</td>
+        <td>{{ formatCurrency(cafe.priceRangeMin) }} - {{ formatCurrency(cafe.priceRangeMax) }}</td>
         <td>{{ cafe.status }}</td>
         <td>
           <el-button type="warning" @click="setCafeToEdit(cafe)">Edit</el-button>
@@ -35,7 +35,7 @@
       </tbody>
     </table>
 
-    <!-- Dialog cho thêm quán cafe -->
+    <!-- Dialog for adding a new cafe -->
     <el-dialog v-model="isAddModalVisible" title="Add New Cafe">
       <div>
         <el-form label-position="top">
@@ -84,8 +84,7 @@
       </span>
     </el-dialog>
 
-
-    <!-- Dialog cho cập nhật quán cafe -->
+    <!-- Dialog for updating cafe details -->
     <el-dialog v-model="isEditModalVisible" title="Edit Cafe">
       <div>
         <el-form label-position="top">
@@ -127,9 +126,9 @@ import {onMounted, ref} from 'vue';
 import {ElMessage, ElNotification} from 'element-plus';
 import {
   createCafe,
-  lockOrUnLock as deleteCafeAPI,
   getAllCafes,
-  updateCafe as updateCafeAPI
+  lockOrUnLock as toggleCafeStatusAPI,
+  updateCafe as updateCafeAPI,
 } from '@/services/admin/admin-cafe-service';
 
 const cafes = ref([]);
@@ -172,38 +171,38 @@ const addCafe = async () => {
       title: 'Error',
       message: 'Please enter complete information.',
       type: 'error',
-    })
+    });
     return;
   }
   try {
     await createCafe(newCafe.value);
-    newCafe.value = {name: '', address: '', bio: '', priceRangeMin: null, priceRangeMax: null};
+    newCafe.value = { name: '', address: '', bio: '', priceRangeMin: null, priceRangeMax: null };
     isAddModalVisible.value = false;
     await fetchCafes();
     ElNotification({
       title: 'Success',
-      message: 'Add new cafe successfully',
+      message: 'New cafe added successfully.',
       type: 'success',
-    })
+    });
   } catch (error) {
     ElNotification({
       title: 'Error',
       message: error?.message,
       type: 'error',
-    })
+    });
   }
 };
 
 // Set cafe to edit
 const setCafeToEdit = (cafe) => {
-  cafeToEdit.value = {...cafe};
+  cafeToEdit.value = { ...cafe };
   isEditModalVisible.value = true;
 };
 
 // Update cafe details
 const updateCafeDetails = async () => {
   if (!cafeToEdit.value.name || !cafeToEdit.value.address) {
-    ElMessage.error('Vui lòng nhập đầy đủ thông tin.');
+    ElMessage.error('Please enter complete information.');
     return;
   }
   try {
@@ -212,35 +211,36 @@ const updateCafeDetails = async () => {
     await fetchCafes();
     ElNotification({
       title: 'Success',
-      message: 'Update cafe successfully',
+      message: 'Cafe details updated successfully.',
       type: 'success',
-    })
+    });
   } catch (error) {
     ElNotification({
       title: 'Error',
       message: error?.message,
       type: 'error',
-    })
+    });
   }
 };
 
-// Remove cafe
+// Toggle cafe status (Lock/Unlock)
 const removeCafe = async (id) => {
-  if (confirm('Are you sure you want to lock/unlock this cafe?')) {
+  const action = cafes.value.find(cafe => cafe.cafeId === id).status === 'INACTIVE' ? 'Unlock' : 'Lock';
+  if (confirm(`Are you sure you want to ${action} this cafe?`)) {
     try {
-      await deleteCafeAPI(id);
+      await toggleCafeStatusAPI(id);
       await fetchCafes();
       ElNotification({
         title: 'Success',
-        message: 'Lock Or UnLock successfully',
+        message: `Cafe successfully ${action}ed.`,
         type: 'success',
-      })
+      });
     } catch (error) {
       ElNotification({
         title: 'Error',
         message: error?.message,
         type: 'error',
-      })
+      });
     }
   }
 };

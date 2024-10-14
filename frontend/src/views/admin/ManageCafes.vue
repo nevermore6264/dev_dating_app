@@ -13,7 +13,8 @@
         <th>Address</th>
         <th>Bio</th>
         <th>Price Fluctuation</th>
-        <th>Action</th>
+        <th>Status</th>
+        <th>Operations</th>
       </tr>
       </thead>
       <tbody>
@@ -23,9 +24,12 @@
         <td>{{ cafe.address }}</td>
         <td>{{ cafe.bio }}</td>
         <td>{{ formatCurrency(cafe.priceRangeMin * 1000) }} - {{ formatCurrency(cafe.priceRangeMax * 1000) }}</td>
+        <td>{{ cafe.status }}</td>
         <td>
           <el-button type="warning" @click="setCafeToEdit(cafe)">Edit</el-button>
-          <el-button type="danger" @click="removeCafe(cafe.cafeId)">Delete</el-button>
+          <el-button type="danger" @click="removeCafe(cafe.cafeId)">
+            {{ cafe.status === 'INACTIVE' ? 'Unlock' : 'Lock' }}
+          </el-button>
         </td>
       </tr>
       </tbody>
@@ -123,7 +127,7 @@ import {onMounted, ref} from 'vue';
 import {ElMessage, ElNotification} from 'element-plus';
 import {
   createCafe,
-  deleteCafe as deleteCafeAPI,
+  lockOrUnLock as deleteCafeAPI,
   getAllCafes,
   updateCafe as updateCafeAPI
 } from '@/services/admin/admin-cafe-service';
@@ -222,13 +226,13 @@ const updateCafeDetails = async () => {
 
 // Remove cafe
 const removeCafe = async (id) => {
-  if (confirm('Bạn có chắc chắn muốn xóa quán cafe này?')) {
+  if (confirm('Are you sure you want to lock/unlock this cafe?')) {
     try {
       await deleteCafeAPI(id);
       await fetchCafes();
       ElNotification({
         title: 'Success',
-        message: 'Delete cafe successfully',
+        message: 'Lock Or UnLock successfully',
         type: 'success',
       })
     } catch (error) {

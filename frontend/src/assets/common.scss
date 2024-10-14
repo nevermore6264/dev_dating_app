@@ -203,3 +203,10 @@ table tr:nth-child(even) {
 table tr:hover {
   background-color: #f1f1f1;
 }
+
+.dialog-footer {
+  text-align: right;
+  padding: 5px 0;
+  display: block;
+  width: 100%;
+}

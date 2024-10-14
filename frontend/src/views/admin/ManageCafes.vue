@@ -231,16 +231,3 @@ const showAddModal = () => {
   isAddModalVisible.value = true;
 };
 </script>
-
-<style scoped>
-
-
-/* Customizing buttons in the modal footer */
-.dialog-footer {
-  text-align: right;
-  padding: 5px 0;
-  display: block;
-  width: 100%;
-}
-
-</style>

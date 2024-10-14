@@ -17,7 +17,7 @@
             <el-icon><Setting /></el-icon> Settings
           </li>
           <li @click="navigateTo('Cafes')">
-            <el-icon><CoffeeCup /></el-icon> Manage Cafes
+            <el-icon><HomeFilled /></el-icon> Manage Cafes
           </li>
         </ul>
       </nav>
@@ -31,7 +31,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { House, User, Setting } from '@element-plus/icons-vue'; // Nhập các icon cần thiết
+import { House, User, Setting, HomeFilled } from '@element-plus/icons-vue'; // Nhập các icon cần thiết
 
 const router = useRouter();
 
@@ -44,57 +44,82 @@ const navigateTo = (component) => {
 <style>
 .admin-dashboard {
   display: flex;
-  height: calc(100vh - 56px);
+  height: 100vh;
+  background-color: #f4f7fa; /* Light background for main content */
 }
 
 .sidebar {
-  width: 200px;
-  background-color: #304156;
+  width: 250px;
+  background-color: #1f2d3d; /* Dark sidebar background */
   padding: 20px;
-  border-right: 1px solid #ddd;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Add slight shadow for depth */
 }
 
 .logo-container {
   display: flex;
-  align-items: center; /* Căn giữa logo và văn bản theo chiều dọc */
-  margin-bottom: 20px; /* Khoảng cách dưới logo */
+  align-items: center;
+  margin-bottom: 30px; /* Increase bottom margin for better spacing */
 }
 
 .logo {
-  width: 40px; /* Chiều rộng logo */
-  height: auto; /* Tự động điều chỉnh chiều cao */
-  margin-right: 10px; /* Khoảng cách giữa logo và văn bản */
+  width: 45px; /* Slightly bigger logo */
+  height: auto;
+  margin-right: 12px;
 }
 
 .logo-text {
-  font-size: 1.2em; /* Kích thước chữ của văn bản */
-  font-weight: bold; /* Đậm chữ */
+  font-size: 1.5em; /* Increase font size */
+  font-weight: bold;
   color: #ffffff;
 }
 
 .sidebar nav ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .sidebar nav li {
   cursor: pointer;
-  margin: 10px 0;
+  margin: 15px 0; /* Increase vertical spacing */
   color: #ffffff;
-  display: flex; /* Thay đổi để hiển thị icon và văn bản cạnh nhau */
-  align-items: center; /* Căn giữa icon và văn bản */
-}
-
-.sidebar el-icon {
-  padding-right: 15px !important; /* Tăng khoảng cách giữa icon và văn bản */
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  border-radius: 8px; /* Rounded corners */
+  transition: background-color 0.3s ease;
 }
 
 .sidebar nav li:hover {
-  text-decoration: underline;
+  background-color: #3a4a5a; /* Hover effect for better visibility */
+  text-decoration: none;
+}
+
+.sidebar nav li.active {
+  background-color: #3a4a5a; /* Indicate active item */
+}
+
+.sidebar el-icon {
+  margin-right: 12px; /* Consistent spacing between icon and text */
 }
 
 .main-content {
   flex: 1;
-  padding: 20px;
+  padding: 40px;
+  background-color: #ffffff; /* White background for main content */
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Light shadow for main content */
 }
+
+.main-content h1 {
+  color: #304156; /* Title color */
+  font-size: 1.8em; /* Larger title font */
+  margin-bottom: 20px; /* Spacing below titles */
+}
+
+.main-content p {
+  font-size: 1em;
+  color: #6b7280; /* Softer text color */
+}
+
 </style>

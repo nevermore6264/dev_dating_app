@@ -17,7 +17,7 @@ export const getAllCafes = async () => {
 // Hàm tạo mới quán cafe
 export const createCafe = async (cafeRequest) => {
     try {
-        const response = await instance.post('/api/v1/admin/cafes', cafeRequest, {
+        const response = await instance.post('/admin/cafes', cafeRequest, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('userToken')}`, // Gửi token trong header
             },
@@ -31,7 +31,7 @@ export const createCafe = async (cafeRequest) => {
 // Hàm cập nhật quán cafe
 export const updateCafe = async (id, cafeRequest) => {
     try {
-        const response = await instance.put(`/api/v1/admin/cafes/${id}`, cafeRequest, {
+        const response = await instance.put(`/admin/cafes/${id}`, cafeRequest, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('userToken')}`, // Gửi token trong header
             },

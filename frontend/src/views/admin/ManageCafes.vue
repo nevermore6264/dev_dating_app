@@ -24,8 +24,8 @@
         <td>{{ cafe.bio }}</td>
         <td>{{ formatCurrency(cafe.priceRangeMin * 1000) }} - {{ formatCurrency(cafe.priceRangeMax * 1000) }}</td>
         <td>
-          <el-button type="warning" @click="setCafeToEdit(cafe)">Sửa</el-button>
-          <el-button type="danger" @click="removeCafe(cafe.cafeId)">Xóa</el-button>
+          <el-button type="warning" @click="setCafeToEdit(cafe.cafeId)">Edit</el-button>
+          <el-button type="danger" @click="removeCafe(cafe.cafeId)">Delete</el-button>
         </td>
       </tr>
       </tbody>
@@ -36,17 +36,17 @@
       <div>
         <el-form label-position="top">
           <!-- Cafe Name -->
-          <el-form-item label="Cafe Name">
+          <el-form-item label="Cafe Name (*)">
             <el-input v-model="newCafe.name" placeholder="Enter cafe name"></el-input>
           </el-form-item>
 
           <!-- Address -->
-          <el-form-item label="Address">
+          <el-form-item label="Address (*)">
             <el-input v-model="newCafe.address" placeholder="Enter address"></el-input>
           </el-form-item>
 
           <!-- Bio -->
-          <el-form-item label="Description">
+          <el-form-item label="Description (*)">
             <el-input v-model="newCafe.bio" type="textarea" placeholder="Enter description"></el-input>
           </el-form-item>
 
@@ -82,16 +82,16 @@
 
 
     <!-- Dialog cho cập nhật quán cafe -->
-    <el-dialog v-model="isEditModalVisible" title="Cập Nhật Quán Cafe">
+    <el-dialog v-model="isEditModalVisible" title="Edit Cafe">
       <div>
         <el-form label-position="top">
           <!-- Cafe Name -->
-          <el-form-item label="Cafe Name">
+          <el-form-item label="Cafe Name (*)">
             <el-input v-model="newCafe.name" placeholder="Enter cafe name"></el-input>
           </el-form-item>
 
           <!-- Address -->
-          <el-form-item label="Address">
+          <el-form-item label="Address (*)">
             <el-input v-model="newCafe.address" placeholder="Enter address"></el-input>
           </el-form-item>
 
@@ -111,7 +111,7 @@
         </el-form>
       </div>
       <span class="dialog-footer">
-        <el-button type="primary" @click="updateCafeDetails">Cập Nhật</el-button>
+        <el-button type="primary" @click="updateCafeDetails">Edit</el-button>
         <el-button @click="isEditModalVisible = false">Cancel</el-button>
       </span>
     </el-dialog>
@@ -120,14 +120,13 @@
 
 <script setup>
 import {onMounted, ref} from 'vue';
-import {ElMessage} from 'element-plus';
+import {ElMessage, ElNotification} from 'element-plus';
 import {
   createCafe,
   deleteCafe as deleteCafeAPI,
   getAllCafes,
   updateCafe as updateCafeAPI
 } from '@/services/admin/admin-cafe-service';
-import router from "@/router";
 
 const cafes = ref([]);
 const newCafe = ref({
@@ -158,22 +157,18 @@ const fetchCafes = async () => {
   try {
     cafes.value = await getAllCafes();
   } catch (error) {
-    console.error(error);
-
-    // Check if error is due to authentication (401 Unauthorized)
-    if (error.response && error.response.status === 401) {
-      ElMessage.error('Session expired. Redirecting to login.');
-      await router.push('/');  // Redirect to the login page
-    } else {
-      ElMessage.error('Failed to fetch cafes. Please try again later.');
-    }
+    ElMessage.error('Failed to fetch cafes. Please try again later.');
   }
 };
 
 // Add new cafe
 const addCafe = async () => {
   if (!newCafe.value.name || !newCafe.value.address) {
-    ElMessage.error('Vui lòng nhập đầy đủ thông tin.');
+    ElNotification({
+      title: 'Error',
+      message: 'Please enter complete information.',
+      type: 'error',
+    })
     return;
   }
   try {
@@ -181,9 +176,17 @@ const addCafe = async () => {
     newCafe.value = {name: '', address: '', bio: '', priceRangeMin: null, priceRangeMax: null};
     isAddModalVisible.value = false;
     await fetchCafes();
-    ElMessage.success('Thêm quán cafe thành công!');
+    ElNotification({
+      title: 'Success',
+      message: 'Add new cafe successfully',
+      type: 'success',
+    })
   } catch (error) {
-    console.error(error);
+    ElNotification({
+      title: 'Error',
+      message: error?.message,
+      type: 'error',
+    })
   }
 };
 

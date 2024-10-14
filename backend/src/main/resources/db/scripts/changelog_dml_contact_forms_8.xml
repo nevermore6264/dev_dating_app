@@ -8,6 +8,8 @@
         <!-- admin -->
         <sql>
             <![CDATA[
+                ALTER TABLE contact_form MODIFY id INT AUTO_INCREMENT;
+
                 INSERT INTO contact_form (full_name, email, phone_number, message, submission_date, response_date, response_status)
                 VALUES
                 ('Nguyễn Văn A', 'nguyenvana@example.com', '0912345678', 'Tôi muốn biết thêm về sản phẩm.', NOW(), NULL, 'Chưa trả lời'),

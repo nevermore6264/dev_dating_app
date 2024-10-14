@@ -16,6 +16,9 @@
           <li @click="navigateTo('Users')">
             <el-icon><User /></el-icon> Manage Users
           </li>
+          <li @click="navigateTo('Contacts')">
+            <el-icon><ChatLineRound /></el-icon> Manage Contacts
+          </li>
         </ul>
 
         <!-- Logout button at the bottom -->
@@ -35,7 +38,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import {House, HomeFilled, User, SwitchButton} from '@element-plus/icons-vue'; // Nhập các icon cần thiết
+import {House, HomeFilled, User, SwitchButton, ChatLineRound} from '@element-plus/icons-vue'; // Nhập các icon cần thiết
 
 const router = useRouter();
 

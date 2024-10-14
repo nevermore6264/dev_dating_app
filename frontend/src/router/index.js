@@ -18,6 +18,7 @@ import AdminDashboard from "@/views/admin/AdminDashboard.vue";
 import Home from "@/views/admin/Home.vue";
 import ManageCafes from "@/views/admin/ManageCafes.vue";
 import ManageUsers from "@/views/admin/ManageUsers.vue";
+import ManageContacts from "@/views/admin/ManageContacts.vue";
 
 const routes = [
   {
@@ -109,6 +110,10 @@ const routes = [
       {
         path: 'users',
         component: ManageUsers, // Đường dẫn đến component quản lý users
+      },
+      {
+        path: 'contacts',
+        component: ManageContacts, // Đường dẫn đến component quản lý users
       },
     ],
   }];

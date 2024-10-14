@@ -10,7 +10,7 @@ public interface CafeService {
 
     CafeResponse updateCafe(Long id, CafeRequest cafeRequest); // Cập nhật phương thức
 
-    int deleteCafe(Long id); // Cập nhật phương thức để trả về String
+    int lockOrUnLockCafe(Long id); // Cập nhật phương thức để trả về String
 
     List<CafeResponse> getAllCafes(); // Cập nhật phương thức
 

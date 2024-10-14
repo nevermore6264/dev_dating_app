@@ -45,7 +45,7 @@ export const updateCafe = async (id, cafeRequest) => {
 // Hàm lấy thông tin quán cafe theo ID
 export const getCafeById = async (id) => {
     try {
-        const response = await instance.get(`/api/v1/admin/cafes/${id}`, {
+        const response = await instance.get(`/admin/cafes/${id}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('userToken')}`, // Gửi token trong header
             },
@@ -53,5 +53,19 @@ export const getCafeById = async (id) => {
         return response.data; // Trả về data nếu API trả về đúng định dạng
     } catch (error) {
         throw error.response ? error.response.data : {message: 'An error occurred while fetching cafe'};
+    }
+};
+
+// Hàm khoá quán cafe
+export const deleteCafe = async (id) => {
+    try {
+        const response = await instance.delete(`/admin/cafes/${id}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('userToken')}`, // Gửi token trong header
+            },
+        });
+        return response.data; // Trả về data nếu API trả về đúng định dạng
+    } catch (error) {
+        throw error.response ? error.response.data : {message: 'An error occurred while deleting cafe'};
     }
 };

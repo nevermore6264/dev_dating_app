@@ -40,15 +40,14 @@ public class CafeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteCafe(@PathVariable Long id) {
+    public ResponseEntity lockOrUnLockCafe(@PathVariable Long id) {
         CommonResponse response = new CommonResponse<>();
         try {
-            int result = cafeService.deleteCafe(id);
+            int result = cafeService.lockOrUnLockCafe(id);
             if (result == 1) {
                 response.setStatus(HttpStatus.OK.value());
                 response.setMessage("Update user successfully");
-                CafeResponse cafe = cafeService.getCafeById(id);
-                return ResponseEntity.ok(cafe);
+                return ResponseEntity.ok(response);
             } else {
                 response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
                 response.setMessage("Failed to update user status");

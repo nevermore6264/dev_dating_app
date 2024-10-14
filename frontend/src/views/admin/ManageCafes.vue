@@ -210,7 +210,8 @@ const updateCafeDetails = async () => {
       title: 'Success',
       message: 'Update cafe successfully',
       type: 'success',
-    })  } catch (error) {
+    })
+  } catch (error) {
     ElNotification({
       title: 'Error',
       message: error?.message,
@@ -225,9 +226,17 @@ const removeCafe = async (id) => {
     try {
       await deleteCafeAPI(id);
       await fetchCafes();
-      ElMessage.success('Xóa quán cafe thành công!');
+      ElNotification({
+        title: 'Success',
+        message: 'Delete cafe successfully',
+        type: 'success',
+      })
     } catch (error) {
-      console.error(error);
+      ElNotification({
+        title: 'Error',
+        message: error?.message,
+        type: 'error',
+      })
     }
   }
 };

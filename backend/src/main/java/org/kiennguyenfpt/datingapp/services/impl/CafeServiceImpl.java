@@ -82,7 +82,7 @@ public class CafeServiceImpl implements CafeService {
     }
 
     @Override
-    public int deleteCafe(Long id) {
+    public int lockOrUnLockCafe(Long id) {
         return cafeRepository.lockOrUnLockCafe(id);
     }
 

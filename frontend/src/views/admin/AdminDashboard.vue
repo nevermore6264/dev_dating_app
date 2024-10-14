@@ -44,6 +44,7 @@ const navigateTo = (component) => {
 <style>
 .admin-dashboard {
   display: flex;
+  height: calc(100vh - 56px);
 }
 
 .sidebar {

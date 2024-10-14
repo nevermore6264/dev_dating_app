@@ -16,7 +16,8 @@ const currentYear = new Date().getFullYear();
 
 <style scoped>
 footer {
-  position: relative;
+  position: absolute;
   width: 100%;
+  bottom: 0;
 }
 </style>

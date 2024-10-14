@@ -2,9 +2,8 @@
   <div>
     <h1>Manager Cafes</h1>
 
-    <h2>Tạo Quán Cafe</h2>
-    <input v-model="newCafeName" placeholder="Nhập tên quán cafe" />
-    <button @click="addCafe">Thêm Quán Cafe</button>
+    <!-- Nút mở modal để thêm quán cafe -->
+    <el-button type="primary" @click="showAddModal">Add New Cafe</el-button>
 
     <h2>Các Quán Cafe</h2>
     <table>
@@ -25,35 +24,78 @@
         <td>{{ cafe.address }}</td>
         <td>{{ cafe.bio }}</td>
         <td>{{ formatCurrency(cafe.priceRangeMin * 1000) }} - {{ formatCurrency(cafe.priceRangeMax * 1000) }}</td>
-
         <td>
-          <button @click="setCafeToEdit(cafe)">Sửa</button>
-          <button @click="removeCafe(cafe.cafeId)">Xóa</button>
+          <el-button type="warning" @click="setCafeToEdit(cafe)">Sửa</el-button>
+          <el-button type="danger" @click="removeCafe(cafe.cafeId)">Xóa</el-button>
         </td>
       </tr>
       </tbody>
     </table>
 
-    <h2>Cập Nhật Quán Cafe</h2>
-    <input v-model="cafeToEdit.name" placeholder="Tên quán cafe" />
-    <button @click="updateCafeDetails">Cập Nhật</button>
+    <!-- Dialog cho thêm quán cafe -->
+    <el-dialog v-model:visible="isAddModalVisible" title="Thêm Quán Cafe">
+      <div>
+        <el-input v-model="newCafe.name" placeholder="Nhập tên quán cafe"></el-input>
+        <el-input v-model="newCafe.address" placeholder="Nhập địa chỉ"></el-input>
+        <el-input v-model="newCafe.bio" placeholder="Nhập mô tả"></el-input>
+
+        <el-input v-model="newCafe.priceRangeMin" type="number" placeholder="Giá thấp nhất"></el-input>
+        <el-input v-model="newCafe.priceRangeMax" type="number" placeholder="Giá cao nhất"></el-input>
+      </div>
+      <span class="dialog-footer">
+        <el-button @click="isAddModalVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="addCafe">Thêm</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- Dialog cho cập nhật quán cafe -->
+    <el-dialog v-model:visible="isEditModalVisible" title="Cập Nhật Quán Cafe">
+      <div>
+        <el-input v-model="cafeToEdit.name" placeholder="Tên quán cafe"></el-input>
+        <el-input v-model="cafeToEdit.address" placeholder="Địa chỉ"></el-input>
+        <el-input v-model="cafeToEdit.bio" placeholder="Mô tả"></el-input>
+
+        <el-input v-model="cafeToEdit.priceRangeMin" type="number" placeholder="Giá thấp nhất"></el-input>
+        <el-input v-model="cafeToEdit.priceRangeMax" type="number" placeholder="Giá cao nhất"></el-input>
+      </div>
+      <span class="dialog-footer">
+        <el-button @click="isEditModalVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="updateCafeDetails">Cập Nhật</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { ElMessage } from 'element-plus';
 import { getAllCafes, createCafe, updateCafe as updateCafeAPI, deleteCafe as deleteCafeAPI } from '@/services/admin/admin-cafe-service';
 
 const cafes = ref([]);
-const newCafeName = ref('');
-const cafeToEdit = ref({});
+const newCafe = ref({
+  name: '',
+  address: '',
+  bio: '',
+  priceRangeMin: null,
+  priceRangeMax: null,
+});
+const cafeToEdit = ref({
+  name: '',
+  address: '',
+  bio: '',
+  priceRangeMin: null,
+  priceRangeMax: null,
+});
 
-// Automatically fetch cafes when component is mounted
+const isAddModalVisible = ref(false);
+const isEditModalVisible = ref(false);
+
+// Load cafes when component is mounted
 onMounted(async () => {
   await fetchCafes();
 });
 
-// Function to fetch cafes
+// Fetch cafes
 const fetchCafes = async () => {
   try {
     cafes.value = await getAllCafes();
@@ -62,56 +104,59 @@ const fetchCafes = async () => {
   }
 };
 
-// Function to add a new cafe
+// Add new cafe
 const addCafe = async () => {
-  if (!newCafeName.value) {
-    alert('Vui lòng nhập tên quán cafe.');
+  if (!newCafe.value.name || !newCafe.value.address) {
+    ElMessage.error('Vui lòng nhập đầy đủ thông tin.');
     return;
   }
   try {
-    const cafeRequest = { name: newCafeName.value };
-    await createCafe(cafeRequest);
-    newCafeName.value = ''; // Reset input
-    await fetchCafes(); // Reload the cafe list
+    await createCafe(newCafe.value);
+    newCafe.value = { name: '', address: '', bio: '', priceRangeMin: null, priceRangeMax: null };
+    isAddModalVisible.value = false;
+    await fetchCafes();
+    ElMessage.success('Thêm quán cafe thành công!');
   } catch (error) {
     console.error(error);
   }
 };
 
-// Function to set cafe to edit
+// Set cafe to edit
 const setCafeToEdit = (cafe) => {
   cafeToEdit.value = { ...cafe };
+  isEditModalVisible.value = true;
 };
 
-// Function to update cafe details
+// Update cafe details
 const updateCafeDetails = async () => {
-  if (!cafeToEdit.value.name) {
-    alert('Vui lòng nhập tên quán cafe cần cập nhật.');
+  if (!cafeToEdit.value.name || !cafeToEdit.value.address) {
+    ElMessage.error('Vui lòng nhập đầy đủ thông tin.');
     return;
   }
   try {
-    const cafeRequest = { name: cafeToEdit.value.name };
-    await updateCafeAPI(cafeToEdit.value.id, cafeRequest);
-    cafeToEdit.value = {}; // Reset the edit form
-    await fetchCafes(); // Reload the cafe list
+    await updateCafeAPI(cafeToEdit.value.cafeId, cafeToEdit.value);
+    isEditModalVisible.value = false;
+    await fetchCafes();
+    ElMessage.success('Cập nhật quán cafe thành công!');
   } catch (error) {
     console.error(error);
   }
 };
 
-// Function to delete a cafe
+// Remove cafe
 const removeCafe = async (id) => {
   if (confirm('Bạn có chắc chắn muốn xóa quán cafe này?')) {
     try {
       await deleteCafeAPI(id);
-      await fetchCafes(); // Reload the cafe list
+      await fetchCafes();
+      ElMessage.success('Xóa quán cafe thành công!');
     } catch (error) {
       console.error(error);
     }
   }
 };
 
-// Function to format currency in VND
+// Format currency in VND
 const formatCurrency = (amount) => {
   return amount.toLocaleString('vi-VN') + ' VNĐ';
 };
@@ -136,7 +181,6 @@ button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin-right: 10px;
 }
 
 button:nth-child(1) {
@@ -145,6 +189,7 @@ button:nth-child(1) {
 
 button:nth-child(2) {
   background-color: #666666;
+  margin-left: 10px;
 }
 
 

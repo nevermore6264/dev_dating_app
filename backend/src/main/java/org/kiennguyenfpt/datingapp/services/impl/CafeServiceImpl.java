@@ -34,9 +34,18 @@ public class CafeServiceImpl implements CafeService {
         cafe.setPriceRangeMin(cafeRequest.getPriceRangeMin());
         cafe.setPriceRangeMax(cafeRequest.getPriceRangeMax());
         cafe.setImageUrl(cafeRequest.getImageUrl());
+        cafe.setStatus(cafeRequest.getStatus());
         Cafe savedCafe = cafeRepository.save(cafe);
-        return new CafeResponse(savedCafe.getCafeId(), savedCafe.getName(), savedCafe.getAddress(),
-                savedCafe.getBio(), savedCafe.getPriceRangeMin(), savedCafe.getPriceRangeMax(), savedCafe.getImageUrl());
+        return new CafeResponse(
+                savedCafe.getCafeId(),
+                savedCafe.getName(),
+                savedCafe.getAddress(),
+                savedCafe.getBio(),
+                savedCafe.getPriceRangeMin(),
+                savedCafe.getPriceRangeMax(),
+                savedCafe.getImageUrl(),
+                savedCafe.getStatus()
+        );
     }
 
     @Override
@@ -54,41 +63,73 @@ public class CafeServiceImpl implements CafeService {
             updatedCafe.setPriceRangeMin(cafeRequest.getPriceRangeMin());
             updatedCafe.setPriceRangeMax(cafeRequest.getPriceRangeMax());
             updatedCafe.setImageUrl(cafeRequest.getImageUrl());
+            updatedCafe.setStatus(cafeRequest.getStatus());
+
             Cafe savedCafe = cafeRepository.save(updatedCafe);
-            return new CafeResponse(savedCafe.getCafeId(), savedCafe.getName(), savedCafe.getAddress(),
-                    savedCafe.getBio(), savedCafe.getPriceRangeMin(), savedCafe.getPriceRangeMax(), savedCafe.getImageUrl());
+            return new CafeResponse(
+                    savedCafe.getCafeId(),
+                    savedCafe.getName(),
+                    savedCafe.getAddress(),
+                    savedCafe.getBio(),
+                    savedCafe.getPriceRangeMin(),
+                    savedCafe.getPriceRangeMax(),
+                    savedCafe.getImageUrl(),
+                    savedCafe.getStatus()
+            );
         } else {
             throw new RuntimeException("Cafe not found");
         }
     }
 
     @Override
-    public String deleteCafe(Long id) {
-        cafeRepository.deleteById(id);
-        return "You have deleted successfully"; // Trả về thông điệp
+    public int deleteCafe(Long id) {
+        return cafeRepository.lockOrUnLockCafe(id);
     }
 
     @Override
     public List<CafeResponse> getAllCafes() {
-        return cafeRepository.findAll().stream().map(cafe -> new CafeResponse(
-                cafe.getCafeId(), cafe.getName(), cafe.getAddress(), cafe.getBio(),
-                cafe.getPriceRangeMin(), cafe.getPriceRangeMax(), cafe.getImageUrl())).collect(Collectors.toList());
+        return cafeRepository.findAll().stream().map(cafe ->
+                new CafeResponse(
+                        cafe.getCafeId(),
+                        cafe.getName(),
+                        cafe.getAddress(),
+                        cafe.getBio(),
+                        cafe.getPriceRangeMin(),
+                        cafe.getPriceRangeMax(),
+                        cafe.getImageUrl(),
+                        cafe.getStatus()
+                )).collect(Collectors.toList());
     }
 
     @Override
     public CafeResponse getCafeById(Long id) {
         Cafe cafe = cafeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cafe not found"));
-        return new CafeResponse(cafe.getCafeId(), cafe.getName(), cafe.getAddress(),
-                cafe.getBio(), cafe.getPriceRangeMin(), cafe.getPriceRangeMax(), cafe.getImageUrl());
+        return new CafeResponse(
+                cafe.getCafeId(),
+                cafe.getName(),
+                cafe.getAddress(),
+                cafe.getBio(),
+                cafe.getPriceRangeMin(),
+                cafe.getPriceRangeMax(),
+                cafe.getImageUrl(),
+                cafe.getStatus()
+        );
     }
 
     @Override
     public List<CafeResponse> searchCafesByName(String name) {
         return cafeRepository.findByNameContainingIgnoreCase(name).stream()
                 .map(cafe -> new CafeResponse(
-                        cafe.getCafeId(), cafe.getName(), cafe.getAddress(),
-                        cafe.getBio(), cafe.getPriceRangeMin(), cafe.getPriceRangeMax(), cafe.getImageUrl()))
+                        cafe.getCafeId(),
+                        cafe.getName(),
+                        cafe.getAddress(),
+                        cafe.getBio(),
+                        cafe.getPriceRangeMin(),
+                        cafe.getPriceRangeMax(),
+                        cafe.getImageUrl(),
+                        cafe.getStatus()
+                ))
                 .collect(Collectors.toList());
     }
 

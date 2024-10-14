@@ -40,8 +40,25 @@ public class CafeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCafe(@PathVariable Long id) {
-        return ResponseEntity.ok(cafeService.deleteCafe(id)); // Thay đổi để trả về String
+    public ResponseEntity deleteCafe(@PathVariable Long id) {
+        CommonResponse response = new CommonResponse<>();
+        try {
+            int result = cafeService.deleteCafe(id);
+            if (result == 1) {
+                response.setStatus(HttpStatus.OK.value());
+                response.setMessage("Update user successfully");
+                CafeResponse cafe = cafeService.getCafeById(id);
+                return ResponseEntity.ok(cafe);
+            } else {
+                response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                response.setMessage("Failed to update user status");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            }
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage("Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
     @GetMapping

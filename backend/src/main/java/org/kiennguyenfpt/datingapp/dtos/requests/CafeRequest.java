@@ -22,4 +22,6 @@ public class CafeRequest {
 
     private String imageUrl;
 
+    private String status;
+
 }

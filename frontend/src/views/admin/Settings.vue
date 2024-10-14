@@ -1,6 +1,0 @@
-<template>
-  <div>
-    <h2>Settings</h2>
-    <p>Configure your settings here.</p>
-  </div>
-</template>

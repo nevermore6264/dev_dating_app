@@ -14,7 +14,7 @@
         <th>Description</th>
         <th>Price Range</th>
         <th>Status</th>
-        <th style="width: 170px">Operations</th>
+        <th style="width: 220px">Operations</th>
       </tr>
       </thead>
       <tbody>
@@ -28,7 +28,7 @@
         <td>
           <el-button type="warning" @click="setCafeToEdit(cafe)">Edit</el-button>
           <el-button type="danger" @click="removeCafe(cafe.cafeId)">
-            {{ cafe.status === 'INACTIVE' ? 'Unlock' : 'Lock' }}
+            {{ cafe.status === 'INACTIVE' ? 'Activate' : 'Deactivate' }}
           </el-button>
         </td>
       </tr>
@@ -225,7 +225,7 @@ const updateCafeDetails = async () => {
 
 // Toggle cafe status (Lock/Unlock)
 const removeCafe = async (id) => {
-  const action = cafes.value.find(cafe => cafe.cafeId === id).status === 'INACTIVE' ? 'Unlock' : 'Lock';
+  const action = cafes.value.find(cafe => cafe.cafeId === id).status === 'INACTIVE' ? 'Activate' : 'Deactivate';
   if (confirm(`Are you sure you want to ${action} this cafe?`)) {
     try {
       await toggleCafeStatusAPI(id);

@@ -3,7 +3,7 @@ import { instance } from '../api-instance-provider';
 // Hàm lấy danh sách tất cả người dùng
 export const getAllUsers = async () => {
     try {
-        const response = await instance.get('/admin/users', {
+        const response = await instance.get('/admin/user', {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('userToken')}`, // Gửi token trong header
             },
@@ -31,7 +31,7 @@ export const getUserById = async (id) => {
 // Hàm khoá hoặc mở khoá người dùng
 export const lockOrUnLockUser = async (id) => {
     try {
-        const response = await instance.put(`/admin/users/${id}/lockOrUnLock`, null, {
+        const response = await instance.put(`/admin/user/${id}/lockOrUnLock`, null, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('userToken')}`, // Gửi token trong header
             },

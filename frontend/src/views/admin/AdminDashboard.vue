@@ -10,19 +10,20 @@
           <li @click="navigateTo('Home')">
             <el-icon><House /></el-icon> Home
           </li>
-          <li @click="navigateTo('Users')">
-            <el-icon><User /></el-icon> Users
-          </li>
-          <li @click="navigateTo('Settings')">
-            <el-icon><Setting /></el-icon> Settings
-          </li>
           <li @click="navigateTo('Cafes')">
             <el-icon><HomeFilled /></el-icon> Manage Cafes
           </li>
           <li @click="navigateTo('Users')">
-            <el-icon><HomeFilled /></el-icon> Manage Users
+            <el-icon><User /></el-icon> Manage Users
           </li>
         </ul>
+
+        <!-- Logout button at the bottom -->
+        <div class="logout-button">
+          <el-button type="danger" @click="logout" :icon="SwitchButton">
+            Logout
+          </el-button>
+        </div>
       </nav>
     </aside>
 
@@ -34,13 +35,19 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { House, User, Setting, HomeFilled } from '@element-plus/icons-vue'; // Nhập các icon cần thiết
+import {House, HomeFilled, User, SwitchButton} from '@element-plus/icons-vue'; // Nhập các icon cần thiết
 
 const router = useRouter();
 
 const navigateTo = (component) => {
   // Điều hướng đến trang tương ứng với tên thành phần
   router.push(`/admin/${component.toLowerCase()}`);
+};
+
+const logout = () => {
+  // Clear token (or any other authentication logic)
+  localStorage.clear(); // Assuming the token is stored in localStorage
+  router.push('/'); // Redirect to login page
 };
 </script>
 
@@ -104,6 +111,13 @@ const navigateTo = (component) => {
 
 .sidebar el-icon {
   margin-right: 12px; /* Consistent spacing between icon and text */
+}
+
+.logout-button {
+  margin-top: auto;
+  position: absolute;
+  bottom: 65px;
+  left: 65px;
 }
 
 .main-content {

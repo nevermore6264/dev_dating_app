@@ -3,9 +3,8 @@
     <h1>Manager Cafes</h1>
 
     <!-- Nút mở modal để thêm quán cafe -->
-    <el-button type="primary" @click="showAddModal">Add New Cafe</el-button>
+    <el-button type="primary" @click="showAddModal" class="btn-add-new">Add New Cafe</el-button>
 
-    <h2>Các Quán Cafe</h2>
     <table>
       <thead>
       <tr>
@@ -33,7 +32,7 @@
     </table>
 
     <!-- Dialog cho thêm quán cafe -->
-    <el-dialog v-model:visible="isAddModalVisible" title="Thêm Quán Cafe">
+    <el-dialog v-model="isAddModalVisible" title="Add new Cafe">
       <div>
         <el-input v-model="newCafe.name" placeholder="Nhập tên quán cafe"></el-input>
         <el-input v-model="newCafe.address" placeholder="Nhập địa chỉ"></el-input>
@@ -49,7 +48,7 @@
     </el-dialog>
 
     <!-- Dialog cho cập nhật quán cafe -->
-    <el-dialog v-model:visible="isEditModalVisible" title="Cập Nhật Quán Cafe">
+    <el-dialog v-model="isEditModalVisible" title="Cập Nhật Quán Cafe">
       <div>
         <el-input v-model="cafeToEdit.name" placeholder="Tên quán cafe"></el-input>
         <el-input v-model="cafeToEdit.address" placeholder="Địa chỉ"></el-input>
@@ -67,9 +66,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { ElMessage } from 'element-plus';
-import { getAllCafes, createCafe, updateCafe as updateCafeAPI, deleteCafe as deleteCafeAPI } from '@/services/admin/admin-cafe-service';
+import {onMounted, ref} from 'vue';
+import {ElMessage} from 'element-plus';
+import {
+  createCafe,
+  deleteCafe as deleteCafeAPI,
+  getAllCafes,
+  updateCafe as updateCafeAPI
+} from '@/services/admin/admin-cafe-service';
 
 const cafes = ref([]);
 const newCafe = ref({
@@ -112,7 +116,7 @@ const addCafe = async () => {
   }
   try {
     await createCafe(newCafe.value);
-    newCafe.value = { name: '', address: '', bio: '', priceRangeMin: null, priceRangeMax: null };
+    newCafe.value = {name: '', address: '', bio: '', priceRangeMin: null, priceRangeMax: null};
     isAddModalVisible.value = false;
     await fetchCafes();
     ElMessage.success('Thêm quán cafe thành công!');
@@ -123,7 +127,7 @@ const addCafe = async () => {
 
 // Set cafe to edit
 const setCafeToEdit = (cafe) => {
-  cafeToEdit.value = { ...cafe };
+  cafeToEdit.value = {...cafe};
   isEditModalVisible.value = true;
 };
 
@@ -160,6 +164,10 @@ const removeCafe = async (id) => {
 const formatCurrency = (amount) => {
   return amount.toLocaleString('vi-VN') + ' VNĐ';
 };
+
+const showAddModal = () => {
+  isAddModalVisible.value = true;
+};
 </script>
 
 <style scoped>
@@ -185,11 +193,12 @@ button {
 
 button:nth-child(1) {
   background-color: #ff4b4b;
+  margin-right: 10px;
+
 }
 
 button:nth-child(2) {
   background-color: #666666;
-  margin-left: 10px;
 }
 
 
@@ -220,4 +229,99 @@ table tr:nth-child(even) {
 table tr:hover {
   background-color: #f1f1f1;
 }
+
+.btn-add-new {
+  background-color: #007ecb !important;
+}
+
+/* Custom styling for the modal */
+.el-dialog {
+  width: 500px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for the modal content */
+.el-dialog__body {
+  padding: 20px;
+  background-color: #fafafa;
+}
+
+/* Input field styling */
+.el-input {
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.el-input input {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  transition: border-color 0.3s ease;
+}
+
+.el-input input:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+/* Customizing buttons in the modal footer */
+.dialog-footer {
+  text-align: right;
+  padding: 10px 20px;
+  background-color: #f9f9f9;
+  border-top: 1px solid #ebebeb;
+}
+
+.el-button {
+  border-radius: 6px;
+  padding: 8px 20px;
+  font-size: 14px;
+}
+
+.el-button--primary {
+  background-color: #3498db;
+  border-color: #3498db;
+}
+
+.el-button--primary:hover {
+  background-color: #2980b9;
+}
+
+.el-button--primary:focus {
+  outline: none;
+}
+
+.el-button--danger {
+  background-color: #e74c3c;
+  border-color: #e74c3c;
+}
+
+.el-button--danger:hover {
+  background-color: #c0392b;
+}
+
+/* Hover and focus effects */
+.el-button:hover {
+  background-color: #2980b9;
+  color: white;
+}
+
+.el-dialog__header {
+  background-color: #3498db;
+  color: white;
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.el-dialog__title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.el-button + .el-button {
+  margin-left: 10px;
+}
+
 </style>

@@ -13,7 +13,7 @@
         <th>Address</th>
         <th>Bio</th>
         <th>Price Fluctuation</th>
-        <th>Thao Tác</th>
+        <th>Action</th>
       </tr>
       </thead>
       <tbody>
@@ -24,7 +24,7 @@
         <td>{{ cafe.bio }}</td>
         <td>{{ formatCurrency(cafe.priceRangeMin * 1000) }} - {{ formatCurrency(cafe.priceRangeMax * 1000) }}</td>
         <td>
-          <el-button type="warning" @click="setCafeToEdit(cafe.cafeId)">Edit</el-button>
+          <el-button type="warning" @click="setCafeToEdit(cafe)">Edit</el-button>
           <el-button type="danger" @click="removeCafe(cafe.cafeId)">Delete</el-button>
         </td>
       </tr>
@@ -87,26 +87,26 @@
         <el-form label-position="top">
           <!-- Cafe Name -->
           <el-form-item label="Cafe Name (*)">
-            <el-input v-model="newCafe.name" placeholder="Enter cafe name"></el-input>
+            <el-input v-model="cafeToEdit.name" placeholder="Enter cafe name"></el-input>
           </el-form-item>
 
           <!-- Address -->
           <el-form-item label="Address (*)">
-            <el-input v-model="newCafe.address" placeholder="Enter address"></el-input>
+            <el-input v-model="cafeToEdit.address" placeholder="Enter address"></el-input>
           </el-form-item>
 
           <!-- Bio -->
           <el-form-item label="Description">
-            <el-input v-model="newCafe.bio" type="textarea" placeholder="Enter description"></el-input>
+            <el-input v-model="cafeToEdit.bio" type="textarea" placeholder="Enter description"></el-input>
           </el-form-item>
 
           <!-- Price Range -->
           <el-form-item label="Price Range (Min)">
-            <el-input v-model="newCafe.priceRangeMin" type="number" placeholder="Minimum price"></el-input>
+            <el-input v-model="cafeToEdit.priceRangeMin" type="number" placeholder="Minimum price"></el-input>
           </el-form-item>
 
           <el-form-item label="Price Range (Max)">
-            <el-input v-model="newCafe.priceRangeMax" type="number" placeholder="Maximum price"></el-input>
+            <el-input v-model="cafeToEdit.priceRangeMax" type="number" placeholder="Maximum price"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -206,9 +206,16 @@ const updateCafeDetails = async () => {
     await updateCafeAPI(cafeToEdit.value.cafeId, cafeToEdit.value);
     isEditModalVisible.value = false;
     await fetchCafes();
-    ElMessage.success('Cập nhật quán cafe thành công!');
-  } catch (error) {
-    console.error(error);
+    ElNotification({
+      title: 'Success',
+      message: 'Update cafe successfully',
+      type: 'success',
+    })  } catch (error) {
+    ElNotification({
+      title: 'Error',
+      message: error?.message,
+      type: 'error',
+    })
   }
 };
 

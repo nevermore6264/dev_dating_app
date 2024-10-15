@@ -19,47 +19,96 @@ const saveTokenAndUserInfo = (token, email, role) => {
 };
 
 // Phương thức xử lý đăng nhập
+import { ElNotification } from 'element-plus';
+
 export const loginUser = async (email, password) => {
   try {
     // Gửi yêu cầu đăng nhập với email và password
     const response = await instance.post(Login.ORIGIN, { email, password });
+    const { status, message, data } = response.data;
 
-    // Nếu trạng thái từ server trả về là 200 (đăng nhập thành công)
-    if (response.data.status === 200) {
-      const resultMessage = response.data.message;
-      const data = response?.data?.data;
-      const token = data?.token; // Token sẽ chứa trong `data`
-      const role = data?.role;
-      console.log("🚀 ~ loginUser ~ response.data.data:", response.data.data);
+    // Kiểm tra nếu đăng nhập thành công
+    if (status === 200) {
+      const { token, role } = data;
 
       // Lưu token và thông tin user vào localStorage
       saveTokenAndUserInfo(token, email, role);
+
+      // Xử lý theo vai trò của người dùng
       if (role === "Admin") {
-        alert("Admin login successful!");
+        ElNotification({
+          title: 'Success',
+          message: 'Admin login successful!',
+          type: 'success',
+        });
         return "Admin login"; // Điều hướng tới layout admin
-      } else { // Role === User
-        // Xử lý các trường hợp đăng nhập khác nhau
-        if (resultMessage.startsWith("First login")) {
-          alert("First login detected, please change your password.");
-          return "First login"; // Điều hướng tới trang đổi mật khẩu
-        } else if (resultMessage.startsWith("Second login")) {
-          alert("Second login detected, please update your profile.");
-          return "Second login"; // Điều hướng tới trang cập nhật hồ sơ
-        } else if (resultMessage === "Login successful") {
-          alert("Login successful!");
-          return "Login successful"; // Điều hướng tới trang homePage
-        } else {
-          alert("Unknown response from server.");
-          return "Unknown"; // Xử lý nếu thông báo không rõ ràng
-        }
       }
-    } else {
-      alert(response.data.message || "Đăng nhập thất bại");
-      return "Failed"; // Xử lý khi đăng nhập thất bại
+
+      // Xử lý trường hợp đăng nhập cho User
+      if (message.startsWith("First login")) {
+        ElNotification({
+          title: 'Notice',
+          message: 'First login detected, please change your password.',
+          type: 'warning',
+        });
+        return "First login"; // Điều hướng tới trang đổi mật khẩu
+      }
+
+      if (message.startsWith("Second login")) {
+        ElNotification({
+          title: 'Notice',
+          message: 'Second login detected, please update your profile.',
+          type: 'warning',
+        });
+        return "Second login"; // Điều hướng tới trang cập nhật hồ sơ
+      }
+
+      if (message === "Login successful") {
+        ElNotification({
+          title: 'Success',
+          message: 'Login successful!',
+          type: 'success',
+        });
+        return "Login successful"; // Điều hướng tới trang homePage
+      }
+
+      ElNotification({
+        title: 'Unknown',
+        message: 'Unknown response from server.',
+        type: 'error',
+      });
+      return "Unknown"; // Trả về nếu thông báo không rõ ràng
     }
+
+    // Nếu đăng nhập thất bại
+    ElNotification({
+      title: 'Error',
+      message: message || 'Đăng nhập thất bại',
+      type: 'error',
+    });
+    return "Failed"; // Trả về nếu đăng nhập thất bại
+
   } catch (error) {
-    // Xử lý lỗi phát sinh trong quá trình request
-    alert("Login failed! Please check your email and password.");
-    return "Error"; // Trả về nếu có lỗi
+    const status = error?.response?.status;
+    const errorMessage = error?.response?.data?.message || "Failed to login";
+
+    // Xử lý lỗi từ server (ví dụ: 403 Forbidden)
+    if (status === 403) {
+      ElNotification({
+        title: 'Error',
+        message: errorMessage,
+        type: 'error',
+      });
+      return "Error"; // Trả về nếu lỗi từ server
+    }
+
+    // Xử lý lỗi chung trong quá trình request
+    ElNotification({
+      title: 'Error',
+      message: 'Login failed! Please check your email and password.',
+      type: 'error',
+    });
+    return "Error"; // Trả về nếu có lỗi khác
   }
 };
+

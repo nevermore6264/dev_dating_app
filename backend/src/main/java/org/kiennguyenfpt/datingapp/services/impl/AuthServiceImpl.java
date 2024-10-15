@@ -88,6 +88,14 @@ public class AuthServiceImpl implements AuthService {
     public ResponseEntity login(String email, String password) {
         CommonResponse response = new CommonResponse<>();
         User user = userService.findByEmail(email);
+        String message;
+
+        if (user.getStatus() == UserStatus.INACTIVE) {
+            message = "User has been locked";
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setMessage(message);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        }
         if (user != null && passwordEncoder.matches(password, user.getPasswordHash())) {
             String token = jwtUtil.generateToken(email, user.getUserId());
             logger.info("User logged in: {}", email);
@@ -96,7 +104,6 @@ public class AuthServiceImpl implements AuthService {
             userService.save(user);
 
             // Tạo thông điệp dựa trên số lần đăng nhập
-            String message;
             if (user.isFirstLogin()) {
                 user.setFirstLogin(false);
                 message = "First login";

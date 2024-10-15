@@ -1,6 +1,20 @@
 <template>
   <div>
-    <h1>Manage Users</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h1>Manage Users</h1>
+
+      <!-- Search bar -->
+      <el-input
+          v-model="searchQuery"
+          placeholder="Search by Email, Phone"
+          style="width: 300px;"
+          @input="filterUsers"
+      >
+        <template #prepend>
+          <el-button :icon="Search" />
+        </template>
+      </el-input>
+    </div>
 
     <table>
       <thead>
@@ -14,7 +28,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-for="user in users" :key="user.userId">
+      <tr v-for="user in filteredUsers" :key="user.userId">
         <td>{{ user.userId }}</td>
         <td>{{ user.email }}</td>
         <td>{{ user.phone ? user.phone : 'Not set' }}</td>
@@ -32,13 +46,25 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { ElMessage, ElNotification } from 'element-plus';
 import {
   getAllUsers,
   lockOrUnLockUser as lockOrUnLockUserAPI
 } from '@/services/admin/admin-user-service';
+import {Search} from "@element-plus/icons-vue";
+
 const users = ref([]);
+const searchQuery = ref('');
+
+// Lọc danh sách người dùng dựa trên tìm kiếm
+const filteredUsers = computed(() => {
+  const query = searchQuery.value.toLowerCase();
+  return users.value.filter(user =>
+      user.email.toLowerCase().includes(query) ||
+      user.phone?.toLowerCase().includes(query)
+  );
+});
 
 // Load users when component is mounted
 onMounted(async () => {

@@ -101,19 +101,30 @@ const routes = [
     name: 'AdminDashboard',
     component: AdminDashboard,
     children: [
-      {path: '', component: Home},  // Default to Home
-      {path: 'home', component: Home}, // Explicit Home route
+      {
+        path: '',
+        component: Home,
+        // meta: { breadcrumb: 'Home' }
+      },  // Default to Home
+      {
+        path: 'home',
+        component: Home,
+        meta: { breadcrumb: 'Home' }
+      }, // Explicit Home route
       {
         path: 'cafes',
-        component: ManageCafes, // Đường dẫn đến component quản lý quán cafe
+        component: ManageCafes, // Đường dẫn đến component quản lý quán cafe,
+        meta: { breadcrumb: 'Manage Cafes' }
       },
       {
         path: 'users',
-        component: ManageUsers, // Đường dẫn đến component quản lý users
+        component: ManageUsers, // Đường dẫn đến component quản lý users,
+        meta: { breadcrumb: 'Manage Users' }
       },
       {
         path: 'contacts',
-        component: ManageContacts, // Đường dẫn đến component quản lý users
+        component: ManageContacts, // Đường dẫn đến component quản lý users,
+        meta: { breadcrumb: 'Manage Contacts' }
       },
     ],
   }];

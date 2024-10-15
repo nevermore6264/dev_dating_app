@@ -31,6 +31,7 @@
     </aside>
 
     <main class="main-content">
+      <Breadcrumb />
       <router-view /> <!-- Dùng router-view để hiển thị các thành phần con -->
     </main>
   </div>
@@ -39,6 +40,7 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import {House, HomeFilled, User, SwitchButton, ChatLineRound} from '@element-plus/icons-vue'; // Nhập các icon cần thiết
+import Breadcrumb from "@/views/admin/Breadcrumb.vue"; // Import Footer
 
 const router = useRouter();
 

@@ -1,11 +1,15 @@
 package org.kiennguyenfpt.datingapp.controllers;
 
 import org.kiennguyenfpt.datingapp.entities.Photo;
+import org.kiennguyenfpt.datingapp.repositories.UserRepository;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.services.PhotoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 
@@ -14,11 +18,12 @@ import java.util.List;
 @CrossOrigin
 
 public class PhotoController {
-
     private final PhotoService photoService;
+    private final UserRepository userRepository;
 
-    public PhotoController(PhotoService photoService) {
+    public PhotoController(PhotoService photoService, UserRepository userRepository) {
         this.photoService = photoService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/list")
@@ -37,13 +42,33 @@ public class PhotoController {
         }
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<CommonResponse<String>> deletePhoto(@RequestParam Long photoId) {
+    @DeleteMapping("/{photoId}")
+    public ResponseEntity<CommonResponse<String>> deletePhoto(@PathVariable Long photoId) {
         CommonResponse<String> response = new CommonResponse<>();
         try {
-            photoService.deletePhoto(photoId);
-            response.setStatus(HttpStatus.OK.value());
-            response.setMessage("Photo deleted successfully.");
+            // Lấy thông tin user từ JWT token (Authentication)
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();  // Username từ JWT
+            Long userId = userRepository.findByEmail(username).getUserId();  // Lấy userId từ repository qua username (email)
+
+            // Kiểm tra xem ảnh có thuộc về người dùng hiện tại hay không
+            Photo photo = photoService.findById(photoId);
+            // Cần kiểm tra cả 3 điều kiện: photo không null, profile không null, và userId trùng khớp
+            if (photo == null || photo.getProfile() == null || photo.getProfile().getUser().getUserId() != userId) {
+                // Trả về thông báo nếu người dùng không có quyền xóa ảnh này
+                response.setStatus(HttpStatus.FORBIDDEN.value());
+                response.setMessage("You do not have permission to delete this photo.");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+            }
+
+            boolean deleted = photoService.deletePhoto(photoId);
+            if (deleted) {
+                response.setStatus(HttpStatus.OK.value());
+                response.setMessage("Photo deleted successfully.");
+            } else {
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+                response.setMessage("Photo not found.");
+            }
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -52,3 +77,4 @@ public class PhotoController {
         }
     }
 }
+

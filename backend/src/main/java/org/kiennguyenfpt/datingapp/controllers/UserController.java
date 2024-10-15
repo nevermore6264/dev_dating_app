@@ -14,9 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.util.*;
 
 @RestController
 @RequestMapping("api/v1/users")
@@ -50,6 +49,9 @@ public class UserController {
             User user = userService.updateProfile(email, updateProfileRequest, files);
 
             if (user != null) {
+                List<String> imageUrls = photoService.uploadPhotos(email, files);
+                updateProfileWithImages(user, imageUrls); // Cập nhật avatar ở đây
+
                 Map<String, Object> responseData = createResponseData(user);
                 response.setStatus(HttpStatus.OK.value());
                 response.setMessage("Profile updated successfully.");
@@ -76,10 +78,39 @@ public class UserController {
             @RequestPart("updateProfileRequest") String updateProfileRequestJson,
             @RequestPart("files") List<MultipartFile> files,
             @RequestHeader("Authorization") String authorizationHeader) {
-        return handleUpdateProfile(updateProfileRequestJson, files, authorizationHeader);
+        CommonResponse<Map<String, Object>> response = new CommonResponse<>();
+
+        try {
+            // Parse the JSON string to UpdateProfileRequest object
+            UpdateProfileRequest updateProfileRequest = new ObjectMapper().readValue(updateProfileRequestJson, UpdateProfileRequest.class);
+            String email = validateJwt(authorizationHeader, response);
+            if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+
+            User user = userService.findByEmail(email);
+            if (user == null || user.getProfile() == null) {
+                // Nếu người dùng chưa cập nhật hồ sơ lần đầu, trả về 404
+                return createErrorResponseMap(response, HttpStatus.NOT_FOUND, "User has not updated profile yet. Please complete your profile first.");
+            }
+
+            // Tiến hành cập nhật hồ sơ
+            user = userService.updateProfile(email, updateProfileRequest, files);
+
+            if (user != null) {
+                Map<String, Object> responseData = createResponseData(user);
+                response.setStatus(HttpStatus.OK.value());
+                response.setMessage("Profile updated successfully.");
+                response.setData(responseData);
+                return ResponseEntity.ok(response);
+            } else {
+                return createErrorResponseMap(response, HttpStatus.NOT_FOUND, "User not found.");
+            }
+        } catch (Exception e) {
+            return createErrorResponseMap(response, HttpStatus.INTERNAL_SERVER_ERROR, "Error updating profile: " + e.getMessage());
+        }
     }
 
      */
+
 
 
     @PostMapping("/update-avatar")
@@ -157,13 +188,36 @@ public class UserController {
 
     private void updateProfileWithImages(User user, List<String> imageUrls) {
         if (!imageUrls.isEmpty()) {
-            user.getProfile().setAvatar(imageUrls.get(0));
+            // Gán ảnh đầu tiên làm avatar
+            String newAvatarUrl = imageUrls.get(0);
+            user.getProfile().setAvatar(newAvatarUrl);
+
+            // Lấy danh sách ảnh hiện có cho profile
+            List<Photo> existingPhotos = photoService.getPhotos(user.getProfile().getProfileId());
+
+            // Sử dụng Set để tránh lặp lại
+            Set<String> existingPhotoUrls = new HashSet<>();
+            for (Photo photo : existingPhotos) {
+                existingPhotoUrls.add(photo.getUrl());
+            }
+
+            // Danh sách để lưu trữ ảnh mới không bao gồm avatar và không bị lặp
+            List<Photo> newPhotos = new ArrayList<>();
+            for (String imageUrl : imageUrls) {
+                // Chỉ thêm ảnh nếu không phải là avatar và chưa tồn tại trong danh sách hiện có
+                if (!imageUrl.equals(newAvatarUrl) && !existingPhotoUrls.contains(imageUrl)) {
+                    newPhotos.add(new Photo(0, user.getProfile(), imageUrl, new Timestamp(System.currentTimeMillis())));
+                }
+            }
+
+            // Thêm ảnh mới vào danh sách hiện có
+            existingPhotos.addAll(newPhotos);
+            user.getProfile().setPhotos(existingPhotos);
         }
-        List<Photo> photos = photoService.getPhotos(user.getProfile().getProfileId());
-        for (Photo photo : photos) {
-            photo.setProfile(user.getProfile()); // Ensure the profile field is set
-        }
-        user.getProfile().setPhotos(photos);
-        userService.save(user); // Save the user to persist changes
+        userService.save(user); // Lưu người dùng để lưu các thay đổi
     }
+
+
+
 }
+

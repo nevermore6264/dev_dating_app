@@ -36,21 +36,25 @@ public class PhotoServiceImpl implements PhotoService {
         if (user == null) {
             throw new IllegalArgumentException("User not found");
         }
+
         for (MultipartFile file : files) {
             String fileName = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
             Blob blob = bucket.create(fileName, file.getBytes(), file.getContentType());
             String imageUrl = blob.getMediaLink();
-            imageUrls.add(imageUrl);
 
-            // Save photo to the database
-            Photo photo = new Photo();
-            photo.setUrl(imageUrl);
-            photo.setProfile(user.getProfile()); // Ensure the profile field is set
-            photoRepository.save(photo);
+            // Kiểm tra xem ảnh đã tồn tại trong DB chưa
+            if (photoRepository.findByUrl(imageUrl) == null) {
+                Photo photo = new Photo();
+                photo.setUrl(imageUrl);
+                photo.setProfile(user.getProfile()); // Đảm bảo trường profile được thiết lập
+                photoRepository.save(photo);
+                imageUrls.add(imageUrl);
+            }
         }
 
         return imageUrls;
     }
+
 
     @Override
     public void savePhoto(Photo photo) {
@@ -63,7 +67,15 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public void deletePhoto(Long photoId) {
-        photoRepository.deleteById(photoId);
+    public boolean deletePhoto(Long photoId) {
+        if (photoRepository.existsById(photoId)) {
+            photoRepository.deleteById(photoId);
+            return true;
+        }
+        return false;
+    }
+    @Override
+    public Photo findById(Long photoId) {
+        return photoRepository.findById(photoId).orElse(null);  // Trả về null nếu không tìm thấy ảnh
     }
 }

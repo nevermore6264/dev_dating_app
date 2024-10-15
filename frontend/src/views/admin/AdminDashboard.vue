@@ -111,6 +111,7 @@ const logout = () => {
 .sidebar nav li:hover {
   background-color: #3a4a5a; /* Hover effect for better visibility */
   text-decoration: none;
+  font-weight: bold;
 }
 
 .sidebar nav li.active {

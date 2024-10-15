@@ -1,14 +1,14 @@
 <template>
   <div>
     <div style="display: flex; justify-content: space-between; align-items: center;">
-      <h1>Manage Users</h1>
+      <h1>Manage Matches</h1>
 
       <!-- Search bar -->
       <el-input
           v-model="searchQuery"
-          placeholder="Search by Email, Phone"
+          placeholder="Search by User1 ID or User2 ID"
           style="width: 300px;"
-          @input="filterUsers"
+          @input="filterMatches"
       >
         <template #prepend>
           <el-button :icon="Search" />
@@ -19,20 +19,18 @@
     <table>
       <thead>
       <tr>
-        <th>ID</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>Status</th>
-        <th>Role</th>
+        <th>Match ID</th>
+        <th>User 1 ID</th>
+        <th>User 2 ID</th>
+        <th>Created At</th>
       </tr>
       </thead>
       <tbody>
-      <tr v-for="user in filteredUsers" :key="user.userId">
-        <td>{{ user.userId }}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.phone ? user.phone : 'Not set' }}</td>
-        <td>{{ user.status }}</td>
-        <td>{{ user?.role?.roleName }}</td>
+      <tr v-for="match in filteredMatches" :key="match.match_id">
+        <td>{{ match.match_id }}</td>
+        <td>{{ match.user1_id }}</td>
+        <td>{{ match.user2_id }}</td>
+        <td>{{ match.created_at }}</td>
       </tr>
       </tbody>
     </table>
@@ -41,35 +39,33 @@
 
 <script setup>
 import { onMounted, ref, computed } from 'vue';
-import { ElMessage, ElNotification } from 'element-plus';
-import {
-  getAllMatches
-} from '@/services/admin/admin-match-service';
-import {Search} from "@element-plus/icons-vue";
+import { ElMessage } from 'element-plus';
+import { getAllMatches } from '@/services/admin/admin-match-service';
+import { Search } from "@element-plus/icons-vue";
 
-const users = ref([]);
+const matches = ref([]);
 const searchQuery = ref('');
 
-// Lọc danh sách người dùng dựa trên tìm kiếm
-const filteredUsers = computed(() => {
+// Filter matches based on search query
+const filteredMatches = computed(() => {
   const query = searchQuery.value.toLowerCase();
-  return users.value.filter(user =>
-      user.email.toLowerCase().includes(query) ||
-      user.phone?.toLowerCase().includes(query)
+  return matches.value.filter(match =>
+      match.user1_id.toString().includes(query) ||
+      match.user2_id.toString().includes(query)
   );
 });
 
-// Load users when component is mounted
+// Fetch matches when component is mounted
 onMounted(async () => {
-  await fetchUsers();
+  await fetchMatches();
 });
 
-// Fetch users
-const fetchUsers = async () => {
+// Fetch all matches
+const fetchMatches = async () => {
   try {
-    users.value = await getAllMatches();
+    matches.value = await getAllMatches();
   } catch (error) {
-    ElMessage.error('Failed to fetch users. Please try again later.');
+    ElMessage.error('Failed to fetch matches. Please try again later.');
   }
 };
 </script>

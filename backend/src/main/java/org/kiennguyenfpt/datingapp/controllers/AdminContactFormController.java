@@ -1,5 +1,6 @@
 package org.kiennguyenfpt.datingapp.controllers;
 
+import org.kiennguyenfpt.datingapp.dtos.requests.ContactFormRequest;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.services.ContactFormService;
 import org.springframework.http.HttpStatus;
@@ -9,8 +10,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -41,10 +42,10 @@ public class AdminContactFormController {
     }
 
     @PutMapping("/{id}/reply")
-    public ResponseEntity replyToContactForm(@PathVariable Long id, @RequestParam String replyMessage) { // Add a replyMessage
+    public ResponseEntity replyToContactForm(@PathVariable Long id, @RequestBody ContactFormRequest contactFormRequest) { // Add a replyMessage
         CommonResponse response = new CommonResponse<>();
         try {
-            int result = contactFormService.replyToContactForm(id, replyMessage); // Updated service method
+            int result = contactFormService.replyToContactForm(id, contactFormRequest.getReplyMessage()); // Updated service method
             if (result == 1) {
                 response.setStatus(HttpStatus.OK.value());
                 response.setMessage("Reply sent successfully!");

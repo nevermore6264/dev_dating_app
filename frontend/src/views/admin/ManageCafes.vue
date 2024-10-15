@@ -2,8 +2,26 @@
   <div>
     <h1>Manage Cafes</h1>
 
-    <!-- Button to open modal for adding a new cafe -->
-    <el-button type="success" @click="showAddModal">Add New Cafe</el-button>
+    <!-- Row chứa nút Add New Cafe và ô tìm kiếm -->
+    <el-row class="mb-4">
+      <el-col :span="18">
+        <!-- Nút thêm quán cafe -->
+        <el-button type="success" @click="showAddModal">Add New Cafe</el-button>
+      </el-col>
+
+      <el-col :span="6">
+        <el-input
+            v-model="searchQuery"
+            placeholder="Search by Cafe Name, Address or Description"
+            clearable
+            @input="filterCafes"
+        >
+          <template #prepend>
+            <el-button :icon="Search" />
+          </template>
+        </el-input>
+      </el-col>
+    </el-row>
 
     <table>
       <thead>
@@ -18,7 +36,8 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-for="cafe in cafes" :key="cafe.cafeId">
+      <!-- Lặp qua danh sách cafes đã được lọc -->
+      <tr v-for="cafe in filteredCafes" :key="cafe.cafeId">
         <td>{{ cafe.cafeId }}</td>
         <td>{{ cafe.name }}</td>
         <td>{{ cafe.address }}</td>
@@ -122,16 +141,20 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from 'vue';
-import {ElMessage, ElNotification} from 'element-plus';
+import { onMounted, ref } from 'vue';
+import { ElMessage, ElNotification } from 'element-plus';
 import {
   createCafe,
   getAllCafes,
   lockOrUnLock as toggleCafeStatusAPI,
   updateCafe as updateCafeAPI,
 } from '@/services/admin/admin-cafe-service';
+import {Search} from "@element-plus/icons-vue";
 
 const cafes = ref([]);
+const searchQuery = ref(''); // Tạo biến lưu từ khóa tìm kiếm
+const filteredCafes = ref([]); // Danh sách cafes sau khi lọc
+
 const newCafe = ref({
   name: '',
   address: '',
@@ -139,6 +162,7 @@ const newCafe = ref({
   priceRangeMin: null,
   priceRangeMax: null,
 });
+
 const cafeToEdit = ref({
   name: '',
   address: '',
@@ -159,9 +183,22 @@ onMounted(async () => {
 const fetchCafes = async () => {
   try {
     cafes.value = await getAllCafes();
+    filteredCafes.value = cafes.value; // Gán giá trị ban đầu cho danh sách đã lọc
   } catch (error) {
     ElMessage.error('Failed to fetch cafes. Please try again later.');
   }
+};
+
+// Hàm lọc cafes dựa trên từ khóa tìm kiếm
+const filterCafes = () => {
+  const query = searchQuery.value.toLowerCase();
+  filteredCafes.value = cafes.value.filter(cafe => {
+    return (
+        cafe.name.toLowerCase().includes(query) ||
+        cafe.address.toLowerCase().includes(query) ||
+        cafe.bio.toLowerCase().includes(query)
+    );
+  });
 };
 
 // Add new cafe

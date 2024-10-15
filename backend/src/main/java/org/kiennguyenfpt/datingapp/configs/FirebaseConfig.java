@@ -1,15 +1,11 @@
 package org.kiennguyenfpt.datingapp.configs;
 
-import com.google.firebase.FirebaseApp;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.io.IOException;
 
 @Configuration
 public class FirebaseConfig {
-    @Bean
-    public FirebaseApp initializeFirebase() throws IOException {
+//    @Bean
+//    public FirebaseApp initializeFirebase() throws IOException {
 //        InputStream serviceAccount =
 //                getClass()
 //                        .getClassLoader()
@@ -22,6 +18,6 @@ public class FirebaseConfig {
 //                .build();
 //
 //        return FirebaseApp.initializeApp(options);
-    }
+//    }
 
 }

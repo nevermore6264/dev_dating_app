@@ -355,7 +355,7 @@ async loadProfiles() {
 /* Main Layout */
 .main-layout {
   display: flex;
-  height: 100vh;
+  height: calc(100vh - 56px);
 }
 
 /* Sidebar */

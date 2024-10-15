@@ -208,7 +208,7 @@ export default {
 }
 
 .profile {
-  margin-top: 260px;
+  margin-top: 200px;
 }
 
 .material-icons {
@@ -255,9 +255,5 @@ export default {
 
 .dropdown-reverse .dropdown-item:hover {
   background-color: rgba(255, 255, 255, 0.1);
-}
-
-.menu-item:last-child {
-  margin-bottom: 20px;
 }
 </style>

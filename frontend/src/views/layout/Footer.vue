@@ -2,7 +2,7 @@
   <footer class="bg-secondary py-3">
     <div class="container text-center">
       <p class="mb-0 text-light">
-        © {{ currentYear }} All rights reserved.
+        © {{ currentYear }} LoveBell. – Made with ❤ in Ho Chi Minh City
       </p>
     </div>
   </footer>

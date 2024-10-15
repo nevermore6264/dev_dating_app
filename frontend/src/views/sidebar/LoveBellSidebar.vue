@@ -248,7 +248,7 @@ export default {
   position: absolute;
   transform: translateY(-125%); /* Thả lên trên */
   background-color: #fff;
-  width: 17%;
+  width: 20%;
   list-style-type: none;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 20px;

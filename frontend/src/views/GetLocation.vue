@@ -11,12 +11,17 @@
         <button class="emergency-button" @click="getLocation">Get Location</button>
       </div>
       <p v-if="location">{{ location }}</p> <!-- Hiển thị vị trí -->
+
+      <!-- Thêm bản đồ -->
+      <div id="map" class="map" v-if="latitude && longitude"></div>
     </div>
   </div>
 </template>
 
 <script>
 import LoveBellSidebar from "@/views/sidebar/LoveBellSidebar.vue";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 export default {
   components: {
@@ -25,6 +30,10 @@ export default {
   data() {
     return {
       location: null, // Biến để lưu thông tin vị trí
+      latitude: null,  // Lưu trữ vĩ độ
+      longitude: null, // Lưu trữ kinh độ
+      map: null,      // Biến bản đồ
+      mapInitialized: false, // Biến trạng thái để kiểm tra xem bản đồ đã được khởi tạo chưa
     };
   },
   methods: {
@@ -43,9 +52,34 @@ export default {
       }
     },
     showPosition(position) {
-      const latitude = position.coords.latitude;
-      const longitude = position.coords.longitude;
-      this.location = `Latitude: ${latitude}, Longitude: ${longitude}`;
+      this.latitude = position.coords.latitude;
+      this.longitude = position.coords.longitude;
+      this.location = `Latitude: ${this.latitude}, Longitude: ${this.longitude}`;
+      this.$nextTick(() => {
+        this.initMap(); // Khởi tạo bản đồ khi có vị trí
+      });
+    },
+    initMap() {
+      if (this.mapInitialized) {
+        // Nếu bản đồ đã được khởi tạo, không cần khởi tạo lại
+        this.map.setView([this.latitude, this.longitude], 13);
+      } else {
+        // Khởi tạo bản đồ lần đầu tiên
+        this.map = L.map("map").setView([this.latitude, this.longitude], 13);
+
+        // Thêm lớp bản đồ từ OpenStreetMap
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19,
+          attribution: '© OpenStreetMap',
+        }).addTo(this.map);
+
+        // Thêm marker tại vị trí
+        L.marker([this.latitude, this.longitude]).addTo(this.map)
+            .bindPopup("You are here")
+            .openPopup();
+
+        this.mapInitialized = true; // Đánh dấu là bản đồ đã được khởi tạo
+      }
     },
     handleError(error) {
       switch (error.code) {
@@ -96,5 +130,11 @@ export default {
   cursor: pointer;
   color: #fff;
   font-weight: bold;
+}
+
+/* Styling cho bản đồ */
+.map {
+  height: 400px; /* Chiều cao của bản đồ */
+  margin-top: 20px;
 }
 </style>

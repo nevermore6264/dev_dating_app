@@ -10,7 +10,7 @@
         <h1>GET CURRENT LOCATION</h1>
         <button class="emergency-button" @click="getLocation">Get Location</button>
       </div>
-      <p v-if="location">{{ location }}</p> <!-- Hiển thị vị trí -->
+      <p class="mt-4" v-if="location">{{ location }}</p> <!-- Hiển thị vị trí -->
 
       <!-- Thêm bản đồ -->
       <div id="map" class="map" v-if="latitude && longitude"></div>

@@ -61,6 +61,14 @@
         </router-link>
       </li>
 
+      <!-- Link to Safety -->
+      <li class="menu-item">
+        <router-link to="/getLocation" class="menu-link">
+          <i class="material-icons">location_on</i>
+          <span>Location</span>
+        </router-link>
+      </li>
+
       <!-- Profile Link -->
       <li class="menu-item profile">
         <router-link to="/profile" class="menu-link">

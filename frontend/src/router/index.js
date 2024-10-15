@@ -20,6 +20,7 @@ import ManageCafes from "@/views/admin/ManageCafes.vue";
 import ManageUsers from "@/views/admin/ManageUsers.vue";
 import ManageContacts from "@/views/admin/ManageContacts.vue";
 import ManageMatches from "@/views/admin/ManageMatches.vue";
+import GetLocation from "@/views/GetLocation.vue";
 
 const routes = [
   {
@@ -91,6 +92,11 @@ const routes = [
     path: "/notification",
     name: "notification",
     component: NotificationPage,
+  },
+  {
+    path: "/getLocation",
+    name: "getLocation",
+    component: GetLocation,
   },
   {
     path: "/a",

@@ -216,7 +216,7 @@ export default {
 }
 
 .profile {
-  margin-top: 200px;
+  margin-top: 148px;
 }
 
 .material-icons {

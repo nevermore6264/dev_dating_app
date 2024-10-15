@@ -11,6 +11,7 @@
         <th>Phone</th>
         <th>Message</th>
         <th>Submission Date</th>
+        <th>Response Date</th>
         <th>Response Status</th>
         <th style="width: 120px">Operations</th>
       </tr>
@@ -23,6 +24,7 @@
         <td>{{ form.phoneNumber }}</td>
         <td>{{ form.message }}</td>
         <td>{{ formatSubmissionDate(form?.submissionDate) }}</td>
+        <td>{{ formatSubmissionDate(form?.responseDate) }}</td>
         <td>
           <el-tag :type="getTagType(form.responseStatus)">
             {{ form.responseStatus }}
@@ -122,7 +124,7 @@ const sendReply = async () => {
 
 // Format the submission date
 const formatSubmissionDate = (dateString) => {
-  if (!dateString) return 'Not available'; // Handle null or undefined dates
+  if (!dateString) return '-'; // Handle null or undefined dates
   return format(new Date(dateString), 'MMMM dd, yyyy HH:mm'); // Format: October 15, 2024 14:30
 };
 

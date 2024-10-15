@@ -95,7 +95,7 @@ p {
 
 .stat-icon {
   font-size: 3em;
-  margin-right: 20px;
+  margin-right: 0;
 }
 
 .stat-content h3 {

@@ -15,9 +15,12 @@ export const getAllContactForms = async () => {
 };
 
 // Hàm trả lời contact form
-export const replyToContactForm = async (id) => {
+export const replyToContactForm = async (id, replyMessage) => {
   try {
-    const response = await instance.put(`/admin/contact-form/${id}/reply`, null, {
+    const response = await instance.put(
+      `/admin/contact-form/${id}/reply`, {
+        replyMessage: replyMessage
+      }, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('userToken')}`, // Gửi token trong header
       },

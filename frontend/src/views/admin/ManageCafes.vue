@@ -114,8 +114,8 @@
         </el-form>
       </div>
       <span class="dialog-footer">
-        <el-button type="primary" @click="updateCafeDetails">Edit</el-button>
-        <el-button @click="isEditModalVisible = false">Cancel</el-button>
+        <el-button type="warning" @click="updateCafeDetails">Edit</el-button>
+        <el-button type="danger" @click="isEditModalVisible = false">Cancel</el-button>
       </span>
     </el-dialog>
   </div>

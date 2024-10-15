@@ -29,13 +29,34 @@
           </el-tag>
         </td>
         <td>
-          <el-button type="primary" @click="replyToForm(form.id)" :disabled="form.responseStatus === 'Replied'">
-            {{ form.responseStatus === 'Replied' ? 'Replied' : 'Reply' }}
+          <el-button
+              type="primary"
+              @click="openReplyModal(form)"
+              :disabled="form.responseStatus === 'Responded'">
+            {{ form.responseStatus === 'Responded' ? 'Replied' : 'Reply' }}
           </el-button>
         </td>
+
       </tr>
       </tbody>
     </table>
+
+    <!-- Modal for replying to contact form -->
+    <el-dialog title="Reply to Contact Form" v-model="isReplyModalVisible" width="600px">
+      <div>
+        <p><strong>Contact ID:</strong> {{ selectedForm?.id }}</p>
+        <p><strong>Message:</strong> {{ selectedForm?.message }}</p>
+        <el-form>
+          <el-form-item label="Reply (HTML allowed)">
+            <el-input type="textarea" v-model="replyMessage" rows="6" placeholder="Enter your HTML reply here"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <template #footer>
+        <el-button type="warning" @click="sendReply">Send Reply</el-button>
+        <el-button type="danger" @click="isReplyModalVisible = false">Cancel</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -49,6 +70,9 @@ import {
 import { format } from 'date-fns'; // Import date-fns format function
 
 const contactForms = ref([]);
+const isReplyModalVisible = ref(false); // Controls visibility of the modal
+const selectedForm = ref(null); // Stores the currently selected form
+const replyMessage = ref(''); // Stores the reply message entered by the user
 
 // Load contact forms when component is mounted
 onMounted(async () => {
@@ -64,27 +88,39 @@ const fetchContactForms = async () => {
   }
 };
 
-// Reply to a contact form
-const replyToForm = async (id) => {
-  if (confirm('Are you sure you want to reply to this contact form?')) {
-    try {
-      await replyToContactFormAPI(id);
-      await fetchContactForms();
-      ElNotification({
-        title: 'Success',
-        message: 'Replied to contact form successfully.',
-        type: 'success',
-      });
-    } catch (error) {
-      ElNotification({
-        title: 'Error',
-        message: error?.message,
-        type: 'error',
-      });
-    }
+// Open reply modal and set selected form
+const openReplyModal = (form) => {
+  selectedForm.value = form;
+  replyMessage.value = ''; // Clear previous reply
+  isReplyModalVisible.value = true;
+};
+
+// Send reply
+const sendReply = async () => {
+  if (replyMessage.value.trim() === '') {
+    ElMessage.warning('Please enter a reply message.');
+    return;
+  }
+
+  try {
+    await replyToContactFormAPI(selectedForm.value.id, replyMessage.value); // Call the API to send the reply
+    await fetchContactForms(); // Refresh contact forms list
+    ElNotification({
+      title: 'Success',
+      message: 'Replied to contact form successfully.',
+      type: 'success',
+    });
+    isReplyModalVisible.value = false; // Close modal after success
+  } catch (error) {
+    ElNotification({
+      title: 'Error',
+      message: error?.message,
+      type: 'error',
+    });
   }
 };
 
+// Format the submission date
 const formatSubmissionDate = (dateString) => {
   if (!dateString) return 'Not available'; // Handle null or undefined dates
   return format(new Date(dateString), 'MMMM dd, yyyy HH:mm'); // Format: October 15, 2024 14:30

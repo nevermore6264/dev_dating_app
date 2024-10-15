@@ -5,6 +5,7 @@ import org.kiennguyenfpt.datingapp.repositories.ContactFormRepository;
 import org.kiennguyenfpt.datingapp.services.ContactFormService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,8 +13,14 @@ import java.util.Optional;
 public class ContactFormServiceImpl implements ContactFormService {
     private final ContactFormRepository contactFormRepository;
 
-    public ContactFormServiceImpl(ContactFormRepository contactFormRepository) {
+    private final EmailServiceImpl emailService;
+
+    public ContactFormServiceImpl(
+            ContactFormRepository contactFormRepository,
+            EmailServiceImpl emailService
+    ) {
         this.contactFormRepository = contactFormRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -26,18 +33,24 @@ public class ContactFormServiceImpl implements ContactFormService {
     public int replyToContactForm(Long id, String replyMessage) {
         // Fetch contact form by ID
         Optional<ContactForm> contactFormOpt = contactFormRepository.findById(id);
-        if (contactFormOpt.isPresent()) {
-            ContactForm contactForm = contactFormOpt.get();
-
-//            // Update the contact form's reply details
-//            contactForm.setReplyMessage(replyMessage);  // Assuming you have a replyMessage field
-//            contactForm.setReplyDate(LocalDate.now());  // Set current date as reply date
-//            contactForm.setStatus(true); // Mark the form as responded
-
-            // Save the updated contact form back to the database
-            contactFormRepository.save(contactForm);
-            return 1; // Success
+        if (contactFormOpt.isEmpty()) {
+            return 0;
         }
-        return 0; // Failure (contact form not found)
+        ContactForm contactForm = contactFormOpt.get();
+
+        // Update the contact form's reply details
+        contactForm.setResponseDate(LocalDateTime.now());  // Set current date as reply date
+        contactForm.setResponseStatus("Responded"); // Mark the form as responded
+
+        // Save the updated contact form back to the database
+        contactFormRepository.save(contactForm);
+        sendEmail(contactFormOpt.get().getEmail(), replyMessage);
+        return 1; // Success
+    }
+
+    private void sendEmail(String email, String htmlContent) {
+        String subject = "Problem Solving Support";
+
+        emailService.sendEmail(email, subject, htmlContent);
     }
 }

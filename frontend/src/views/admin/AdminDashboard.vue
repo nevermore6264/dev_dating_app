@@ -11,13 +11,16 @@
             <el-icon><House /></el-icon> Home
           </li>
           <li @click="navigateTo('Cafes')">
-            <el-icon><HomeFilled /></el-icon> Manage Cafes
+            <el-icon><CoffeeCup /></el-icon> Manage Cafes
           </li>
           <li @click="navigateTo('Users')">
             <el-icon><User /></el-icon> Manage Users
           </li>
           <li @click="navigateTo('Contacts')">
             <el-icon><ChatLineRound /></el-icon> Manage Contacts
+          </li>
+          <li @click="navigateTo('Matches')">
+            <el-icon><Money/></el-icon> Manage Matches
           </li>
         </ul>
 
@@ -39,7 +42,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import {House, HomeFilled, User, SwitchButton, ChatLineRound} from '@element-plus/icons-vue'; // Nhập các icon cần thiết
+import {House, CoffeeCup, User, SwitchButton, ChatLineRound, Money} from '@element-plus/icons-vue';
 import Breadcrumb from "@/views/admin/Breadcrumb.vue"; // Import Footer
 
 const router = useRouter();

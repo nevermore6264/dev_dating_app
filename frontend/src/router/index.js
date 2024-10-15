@@ -19,6 +19,7 @@ import Home from "@/views/admin/Home.vue";
 import ManageCafes from "@/views/admin/ManageCafes.vue";
 import ManageUsers from "@/views/admin/ManageUsers.vue";
 import ManageContacts from "@/views/admin/ManageContacts.vue";
+import ManageMatches from "@/views/admin/ManageMatches.vue";
 
 const routes = [
   {
@@ -123,8 +124,13 @@ const routes = [
       },
       {
         path: 'contacts',
-        component: ManageContacts, // Đường dẫn đến component quản lý users,
+        component: ManageContacts, // Đường dẫn đến component quản lý contacts,
         meta: { breadcrumb: 'Manage Contacts' }
+      },
+      {
+        path: 'matches',
+        component: ManageMatches, // Đường dẫn đến component quản lý matches,
+        meta: { breadcrumb: 'Manage Matches' }
       },
     ],
   }];

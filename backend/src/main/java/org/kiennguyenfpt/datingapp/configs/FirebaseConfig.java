@@ -1,13 +1,15 @@
 package org.kiennguyenfpt.datingapp.configs;
 
+import com.google.firebase.FirebaseApp;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.io.IOException;
 
 @Configuration
 public class FirebaseConfig {
-//    @Bean
-//    public FirebaseApp initializeFirebase() throws IOException {
-////        FileInputStream serviceAccount =
-////                new FileInputStream("D:\\ki 8\\datingwebfpt-firebase-adminsdk-grvca-d65d9a7351.json");
+    @Bean
+    public FirebaseApp initializeFirebase() throws IOException {
 //        InputStream serviceAccount =
 //                getClass()
 //                        .getClassLoader()
@@ -20,6 +22,6 @@ public class FirebaseConfig {
 //                .build();
 //
 //        return FirebaseApp.initializeApp(options);
-//    }
+    }
 
 }

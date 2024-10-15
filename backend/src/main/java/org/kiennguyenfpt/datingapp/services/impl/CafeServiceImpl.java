@@ -50,10 +50,6 @@ public class CafeServiceImpl implements CafeService {
 
     @Override
     public CafeResponse updateCafe(Long id, CafeRequest cafeRequest) {
-        if (cafeRepository.findByName(cafeRequest.getName()).isPresent() ||
-                cafeRepository.findByAddress(cafeRequest.getAddress()).isPresent()) {
-            throw new IllegalArgumentException("Cafe with the same name or address already exists");
-        }
         Optional<Cafe> existingCafe = cafeRepository.findById(id);
         if (existingCafe.isPresent()) {
             Cafe updatedCafe = existingCafe.get();

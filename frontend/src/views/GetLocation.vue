@@ -10,7 +10,7 @@
         <h1>GET CURRENT LOCATION</h1>
         <button class="emergency-button" @click="getLocation">Get Location</button>
       </div>
-      <p class="mt-4" v-if="location">{{ location }}</p> <!-- Hiển thị vị trí -->
+      <p class="mt-4" v-if="location" v-html="location"></p> <!-- Sử dụng v-html để hiển thị vị trí -->
 
       <!-- Thêm bản đồ -->
       <div id="map" class="map" v-if="latitude && longitude"></div>
@@ -37,7 +37,7 @@ export default {
     };
   },
   methods: {
-    getLocation() {
+    async getLocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -55,9 +55,24 @@ export default {
       this.latitude = position.coords.latitude;
       this.longitude = position.coords.longitude;
       this.location = `Latitude: ${this.latitude}, Longitude: ${this.longitude}`;
+
+      // Gọi hàm để lấy địa chỉ
+      this.getAddress(this.latitude, this.longitude);
+
       this.$nextTick(() => {
         this.initMap(); // Khởi tạo bản đồ khi có vị trí
       });
+    },
+    async getAddress(lat, lng) {
+      try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
+        const data = await response.json();
+        if (data && data.display_name) {
+          this.location += `<br/> Address: ${data.display_name}`; // Cập nhật địa chỉ vào biến location
+        }
+      } catch (error) {
+        console.error("Error fetching address:", error);
+      }
     },
     initMap() {
       if (this.mapInitialized) {

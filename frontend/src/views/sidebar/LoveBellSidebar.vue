@@ -178,8 +178,8 @@ export default {
   padding: 15px 20px;
   font-size: 20px;
   font-weight: bold;
-  display: flex;
-  align-items: center;
+  display: block;
+  width: 100%;
   cursor: pointer;
   color: #000;
 }
@@ -261,9 +261,9 @@ export default {
 /* Cách dropdown hiển thị từ dưới lên */
 .dropdown-reverse {
   position: absolute;
-  transform: translateY(0%); /* Thả lên trên */
+  bottom: 260px;
   background-color: #fff;
-  width: 23%;
+  width: 260px;
   list-style-type: none;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 20px;

@@ -100,8 +100,6 @@ public class AuthServiceImpl implements AuthService {
             String token = jwtUtil.generateToken(email, user.getUserId());
             logger.info("User logged in: {}", email);
 
-            user.setLoginCount(user.getLoginCount() + 1);
-            userService.save(user);
 
             // Tạo thông điệp dựa trên số lần đăng nhập
             if (user.isFirstLogin()) {
@@ -112,7 +110,9 @@ public class AuthServiceImpl implements AuthService {
             } else {
                 message = "Login successful";
             }
-
+            user.setLoginCount(user.getLoginCount() + 1);
+            userService.save(user);
+            
             response.setStatus(HttpStatus.OK.value());
             response.setMessage(message);
 

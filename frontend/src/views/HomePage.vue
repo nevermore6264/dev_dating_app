@@ -172,7 +172,7 @@ export default {
     this.matches = matchData;
   } catch (error) {
     console.error("Error loading matches:", error.message);
-    alert("Unable to load matches. Please try again later.");
+    // alert("Unable to load matches. Please try again later.");
   }
 },
 

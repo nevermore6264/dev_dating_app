@@ -14,7 +14,7 @@ import lombok.Setter;
 @Table(name = "MatchAnalytics")
 public class MatchAnalytic {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long analyticsId;
 
     @ManyToOne

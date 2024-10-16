@@ -252,9 +252,9 @@ export default {
 /* Cách dropdown hiển thị từ dưới lên */
 .dropdown-reverse {
   position: absolute;
-  transform: translateY(-125%); /* Thả lên trên */
+  transform: translateY(0%); /* Thả lên trên */
   background-color: #fff;
-  width: 20%;
+  width: 23%;
   list-style-type: none;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 20px;

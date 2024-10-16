@@ -7,15 +7,29 @@ import org.kiennguyenfpt.datingapp.entities.Photo;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.security.JwtUtil;
+import org.kiennguyenfpt.datingapp.services.LocationService;
 import org.kiennguyenfpt.datingapp.services.PhotoService;
 import org.kiennguyenfpt.datingapp.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("api/v1/users")
@@ -27,14 +41,22 @@ public class UserController {
     private final JwtUtil jwtUtil;
     private final ProfileMapper profileMapper;
 
-    public UserController(UserService userService, PhotoService photoService, JwtUtil jwtUtil, ProfileMapper profileMapper) {
+    private final LocationService locationService;
+
+    public UserController(
+            UserService userService,
+            PhotoService photoService,
+            JwtUtil jwtUtil,
+            ProfileMapper profileMapper,
+            LocationService locationService
+    ) {
         this.userService = userService;
         this.photoService = photoService;
         this.jwtUtil = jwtUtil;
         this.profileMapper = profileMapper;
+        this.locationService = locationService;
     }
 
-    /*
     private ResponseEntity<CommonResponse<Map<String, Object>>> handleUpdateProfile(
             String updateProfileRequestJson, List<MultipartFile> files, String authorizationHeader) {
 
@@ -109,10 +131,6 @@ public class UserController {
         }
     }
 
-     */
-
-
-
     @PostMapping("/update-avatar")
     public ResponseEntity<CommonResponse<String>> updateAvatar(
             @RequestPart("file") MultipartFile file,
@@ -136,6 +154,30 @@ public class UserController {
             }
         } catch (Exception e) {
             return createErrorResponseString(response, HttpStatus.INTERNAL_SERVER_ERROR, "Error updating avatar: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/location")
+    public ResponseEntity getCurrentLocation(
+            @RequestParam double latitude,
+            @RequestParam double longitude,
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        CommonResponse response = new CommonResponse<>();
+        try {
+            String email = validateJwtString(authorizationHeader, response);
+            if (email == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("Get location successfully!");
+            response.setData(locationService.getCurrentLocation(latitude, longitude));
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage("Error: " + e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
@@ -217,7 +259,4 @@ public class UserController {
         userService.save(user); // Lưu người dùng để lưu các thay đổi
     }
 
-
-
 }
-

@@ -16,7 +16,7 @@
 
         <el-card class="stat-card" shadow="hover" @click="navigateTo('/admin/cafes')"> <!-- Navigate to cafes -->
           <el-icon class="stat-icon" color="#67c23a">
-            <HomeFilled />
+            <CoffeeCup />
           </el-icon>
           <div class="stat-content">
             <h3>Cafes</h3>
@@ -33,6 +33,16 @@
             <p>{{ contactCount }} contacts</p>
           </div>
         </el-card>
+
+        <el-card class="stat-card" shadow="hover" @click="navigateTo('/admin/matches')"> <!-- Navigate to contacts -->
+          <el-icon class="stat-icon" color="#e6a23c">
+            <Money />
+          </el-icon>
+          <div class="stat-content">
+            <h3>Matches</h3>
+            <p>{{ matchCount }} matches</p>
+          </div>
+        </el-card>
       </div>
 
       <!-- Chart Section -->
@@ -43,17 +53,19 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { User, HomeFilled, ChatLineRound } from '@element-plus/icons-vue';
+import { User, CoffeeCup, ChatLineRound, Money } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import { getAllCafes } from '@/services/admin/admin-cafe-service';
 import { getAllContactForms } from '@/services/admin/admin-contact-service';
 import { getAllUsers } from '@/services/admin/admin-user-service';
+import { getAllMatches } from '@/services/admin/admin-match-service';
 import * as echarts from 'echarts'; // Import ECharts
 
 // State variables
 const userCount = ref(0);
 const cafeCount = ref(0);
 const contactCount = ref(0);
+const matchCount = ref(0);
 
 const router = useRouter();
 
@@ -66,6 +78,8 @@ const fetchStats = async () => {
     contactCount.value = contacts.length;
     const cafes = await getAllCafes();
     cafeCount.value = cafes.length;
+    const matches = await getAllMatches();
+    matchCount.value = matches.length;
     renderChart(); // Render the chart after fetching data
   } catch (error) {
     console.error('Error fetching statistics:', error.message);

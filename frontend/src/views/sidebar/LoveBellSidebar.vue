@@ -215,14 +215,23 @@ export default {
   margin-right: 15px;
 }
 
-.profile {
-  position: absolute;
-  bottom: 112px;
+@media screen and (max-height: 764px) {
+  .lovebell-sidebar{
+    overflow-y: scroll;
+  }
 }
 
-.see-more {
-  position: absolute;
-  bottom: 56px;
+
+@media screen and (min-height: 764px) {
+  .profile {
+    position: absolute;
+    bottom: 112px;
+  }
+
+  .see-more {
+    position: absolute;
+    bottom: 56px;
+  }
 }
 
 .material-icons {

@@ -11,6 +11,7 @@
         <button class="emergency-button" @click="getLocation">Get Location</button>
       </div>
       <p class="mt-4" v-if="location" v-html="location"></p> <!-- Sử dụng v-html để hiển thị vị trí -->
+      <p class="mt-4" v-if="address" v-text="address"></p> <!-- Sử dụng v-html để hiển thị vị trí -->
 
       <!-- Thêm bản đồ -->
       <div id="map" class="map" v-if="latitude && longitude"></div>
@@ -37,6 +38,7 @@ export default {
       location: null, // Biến để lưu thông tin vị trí
       latitude: null,  // Lưu trữ vĩ độ
       longitude: null, // Lưu trữ kinh độ
+      address: null,
       map: null,      // Biến bản đồ
       mapInitialized: false, // Biến trạng thái để kiểm tra xem bản đồ đã được khởi tạo chưa
     };
@@ -75,7 +77,7 @@ export default {
         const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
         const data = await response.json();
         if (data && data.display_name) {
-          this.location += `<br/> Address: ${data.display_name}`; // Cập nhật địa chỉ vào biến location
+          this.address = `Address: ${data.display_name}`; // Cập nhật địa chỉ vào biến location
         }
       } catch (error) {
         console.error("Error fetching address:", error);
@@ -133,7 +135,7 @@ export default {
         }
 
         // Remove the 'Address: ' prefix and split the address by commas
-        const addressString = this.location.replace('Address: ', '');
+        const addressString = this.address.replace('Address: ', '');
         const addressParts = addressString.split(', ');
 
         // Map each part to its corresponding entity field

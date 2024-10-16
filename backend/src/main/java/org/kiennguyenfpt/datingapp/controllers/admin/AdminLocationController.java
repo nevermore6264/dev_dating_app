@@ -1,4 +1,4 @@
-package org.kiennguyenfpt.datingapp.controllers;
+package org.kiennguyenfpt.datingapp.controllers.admin;
 
 import org.kiennguyenfpt.datingapp.entities.Location;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;

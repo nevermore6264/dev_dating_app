@@ -36,6 +36,8 @@ public class Location {
 
     private String province;
 
+    private String country;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

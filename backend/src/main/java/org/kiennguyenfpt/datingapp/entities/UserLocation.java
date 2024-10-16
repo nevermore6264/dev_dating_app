@@ -18,8 +18,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Locations")
-public class Location {
+@Table(name = "UserLocation")
+public class UserLocation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,8 +27,6 @@ public class Location {
     private Double latitude;
 
     private Double longitude;
-
-    private String street;
 
     private String ward;
 

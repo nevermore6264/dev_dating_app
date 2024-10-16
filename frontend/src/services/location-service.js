@@ -1,9 +1,9 @@
-import {instance} from '../api-instance-provider';
+import {instance} from './api-instance-provider';
 
 // Hàm tạo mới quán cafe
 export const createLocation = async (locationData) => {
   try {
-    const response = await instance.post('/admin/locations', locationData, {
+    const response = await instance.post('/location', locationData, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('userToken')}`, // Gửi token trong header
       },

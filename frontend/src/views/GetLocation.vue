@@ -25,7 +25,7 @@
 
 <script>
 import LoveBellSidebar from "@/views/sidebar/LoveBellSidebar.vue";
-import { createLocation } from '@/services/admin/admin-location-service';
+import { createLocation } from '@/services/location-service';
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -149,13 +149,12 @@ export default {
         const locationData = {
           latitude: this.latitude,
           longitude: this.longitude,
-          street: '',       // No street in the example, leave it empty if it's not present
           ward: ward,
           district: district,
           province: province,
           postalCode: postalCode,
           country: country,
-          userId: userId,    // Retrieve userId from localStorage
+          userId: userId
         };
 
         // Save the location data to the database

@@ -14,12 +14,17 @@
 
       <!-- Thêm bản đồ -->
       <div id="map" class="map" v-if="latitude && longitude"></div>
+
+      <button class="save-location-button" @click="saveLocation" v-if="latitude && longitude">
+        Save Location
+      </button>
     </div>
   </div>
 </template>
 
 <script>
 import LoveBellSidebar from "@/views/sidebar/LoveBellSidebar.vue";
+import { saveLocationToDB } from '@/services/admin/admin-location-service'; // Assume you have a service for handling API requests
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -51,6 +56,7 @@ export default {
         this.location = "Geolocation is not supported by this browser.";
       }
     },
+
     showPosition(position) {
       this.latitude = position.coords.latitude;
       this.longitude = position.coords.longitude;
@@ -63,6 +69,7 @@ export default {
         this.initMap(); // Khởi tạo bản đồ khi có vị trí
       });
     },
+
     async getAddress(lat, lng) {
       try {
         const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
@@ -74,6 +81,7 @@ export default {
         console.error("Error fetching address:", error);
       }
     },
+
     initMap() {
       if (this.mapInitialized) {
         // Nếu bản đồ đã được khởi tạo, không cần khởi tạo lại
@@ -96,6 +104,7 @@ export default {
         this.mapInitialized = true; // Đánh dấu là bản đồ đã được khởi tạo
       }
     },
+
     handleError(error) {
       switch (error.code) {
         case error.PERMISSION_DENIED:
@@ -113,6 +122,21 @@ export default {
       }
     },
   },
+
+  async saveLocation() {
+    try {
+      const locationData = {
+        latitude: this.latitude,
+        longitude: this.longitude,
+        address: this.location, // Assuming the address is already fetched
+      };
+      await saveLocationToDB(locationData);
+      alert('Location saved successfully!');
+    } catch (error) {
+      console.error('Error saving location:', error);
+      alert('Failed to save location');
+    }
+  }
 };
 </script>
 
@@ -151,5 +175,20 @@ export default {
 .map {
   height: 400px; /* Chiều cao của bản đồ */
   margin-top: 20px;
+}
+
+.save-location-button {
+  background-color: #28a745;
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.save-location-button:hover {
+  background-color: #218838;
+  transform: scale(1.05); /* Adds a zoom effect */
 }
 </style>

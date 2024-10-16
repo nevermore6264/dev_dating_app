@@ -1,6 +1,9 @@
 package org.kiennguyenfpt.datingapp.services;
 
+import org.kiennguyenfpt.datingapp.dtos.requests.ProfileCreateRequest;
+import org.kiennguyenfpt.datingapp.dtos.requests.UpdateProfileRequest;
 import org.kiennguyenfpt.datingapp.entities.Profile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -10,5 +13,9 @@ public interface ProfileService {
     Profile getProfileByUserId(Long userId);
     Profile getRandomUserProfileExcludingCurrentUser(String email);
     List<Profile> getAllProfilesExcludingCurrentUserAndSwiped(String email);
+    Profile updateProfile(String email, UpdateProfileRequest updateProfileRequest, List<MultipartFile> files);
+    Profile saveProfile(Profile profile);
+
+    Profile createProfile(ProfileCreateRequest createRequest, String email, List<MultipartFile> files);
 
 }

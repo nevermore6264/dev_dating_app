@@ -4,7 +4,7 @@
       <h2>Welcome to the Admin Dashboard!</h2>
 
       <div class="stats-grid">
-        <el-card class="stat-card" shadow="hover" @click="navigateTo('/admin/users')"> <!-- Navigate to users -->
+        <el-card class="stat-card" shadow="hover" @click="navigateTo('/admin/users')">
           <el-icon class="stat-icon" color="#f56c6c">
             <User />
           </el-icon>
@@ -14,7 +14,7 @@
           </div>
         </el-card>
 
-        <el-card class="stat-card" shadow="hover" @click="navigateTo('/admin/cafes')"> <!-- Navigate to cafes -->
+        <el-card class="stat-card" shadow="hover" @click="navigateTo('/admin/cafes')">
           <el-icon class="stat-icon" color="#67c23a">
             <CoffeeCup />
           </el-icon>
@@ -24,7 +24,7 @@
           </div>
         </el-card>
 
-        <el-card class="stat-card" shadow="hover" @click="navigateTo('/admin/contacts')"> <!-- Navigate to contacts -->
+        <el-card class="stat-card" shadow="hover" @click="navigateTo('/admin/contacts')">
           <el-icon class="stat-icon" color="#e6a23c">
             <ChatLineRound />
           </el-icon>
@@ -34,8 +34,8 @@
           </div>
         </el-card>
 
-        <el-card class="stat-card" shadow="hover" @click="navigateTo('/admin/matches')"> <!-- Navigate to contacts -->
-          <el-icon class="stat-icon" color="#e6a23c">
+        <el-card class="stat-card" shadow="hover" @click="navigateTo('/admin/matches')">
+          <el-icon class="stat-icon" color="#409eff">
             <Money />
           </el-icon>
           <div class="stat-content">
@@ -45,7 +45,7 @@
         </el-card>
       </div>
 
-      <!-- Chart Section -->
+      <!-- Combined Chart Section -->
       <div id="statistics-chart" class="chart-container"></div>
     </el-card>
   </div>
@@ -69,7 +69,7 @@ const matchCount = ref(0);
 
 const router = useRouter();
 
-// Function to fetch statistics
+// Fetch statistics data
 const fetchStats = async () => {
   try {
     const users = await getAllUsers();
@@ -80,18 +80,18 @@ const fetchStats = async () => {
     cafeCount.value = cafes.length;
     const matches = await getAllMatches();
     matchCount.value = matches.length;
-    renderChart(); // Render the chart after fetching data
+    renderChart();
   } catch (error) {
     console.error('Error fetching statistics:', error.message);
   }
 };
 
-// Function to navigate to different pages
+// Navigation function
 const navigateTo = (path) => {
-  router.push(path); // Use router to navigate
+  router.push(path);
 };
 
-// Function to render the chart
+// Render the combined chart
 const renderChart = () => {
   const chartDom = document.getElementById('statistics-chart');
   const myChart = echarts.init(chartDom);
@@ -101,24 +101,33 @@ const renderChart = () => {
     },
     tooltip: {},
     legend: {
-      data: ['Users', 'Cafes', 'Contacts']
+      data: ['Count']
     },
     xAxis: {
-      data: ['Users', 'Cafes', 'Contacts']
+      type: 'category',
+      data: ['Users', 'Cafes', 'Contacts', 'Matches']
     },
-    yAxis: {},
+    yAxis: {
+      type: 'value'
+    },
     series: [
       {
         name: 'Count',
         type: 'bar',
-        data: [userCount.value, cafeCount.value, contactCount.value]
+        data: [userCount.value, cafeCount.value, contactCount.value, matchCount.value],
+        itemStyle: {
+          color: (params) => {
+            const colors = ['#f56c6c', '#67c23a', '#e6a23c', '#409eff'];
+            return colors[params.dataIndex];
+          }
+        }
       }
     ]
   };
-  option && myChart.setOption(option);
+  myChart.setOption(option);
 };
 
-// Fetch stats and render chart on component mount
+// Fetch stats and render chart when the component is mounted
 onMounted(() => {
   fetchStats();
 });
@@ -132,7 +141,7 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column; /* Center the content vertically */
+  flex-direction: column;
 }
 
 .dashboard-card {
@@ -142,7 +151,7 @@ onMounted(() => {
   max-width: 900px;
   text-align: center;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  margin-bottom: 40px; /* Space for the chart */
+  margin-bottom: 40px;
 }
 
 h2 {
@@ -164,13 +173,12 @@ p {
 }
 
 .stat-card {
-  align-items: center;
   padding: 20px;
   border-radius: 12px;
   background: linear-gradient(135deg, #fef5f5, #fff);
   transition: transform 0.3s ease;
   min-width: 250px;
-  cursor: pointer; /* Add pointer cursor */
+  cursor: pointer;
 }
 
 .stat-card:hover {
@@ -196,6 +204,6 @@ p {
 .chart-container {
   width: 100%;
   height: 400px;
-  margin-top: 30px; /* Add margin for the chart */
+  margin-top: 30px;
 }
 </style>

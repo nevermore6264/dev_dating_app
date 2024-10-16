@@ -1,5 +1,15 @@
-import axios from 'axios';
+import {instance} from '../api-instance-provider';
 
-export async function saveLocationToDB(locationData) {
-  return await axios.post('/api/locations/save', locationData);
-}
+// Hàm tạo mới quán cafe
+export const createLocation = async (locationData) => {
+  try {
+    const response = await instance.post('/admin/locations', locationData, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('userToken')}`, // Gửi token trong header
+      },
+    });
+    return response.data; // Trả về data nếu API trả về đúng định dạng
+  } catch (error) {
+    throw error.response ? error.response.data : {message: 'An error occurred while creating cafe'};
+  }
+};

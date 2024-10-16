@@ -24,7 +24,7 @@
 
 <script>
 import LoveBellSidebar from "@/views/sidebar/LoveBellSidebar.vue";
-import { saveLocationToDB } from '@/services/admin/admin-location-service'; // Assume you have a service for handling API requests
+import { createLocation } from '@/services/admin/admin-location-service';
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -121,51 +121,53 @@ export default {
           break;
       }
     },
+
+    async saveLocation() {
+      try {
+        // Retrieve the userId from localStorage
+        const userId = localStorage.getItem('userId');
+
+        if (!userId) {
+          alert('User is not logged in.');
+          return;
+        }
+
+        // Remove the 'Address: ' prefix and split the address by commas
+        const addressString = this.location.replace('Address: ', '');
+        const addressParts = addressString.split(', ');
+
+        // Map each part to its corresponding entity field
+        const ward = addressParts[0] || '';                // Phường Hòa Quý
+        const district = addressParts[1] || '';            // Ngũ Hành Sơn District
+        const province = addressParts[2] || '';            // Da Nang
+        const postalCode = addressParts[3] || '';          // 50507 (optional if required in your entity)
+        const country = addressParts[4] || '';             // Vietnam
+
+        // Create the location data object with latitude, longitude, and the parsed address components
+        const locationData = {
+          latitude: this.latitude,
+          longitude: this.longitude,
+          street: '',       // No street in the example, leave it empty if it's not present
+          ward: ward,
+          district: district,
+          province: province,
+          postalCode: postalCode,
+          country: country,
+          userId: userId,    // Retrieve userId from localStorage
+        };
+
+        // Save the location data to the database
+        await createLocation(locationData);
+
+        alert('Location saved successfully!');
+      } catch (error) {
+        console.error(error);
+        // alert('Failed to save location');
+      }
+    }
+
   },
 
-  async saveLocation() {
-    try {
-      // Retrieve the userId from localStorage
-      const userId = localStorage.getItem('userId');
-
-      if (!userId) {
-        alert('User is not logged in.');
-        return;
-      }
-
-      // Remove the 'Address: ' prefix and split the address by commas
-      const addressString = this.location.replace('Address: ', '');
-      const addressParts = addressString.split(', ');
-
-      // Map each part to its corresponding entity field
-      const ward = addressParts[0] || '';                // Phường Hòa Quý
-      const district = addressParts[1] || '';            // Ngũ Hành Sơn District
-      const province = addressParts[2] || '';            // Da Nang
-      const postalCode = addressParts[3] || '';          // 50507 (optional if required in your entity)
-      const country = addressParts[4] || '';             // Vietnam
-
-      // Create the location data object with latitude, longitude, and the parsed address components
-      const locationData = {
-        latitude: this.latitude,
-        longitude: this.longitude,
-        street: '',       // No street in the example, leave it empty if it's not present
-        ward: ward,
-        district: district,
-        province: province,
-        postalCode: postalCode,
-        country: country,
-        userId: userId,    // Retrieve userId from localStorage
-      };
-
-      // Save the location data to the database
-      await saveLocationToDB(locationData);
-
-      alert('Location saved successfully!');
-    } catch (error) {
-      console.error('Error saving location:', error);
-      alert('Failed to save location');
-    }
-  }
 };
 </script>
 

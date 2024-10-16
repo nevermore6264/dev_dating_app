@@ -1,22 +1,22 @@
 package org.kiennguyenfpt.datingapp.controllers;
 
-import org.springframework.security.core.Authentication;
 import org.kiennguyenfpt.datingapp.dtos.responses.MatchResponse;
-import org.kiennguyenfpt.datingapp.entities.Match;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.services.MatchService;
 import org.kiennguyenfpt.datingapp.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/matches")
 @CrossOrigin
-
 public class MatchController {
     private final MatchService matchService;
     private final UserService userService;
@@ -51,4 +51,5 @@ public class MatchController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
 }

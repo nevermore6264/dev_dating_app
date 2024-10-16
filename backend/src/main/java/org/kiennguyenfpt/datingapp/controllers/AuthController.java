@@ -9,19 +9,23 @@ import org.kiennguyenfpt.datingapp.dtos.responses.UserResponse;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.exceptions.InvalidEmailException;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
-import org.kiennguyenfpt.datingapp.services.AuthService;
 import org.kiennguyenfpt.datingapp.security.JwtUtil;
+import org.kiennguyenfpt.datingapp.services.AuthService;
 import org.kiennguyenfpt.datingapp.validation.EmailValidator;
 import org.kiennguyenfpt.datingapp.validation.ValidationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("api/v1/auth")
-
 public class AuthController {
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
@@ -50,19 +54,13 @@ public class AuthController {
                 response.setStatus(HttpStatus.OK.value());
                 response.setMessage("User registered successfully!");
                 response.setData(userResponse);
-                //System.out.println("Registered password: " + user.getPasswordHash());
-
                 return ResponseEntity.ok(response);
             }
 
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.setMessage("Error registering user.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        } catch (InvalidEmailException e) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            response.setMessage(e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidEmailException | IllegalArgumentException e) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.setMessage(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -146,11 +144,7 @@ public class AuthController {
                 response.setMessage("Invalid email");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
-        } catch (InvalidEmailException e) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            response.setMessage(e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidEmailException | IllegalArgumentException e) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.setMessage(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -160,4 +154,5 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
 }

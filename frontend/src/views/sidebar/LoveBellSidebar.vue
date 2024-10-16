@@ -78,7 +78,7 @@
       </li>
 
       <!-- Link to More Options (Dropdown) -->
-      <li class="menu-item" @click="toggleMoreOptions">
+      <li class="menu-item see-more" @click="toggleMoreOptions">
         <i class="material-icons">menu</i>
         <span>Xem thêm</span>
       </li>
@@ -159,13 +159,13 @@ export default {
 <style>
 .lovebell-sidebar {
   background-color: #ff85a1;
-  height: auto;
   width: 300px;
   color: #000;
   font-family: Arial, sans-serif;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  height: calc(100vh - 56px);
 }
 
 .menu {
@@ -216,7 +216,13 @@ export default {
 }
 
 .profile {
-  margin-top: 148px;
+  position: absolute;
+  bottom: 112px;
+}
+
+.see-more {
+  position: absolute;
+  bottom: 56px;
 }
 
 .material-icons {

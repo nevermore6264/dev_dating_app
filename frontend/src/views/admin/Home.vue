@@ -93,14 +93,14 @@ const navigateTo = (path) => {
 const renderChart = () => {
   const chartDom = document.getElementById('statistics-chart');
   const myChart = echarts.init(chartDom);
+
+  const colors = ['#f56c6c', '#67c23a', '#e6a23c', '#409eff'];
+
   const option = {
     title: {
       text: 'Statistics Overview'
     },
     tooltip: {},
-    legend: {
-      data: ['Count']
-    },
     xAxis: {
       type: 'category',
       data: ['Users', 'Cafes', 'Contacts', 'Matches']
@@ -115,13 +115,13 @@ const renderChart = () => {
         data: [userCount.value, cafeCount.value, contactCount.value, matchCount.value],
         itemStyle: {
           color: (params) => {
-            const colors = ['#f56c6c', '#67c23a', '#e6a23c', '#409eff'];
             return colors[params.dataIndex];
           }
         }
       }
     ]
   };
+
   myChart.setOption(option);
 };
 

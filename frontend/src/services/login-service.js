@@ -43,7 +43,7 @@ export const loginUser = async (email, password) => {
         });
         return "Admin login"; // Điều hướng tới layout admin
       }
-
+      console.log(message)
       // Xử lý trường hợp đăng nhập cho User
       if (message.startsWith("First login")) {
         ElNotification({

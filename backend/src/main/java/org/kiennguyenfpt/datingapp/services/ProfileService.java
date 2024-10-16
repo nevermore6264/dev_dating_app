@@ -14,8 +14,8 @@ public interface ProfileService {
     Profile getRandomUserProfileExcludingCurrentUser(String email);
     List<Profile> getAllProfilesExcludingCurrentUserAndSwiped(String email);
     Profile updateProfile(String email, UpdateProfileRequest updateProfileRequest, List<MultipartFile> files);
-    Profile saveProfile(Profile profile);
+//    Profile saveProfile(Profile profile);
 
-    Profile createProfile(ProfileCreateRequest createRequest, String email, List<MultipartFile> files);
+//    Profile createProfile(ProfileCreateRequest createRequest, String email, List<MultipartFile> files);
 
 }

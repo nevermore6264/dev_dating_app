@@ -1,5 +1,6 @@
 package org.kiennguyenfpt.datingapp.services.impl;
 
+import org.kiennguyenfpt.datingapp.dtos.requests.UpdateProfileRequest;
 import org.kiennguyenfpt.datingapp.entities.Profile;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.repositories.ProfileRepository;
@@ -8,6 +9,7 @@ import org.kiennguyenfpt.datingapp.services.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Random;
@@ -93,6 +95,20 @@ public class ProfileServiceImpl implements ProfileService {
             logger.severe("Error in getAllProfilesExcludingCurrentUserAndSwiped: " + e.getMessage());
             throw e; // Ném lại exception nếu có lỗi
         }
+    }
+
+    @Override
+    public Profile updateProfile(String email, UpdateProfileRequest updateProfileRequest, List<MultipartFile> files) {
+        /*
+        Profile profile = profileRepository.findByUser_Email(email);
+        if (profile != null) {
+            // Cập nhật các trường của profile từ updateProfileRequest
+            profile.setName(updateProfileRequest.getName());
+            profile.setAge(updateProfileRequest.getAge());
+            profile.setBio(updateProfileRequest.getBio());
+
+         */
+        return null;
     }
 
 

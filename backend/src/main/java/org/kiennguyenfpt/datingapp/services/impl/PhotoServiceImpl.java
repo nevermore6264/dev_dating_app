@@ -52,7 +52,7 @@ public class PhotoServiceImpl implements PhotoService {
             }
         }
 
-        return imageUrls;
+        return null;
     }
 
 

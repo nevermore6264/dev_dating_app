@@ -1,53 +1,51 @@
 <template>
-  <div class="admin-home">
-    <el-card shadow="hover" class="dashboard-card">
-      <h2>Welcome to the Admin Dashboard!</h2>
+  <div class="admin-home dashboard-card">
+    <h2>Welcome to the Admin Dashboard!</h2>
 
-      <div class="stats-grid">
-        <el-card class="stat-card" shadow="hover" @click="navigateTo('/admin/users')">
-          <el-icon class="stat-icon" color="#f56c6c">
-            <User />
-          </el-icon>
-          <div class="stat-content">
-            <h3>Users</h3>
-            <p>{{ userCount }} users</p>
-          </div>
-        </el-card>
+    <div class="stats-grid">
+      <el-card class="stat-card" shadow="hover" @click="navigateTo('/admin/users')">
+        <el-icon class="stat-icon" color="#f56c6c">
+          <User />
+        </el-icon>
+        <div class="stat-content">
+          <h3>Users</h3>
+          <p>{{ userCount }} users</p>
+        </div>
+      </el-card>
 
-        <el-card class="stat-card" shadow="hover" @click="navigateTo('/admin/cafes')">
-          <el-icon class="stat-icon" color="#67c23a">
-            <CoffeeCup />
-          </el-icon>
-          <div class="stat-content">
-            <h3>Cafes</h3>
-            <p>{{ cafeCount }} cafes</p>
-          </div>
-        </el-card>
+      <el-card class="stat-card" shadow="hover" @click="navigateTo('/admin/cafes')">
+        <el-icon class="stat-icon" color="#67c23a">
+          <CoffeeCup />
+        </el-icon>
+        <div class="stat-content">
+          <h3>Cafes</h3>
+          <p>{{ cafeCount }} cafes</p>
+        </div>
+      </el-card>
 
-        <el-card class="stat-card" shadow="hover" @click="navigateTo('/admin/contacts')">
-          <el-icon class="stat-icon" color="#e6a23c">
-            <ChatLineRound />
-          </el-icon>
-          <div class="stat-content">
-            <h3>Contacts</h3>
-            <p>{{ contactCount }} contacts</p>
-          </div>
-        </el-card>
+      <el-card class="stat-card" shadow="hover" @click="navigateTo('/admin/contacts')">
+        <el-icon class="stat-icon" color="#e6a23c">
+          <ChatLineRound />
+        </el-icon>
+        <div class="stat-content">
+          <h3>Contacts</h3>
+          <p>{{ contactCount }} contacts</p>
+        </div>
+      </el-card>
 
-        <el-card class="stat-card" shadow="hover" @click="navigateTo('/admin/matches')">
-          <el-icon class="stat-icon" color="#409eff">
-            <Money />
-          </el-icon>
-          <div class="stat-content">
-            <h3>Matches</h3>
-            <p>{{ matchCount }} matches</p>
-          </div>
-        </el-card>
-      </div>
+      <el-card class="stat-card" shadow="hover" @click="navigateTo('/admin/matches')">
+        <el-icon class="stat-icon" color="#409eff">
+          <Money />
+        </el-icon>
+        <div class="stat-content">
+          <h3>Matches</h3>
+          <p>{{ matchCount }} matches</p>
+        </div>
+      </el-card>
+    </div>
 
-      <!-- Combined Chart Section -->
-      <div id="statistics-chart" class="chart-container"></div>
-    </el-card>
+    <!-- Combined Chart Section -->
+    <div id="statistics-chart" class="chart-container"></div>
   </div>
 </template>
 
@@ -147,11 +145,8 @@ onMounted(() => {
 .dashboard-card {
   background-color: #fff;
   border-radius: 16px;
-  padding: 40px;
-  max-width: 900px;
   text-align: center;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  margin-bottom: 40px;
 }
 
 h2 {
@@ -167,9 +162,11 @@ p {
 }
 
 .stats-grid {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Make each card at least 250px wide and expand */
+  gap: 20px; /* Space between the cards */
+  width: 100%;
+  margin-top: 20px;
 }
 
 .stat-card {
@@ -179,6 +176,7 @@ p {
   transition: transform 0.3s ease;
   min-width: 250px;
   cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 .stat-card:hover {
@@ -187,7 +185,8 @@ p {
 
 .stat-icon {
   font-size: 3em;
-  margin-right: 0;
+  margin-bottom: 10px;
+  margin-right: 0 !important;
 }
 
 .stat-content h3 {

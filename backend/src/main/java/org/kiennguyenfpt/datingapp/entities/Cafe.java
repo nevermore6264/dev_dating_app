@@ -19,7 +19,7 @@ import lombok.Setter;
 @Table(name = "Cafes")
 public class Cafe {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long cafeId;
 
     @Column(nullable = false)

@@ -26,7 +26,7 @@ import lombok.Setter;
 @Table(name = "Likes")
 public class Like {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long likeId;
 
     @ManyToOne

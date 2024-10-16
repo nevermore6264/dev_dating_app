@@ -1,5 +1,6 @@
 package org.kiennguyenfpt.datingapp.services.impl;
 
+import org.kiennguyenfpt.datingapp.dtos.responses.LoginSuccessfulResponse;
 import org.kiennguyenfpt.datingapp.entities.Role;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.entities.UserRole;
@@ -105,27 +106,24 @@ public class AuthServiceImpl implements AuthService {
             // Tạo thông điệp dựa trên số lần đăng nhập
             if (user.isFirstLogin()) {
                 user.setFirstLogin(false);
-                user.setLoginCount(user.getLoginCount() + 1);
-                userService.save(user);
-                response.setStatus(HttpStatus.OK.value());
-                response.setMessage("First login");
-                response.setData(token);
-                return ResponseEntity.ok(response);
+                message = "First login";
             } else if (user.getLoginCount() == 1) {
-                user.setLoginCount(user.getLoginCount() + 1);
-                userService.save(user);
-                response.setStatus(HttpStatus.OK.value());
-                response.setMessage("Second login");
-                response.setData(token);
-                return ResponseEntity.ok(response);
+                message = "Second login";
             } else {
-                user.setLoginCount(user.getLoginCount() + 1);
-                userService.save(user);
-                response.setStatus(HttpStatus.OK.value());
-                response.setMessage("Login successful");
-                response.setData(token);
-                return ResponseEntity.ok(response);
+                message = "Login successful";
             }
+
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage(message);
+
+            LoginSuccessfulResponse successfulResponse = new LoginSuccessfulResponse(
+                    user.getEmail(),
+                    token,
+                    user.getUserRoles().get(0).getRole().getRoleName()
+            );
+
+            response.setData(successfulResponse);
+            return ResponseEntity.ok(response);
         }
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         response.setMessage("Invalid email or password");

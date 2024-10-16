@@ -14,6 +14,8 @@ public interface CafeService {
 
     List<CafeResponse> getAllCafes(); // Cập nhật phương thức
 
+    List<CafeResponse> getActiveCafes();
+
     CafeResponse getCafeById(Long id);
 
     List<CafeResponse> searchCafesByName(String name);// Cập nhật phương thức

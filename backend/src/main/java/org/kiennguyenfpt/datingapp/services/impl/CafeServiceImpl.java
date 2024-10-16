@@ -98,6 +98,23 @@ public class CafeServiceImpl implements CafeService {
     }
 
     @Override
+    public List<CafeResponse> getActiveCafes() {
+        return cafeRepository.findAll().stream()
+                .filter(cafe -> cafe.getStatus().equals("ACTIVE")) // Filter by ACTIVE status
+                .map(cafe -> new CafeResponse(
+                        cafe.getCafeId(),
+                        cafe.getName(),
+                        cafe.getAddress(),
+                        cafe.getBio(),
+                        cafe.getPriceRangeMin(),
+                        cafe.getPriceRangeMax(),
+                        cafe.getImageUrl(),
+                        cafe.getStatus()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public CafeResponse getCafeById(Long id) {
         Cafe cafe = cafeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cafe not found"));

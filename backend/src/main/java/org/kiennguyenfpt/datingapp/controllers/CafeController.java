@@ -61,7 +61,7 @@ public class CafeController {
 
     @GetMapping
     public ResponseEntity<List<CafeResponse>> getAllCafes() {
-        return ResponseEntity.ok(cafeService.getAllCafes());
+        return ResponseEntity.ok(cafeService.getActiveCafes());
     }
 
     @GetMapping("/{id}")

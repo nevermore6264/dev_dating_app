@@ -3,7 +3,10 @@ package org.kiennguyenfpt.datingapp.services.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kiennguyenfpt.datingapp.dtos.responses.LocationResponse;
+import org.kiennguyenfpt.datingapp.entities.Location;
+import org.kiennguyenfpt.datingapp.repositories.LocationRepository;
 import org.kiennguyenfpt.datingapp.services.LocationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -29,6 +32,13 @@ public class LocationServiceImpl implements LocationService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Autowired
+    private LocationRepository locationRepository;
+
+    public Location saveLocation(Location location) {
+        return locationRepository.save(location);
     }
 
     public LocationResponse parseLocationResponse(String jsonResponse) throws Exception {

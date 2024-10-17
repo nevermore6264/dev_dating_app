@@ -6,6 +6,11 @@
             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
     <changeSet author="Dev" id="7">
         <!-- admin -->
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="contact_form"/>
+            </not>
+        </preConditions>
         <sql>
             <![CDATA[
                 CREATE TABLE contact_form (

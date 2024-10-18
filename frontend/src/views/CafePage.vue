@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container_cafe">
     <!-- Sidebar -->
     <LoveBellSidebar />
 
@@ -115,14 +115,17 @@ export default {
 
 <style scoped>
 /* Container chứa cả sidebar và phần chính */
-.container {
+.container_cafe {
   display: flex;
   align-items: flex-start;
   background-color: #f5f5f5;
+  overflow: hidden;
 }
 
 /* Phần chính chiếm 80% chiều rộng */
 .cafe-details {
+  overflow-y: scroll;
+  height: calc(100vh - 56px);
   flex: 4;
   padding: 40px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

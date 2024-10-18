@@ -1,16 +1,16 @@
 <template>
-  <div class="login-page-container">
-    <div class="white-container">
+  <div class="lovebell-login-page-container">
+    <div class="lovebell-white-container">
       <!-- Logo section -->
-      <div class="logo-container">
-        <div class="logo">
+      <div class="lovebell-logo-container">
+        <div class="lovebell-logo">
           <img :src="require('@/assets/lovebell.jpg')" alt="Logo" />
           <h1>LOVE-BELL</h1>
         </div>
       </div>
 
       <!-- Form section -->
-      <div class="form-container">
+      <div class="lovebell-form-container">
         <h2>Start Dating</h2>
         <p>Enter your email to login for this web</p>
 
@@ -19,37 +19,37 @@
           type="email"
           v-model="email"
           placeholder="email@domain.com"
-          class="email-input"
+          class="lovebell-email-input"
         />
         <input
           type="password"
           v-model="password"
           placeholder="*****"
-          class="password-input"
+          class="lovebell-password-input"
         />
 
-        <p class="forgot-password" @click="goToForgotPass">
+        <p class="lovebell-forgot-password" @click="goToForgotPass">
           Forgot your password?
         </p>
 
         <!-- Sign up with email button -->
-        <button @click="loginWithEmail" class="sign-up-email-button">
+        <button @click="loginWithEmail" class="lovebell-sign-up-email-button">
           Login with email
         </button>
 
-        <p class="dont-have-account">
+        <p class="lovebell-dont-have-account">
           Don't have an account?
-          <a @click="goToLogin" class="login-link">Sign up</a>
+          <a @click="goToLogin" class="lovebell-login-link">Sign up</a>
         </p>
 
-        <div class="separator">
-          <hr class="line" />
+        <div class="lovebell-separator">
+          <hr class="lovebell-line" />
           <span>OR</span>
-          <hr class="line" />
+          <hr class="lovebell-line" />
         </div>
 
         <!-- Sign in options -->
-        <button @click="signUpWithGoogle" class="google-login-button">
+        <button @click="signUpWithGoogle" class="lovebell-google-login-button">
           <svg
             width="20"
             height="20"
@@ -77,15 +77,15 @@
           LOG IN WITH GOOGLE
         </button>
 
-        <button @click="loginWithPhoneNumber" class="phone-login-button">
+        <button @click="loginWithPhoneNumber" class="lovebell-phone-login-button">
           LOG IN WITH PHONE NUMBER
         </button>
 
-        <button @click="loginWithFacebook" class="facebook-login-button">
+        <button @click="loginWithFacebook" class="lovebell-facebook-login-button">
           LOG IN WITH FACEBOOK
         </button>
 
-        <p class="terms">
+        <p class="lovebell-terms">
           By clicking continue, you agree to our
           <a href="#">Terms of Service</a> and
           <a href="#">Privacy Policy</a>
@@ -118,6 +118,8 @@ export default {
       this.$router.push("/UpdateProfileFirstLogin"); // Chuyển hướng tới trang cập nhật hồ sơ
     } else if (loginStatus === "Login successful") {
       this.$router.push("/homePage"); // Chuyển hướng tới trang homePage
+    } else if (loginStatus === "Admin login") {
+        this.$router.push("/admin"); // Chuyển hướng tới layout admin
     }
   } catch (error) {
     console.error("Login failed:", error);
@@ -151,7 +153,7 @@ body {
   font-family: Arial, sans-serif;
 }
 
-.login-page-container {
+.lovebell-login-page-container {
   display: flex;
   height: 100vh; /* Chiều cao bằng toàn bộ trang */
   justify-content: center; /* Căn giữa nội dung */
@@ -160,7 +162,7 @@ body {
   background-color: #ff85a1; /* Màu hồng đậm hơn, tương tự ảnh */
 }
 
-.logo-container {
+.lovebell-logo-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -169,49 +171,41 @@ body {
   padding: 20px; /* Thêm padding cho phần logo */
   margin-right: 20px; /* Khoảng cách bên phải */
 }
-.white-container {
+.lovebell-white-container {
   display: flex;
   background-color: #fff; /* Nền trắng cho cả khung */
   border-radius: 20px; /* Bo góc cho khung */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Thêm hiệu ứng đổ bóng */
   padding: 50px; /* Padding cho khung trắng */
+  margin-bottom: 50px;
 }
-.logo img {
+.lovebell-logo img {
   width: 300px; /* Điều chỉnh kích thước hình ảnh */
   height: auto;
   margin-bottom: 40px;
 }
 
-h1 {
+.lovebell-logo h1, h2 {
   color: #ff4d95;
   font-size: 36px; /* Kích thước chữ logo */
   margin: 10px 0;
   text-align: center;
 }
 
-.form-container {
+.lovebell-form-container {
   width: 100%;
   max-width: 400px; /* Kích thước tối đa cho phần form */
   padding: 20px;
   background-color: #fff; /* Màu nền của phần form */
   border-radius: 10px; /* Bo góc cho phần form */
 }
-
-h2 {
-  color: #ff4d95;
-  font-size: 30px;
+.lovebell-form-container{
   text-align: center;
 }
 
-p {
-  color: #999;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.email-input,
-.password-input {
-  width: 95%;
+.lovebell-email-input,
+.lovebell-password-input {
+  width: 100%;
   padding: 10px;
   margin-bottom: 15px;
   border-radius: 5px;
@@ -219,7 +213,7 @@ p {
   font-size: 16px;
 }
 
-.forgot-password {
+.lovebell-forgot-password {
   color: #999;
   font-size: 12px;
   text-align: right;
@@ -228,11 +222,11 @@ p {
   text-decoration: underline; /* Thêm gạch chân cho link */
 }
 
-.forgot-password:hover {
+.lovebell-forgot-password:hover {
   color: #ff4d95; /* Thay đổi màu khi hover */
 }
 
-.sign-up-email-button {
+.lovebell-sign-up-email-button {
   width: 100%;
   padding: 15px;
   margin-bottom: 5px;
@@ -243,28 +237,28 @@ p {
   font-size: 16px;
   cursor: pointer;
 }
-.sign-up-email-button :hover {
+.lovebell-sign-up-email-button:hover {
   color: #ed94b8;
 }
 
-.dont-have-account {
+.lovebell-dont-have-account {
   color: #999;
   font-size: 14px;
   text-align: center;
   margin-top: 20px;
 }
 
-.login-link {
+.lovebell-login-link {
   color: #ff4d95;
   text-decoration: none;
   cursor: pointer;
 }
 
-.login-link:hover {
+.lovebell-login-link:hover {
   text-decoration: underline;
 }
 
-.separator {
+.lovebell-separator {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -272,22 +266,22 @@ p {
   margin: 20px 0;
 }
 
-.separator .line {
+.lovebell-separator .lovebell-line {
   border: none;
   border-top: 1px solid #ccc;
   margin: 0 10px;
   flex-grow: 1;
 }
 
-.separator span {
+.lovebell-separator span {
   color: #999;
   font-weight: bold;
   padding: 0 10px;
 }
 
-.google-login-button,
-.phone-login-button,
-.facebook-login-button {
+.lovebell-google-login-button,
+.lovebell-phone-login-button,
+.lovebell-facebook-login-button {
   width: 100%;
   padding: 15px;
   margin-bottom: 15px;
@@ -298,7 +292,7 @@ p {
   cursor: pointer;
 }
 
-.google-login-button {
+.lovebell-google-login-button {
   background-color: #d0d0d0;
   color: #555;
   border: 1px solid #ddd;
@@ -307,26 +301,26 @@ p {
   justify-content: center;
 }
 
-.google-login-button img {
+.lovebell-google-login-button img {
   margin-right: 10px;
 }
 
-.phone-login-button {
+.lovebell-phone-login-button {
   background-color: black;
 }
 
-.facebook-login-button {
+.lovebell-facebook-login-button {
   background-color: #3b5998;
 }
 
-.terms {
+.lovebell-terms {
   color: #999;
   text-align: center;
   font-size: 12px;
   margin-top: 20px;
 }
 
-.terms a {
+.lovebell-terms a {
   color: #ff4d95;
   text-decoration: none;
 }

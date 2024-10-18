@@ -20,6 +20,7 @@ export const getLoggedInUser = () => {
   }
 };
 
+// Hàm lấy thông tin profile của người dùng
 export const getMyProfile = async () => {
   const loggedInUser = getLoggedInUser();
 
@@ -36,7 +37,6 @@ export const getMyProfile = async () => {
 
       if (response.data) {
         console.log("🚀 ~ getMyProfile ~ response.data:", response.data);
-        console.log("Profile data retrieved:", response.data);
         return response.data;
       } else {
         throw new Error("Profile data not found");
@@ -48,5 +48,43 @@ export const getMyProfile = async () => {
   } else {
     console.error("No logged-in user found.");
     return null;
+  }
+};
+
+export const updateProfile = async (name, phone, age, bio, gender, files) => {
+  try {
+    // Tạo FormData để gửi dữ liệu multipart/form-data
+    const formData = new FormData();
+
+    // Append chuỗi JSON cho `updateProfileRequest`
+    const updateProfileRequest = JSON.stringify({
+      name,
+      phone,
+      age,
+      bio,
+      gender,
+    });
+    formData.append("updateProfileRequest", updateProfileRequest);
+
+    // Thêm từng file vào FormData
+    if (files && files.length > 0) {
+      files.forEach((file) => {
+        formData.append("files", file);
+      });
+    }
+
+    // Gửi yêu cầu cập nhật hồ sơ
+    const response = await instance.put("/users/update-profile", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${localStorage.getItem("userToken")}`, // Bearer token cho Authorization
+      },
+    });
+
+    return response.data; // Trả về data từ server
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to update profile"
+    );
   }
 };

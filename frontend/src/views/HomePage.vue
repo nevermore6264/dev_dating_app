@@ -13,79 +13,85 @@
       <LoveBellSidebar />
 
       <!-- Sidebar for matches -->
-<!-- Sidebar for matches -->
-<aside class="sidebarMatch">
-  <div class="sidebar-header">
-    <h3>Compatible Objects</h3>
-  </div>
-  <div class="matches-grid" v-if="matches && matches.length > 0">
-    <!-- Hiển thị các đối tượng tương hợp nếu có -->
-    <div class="match-item" v-for="match in matches" :key="match.targetUserId">
-      <img
-        :src="getAuthorizedImageUrl(match.targetUserAvatar)"
-        class="match-image"
-        alt="Match Avatar"
-      />
-      <div class="match-info">
-        <span class="match-name">{{ match.targetUserName }}</span>
-      </div>
-    </div>
-  </div>
-</aside>
-
-
-<!-- Main content area: Profile card -->
-<div class="profile-section" v-if="currentProfile">
-  <transition name="swipe" @after-enter="resetCardPosition">
-    <div
-      class="profile-card"
-      :key="profileIndex"
-      :class="{
-        'swipe-left': swipeLeft,
-        'swipe-right': swipeRight,
-        'show-like': showLike,
-        'show-dislike': showDislike,
-      }"
-    >
-      <img
-        v-if="currentProfile.avatar || currentProfile.imageUrl"
-        :src="
-          getAuthorizedImageUrl(currentProfile.avatar || currentProfile.imageUrl)
-        "
-        alt="Profile Image"
-        class="profile-image"
-      />
-      <div class="like-dislike-text" v-if="showLike">LIKE</div>
-      <div class="like-dislike-text" v-if="showDislike">DISLIKE</div>
-      <div class="profile-info">
-        <div class="profile-header-name">
-          <h2>{{ currentProfile.name }} - {{ currentProfile.age }}</h2>
-          <div class="profile-kilometer">
-          <button class="info-button" @click="showProfileInfo">
-            <i class="fas fa-info-circle"></i>
-          </button>
+      <aside class="sidebarMatch">
+        <div class="sidebar-header">
+          <h3>Compatible Objects</h3>
         </div>
+        <div class="matches-grid" v-if="matches && matches.length > 0">
+          <!-- Hiển thị các đối tượng tương hợp nếu có -->
+          <div
+            class="match-item"
+            v-for="match in matches"
+            :key="match.targetUserId"
+          >
+            <img
+              :src="getAuthorizedImageUrl(match.targetUserAvatar)"
+              class="match-image"
+              alt="Match Avatar"
+            />
+            <div class="match-info">
+              <span class="match-name">{{ match.targetUserName }}</span>
+            </div>
+          </div>
         </div>
-        <p>
-          <i class="fas fa-map-marker-alt"></i>
-          Cách xa {{ getRandomDistance() }} km
-        </p>
-      </div>
-      <div class="action-buttons">
-        <button class="button dislike-button" @click="dislike">
-          <i class="fas fa-times"></i>
-        </button>
-        <button class="button super-like-button" @click="superLike">
-          <i class="fas fa-star"></i>
-        </button>
-        <button class="button like-button" @click="like">
-          <i class="fas fa-heart"></i>
-        </button>
-      </div>
-    </div>
-  </transition>
-</div>
+      </aside>
 
+      <!-- Main content area: Profile card -->
+      <div
+        class="profile-section"
+        v-if="currentProfile && currentProfile.avatar && currentProfile.name"
+      >
+        <transition name="swipe" @after-enter="resetCardPosition">
+          <div
+            class="profile-card"
+            :key="profileIndex"
+            :class="{
+              'swipe-left': swipeLeft,
+              'swipe-right': swipeRight,
+              'show-like': showLike,
+              'show-dislike': showDislike,
+            }"
+          >
+            <img
+              v-if="currentProfile.avatar || currentProfile.imageUrl"
+              :src="
+                getAuthorizedImageUrl(
+                  currentProfile.avatar || currentProfile.imageUrl
+                )
+              "
+              alt="Profile Image"
+              class="profile-image-card"
+            />
+            <div class="like-dislike-text" v-if="showLike">LIKE</div>
+            <div class="like-dislike-text" v-if="showDislike">DISLIKE</div>
+            <div class="profile-info">
+              <div class="profile-header-name">
+                <h2>{{ currentProfile.name }} - {{ currentProfile.age }}</h2>
+                <div class="profile-kilometer">
+                  <button class="info-button" @click="showProfileInfo">
+                    <i class="fas fa-info-circle"></i>
+                  </button>
+                </div>
+              </div>
+              <p>
+                <i class="fas fa-map-marker-alt"></i>
+                Cách xa {{ getRandomDistance() }} km
+              </p>
+            </div>
+            <div class="action-buttons">
+              <button class="button dislike-button" @click="dislike">
+                <i class="fas fa-times"></i>
+              </button>
+              <button class="button super-like-button" @click="superLike">
+                <i class="fas fa-star"></i>
+              </button>
+              <button class="button like-button" @click="like">
+                <i class="fas fa-heart"></i>
+              </button>
+            </div>
+          </div>
+        </transition>
+      </div>
 
       <!-- Modal Popup -->
       <div v-if="showInfo" class="modal-overlay" @click="closeModal">
@@ -108,11 +114,7 @@
           >
             <img
               v-if="currentProfile.imageUrl"
-              :src="
-                getAuthorizedImageUrl(
-                  currentProfile.imageUrl
-                )
-              "
+              :src="getAuthorizedImageUrl(currentProfile.imageUrl)"
               alt="Profile Image"
               class="profile-image"
             />
@@ -139,7 +141,7 @@
 <script>
 import LoveBellSidebar from "@/views/sidebar/LoveBellSidebar.vue";
 import { getMatchesForUser } from "@/services/match-service";
-import { loadAllProfiles } from "@/services/profile-service";
+import { loadRandomProfile } from "@/services/profile-service";
 import { swipeAction } from "@/services/swipe-service";
 
 export default {
@@ -166,85 +168,74 @@ export default {
   },
   methods: {
     async loadMatches() {
-  try {
-    const matchData = await getMatchesForUser();
-    console.log("Match data:", matchData);
-    this.matches = matchData;
-  } catch (error) {
-    console.error("Error loading matches:", error.message);
-    alert("Unable to load matches. Please try again later.");
-  }
-},
+      try {
+        const matchData = await getMatchesForUser();
+        console.log("Match data:", matchData);
+        this.matches = matchData;
+      } catch (error) {
+        console.error("Error loading matches:", error.message);
+        // alert("Unable to load matches. Please try again later.");
+      }
+    },
 
-async loadProfiles() {
-  try {
-    const profileData = await loadAllProfiles();
-    console.log("Profiles loaded:", profileData);
+    async loadProfiles() {
+      try {
+        const profileData = await loadRandomProfile();
+        console.log("Profiles loaded:", profileData);
 
-    // Giả sử bạn lưu userId của người dùng hiện tại trong localStorage
-    const currentUserId = parseInt(localStorage.getItem("userId"), 10);
+        const currentUserId = parseInt(localStorage.getItem("userId"), 10);
 
-    // Lọc danh sách hồ sơ để loại bỏ người dùng hiện tại và những người đã swipe
-    const filteredProfiles = profileData.filter(
-      (profile) =>
-        profile.userId !== currentUserId &&
-        !this.likedProfiles.some(
-          (liked) => liked.userId === profile.userId
-        ) &&
-        !this.dislikedProfiles.some(
-          (disliked) => disliked.userId === profile.userId
-        )
-    );
+        // Lọc danh sách hồ sơ để loại bỏ người dùng hiện tại và những người đã swipe
+        const filteredProfiles = profileData.filter(
+          (profile) =>
+            profile.userId !== currentUserId &&
+            (!this.likedProfiles ||
+              !this.likedProfiles.some(
+                (liked) => liked.userId === profile.userId
+              )) &&
+            (!this.dislikedProfiles ||
+              !this.dislikedProfiles.some(
+                (disliked) => disliked.userId === profile.userId
+              ))
+        );
 
-    // Lưu danh sách hồ sơ và đặt hồ sơ đầu tiên
-    if (filteredProfiles.length > 0) {
-      this.profiles = filteredProfiles;
-      this.profileIndex = 0;
-      this.currentProfile = this.profiles[this.profileIndex];
-      console.log("Current Profile set:", this.currentProfile);
-    } else {
-      console.warn("No profiles available.");
-      alert("No profiles found. Please try again later.");
-    }
-  } catch (error) {
-    console.error("Failed to load profiles:", error);
-  }
-},
-
-
-    nextProfile() {
-      this.currentProfileVisible = false;
-      setTimeout(() => {
-        // Tăng chỉ số `profileIndex` để chuyển sang hồ sơ tiếp theo
-        this.profileIndex++;
-
-        // Tìm hồ sơ hợp lệ chưa được matched
-        while (
-          this.profileIndex < this.profiles.length &&
-          this.matches.some(
-            (match) =>
-              match.targetUserId === this.profiles[this.profileIndex].userId
-          )
-        ) {
-          this.profileIndex++;
-        }
-
-        // Kiểm tra xem chỉ số `profileIndex` có hợp lệ hay không
-        if (this.profileIndex < this.profiles.length) {
-          // Nếu hợp lệ, cập nhật hồ sơ hiện tại
-          this.currentProfile = { ...this.profiles[this.profileIndex] };
-          console.log("Profile Index updated:", this.profileIndex);
-          console.log("Current Profile updated:", this.currentProfile);
+        if (filteredProfiles.length > 0) {
+          this.profiles = [...filteredProfiles]; // Spread operator đảm bảo tạo ra mảng mới
+          this.profileIndex = 0;
+          this.currentProfile = { ...this.profiles[this.profileIndex] }; // Spread để tạo ra đối tượng mới
+          console.log("Current Profile set:", this.currentProfile);
         } else {
-          // Nếu không còn hồ sơ nào để duyệt, kết thúc danh sách hồ sơ
-          console.log("End of profile list");
-          this.currentProfile = null;
-          alert("You have viewed all profiles. Please try again later.");
+          console.warn("No profiles available.");
+          alert("No profiles found. Please try again later.");
         }
+      } catch (error) {
+        console.error("Failed to load profiles:", error);
+      }
+    },
 
-        // Hiển thị lại hồ sơ sau khi chuyển đổi
-        this.currentProfileVisible = true;
-      }, 500);
+    async nextProfile() {
+      this.currentProfileVisible = false; // Ẩn hồ sơ hiện tại để tạo hiệu ứng
+
+      setTimeout(async () => {
+        try {
+          // Gọi hàm loadProfiles để tải hồ sơ mới
+          await this.loadProfiles();
+
+          // Kiểm tra nếu currentProfile đã được cập nhật bởi loadProfiles
+          if (this.currentProfile) {
+            console.log("New profile loaded:", this.currentProfile);
+          } else {
+            console.log("No more profiles available.");
+            alert("You have viewed all profiles. Please try again later.");
+          }
+        } catch (error) {
+          console.error("Error loading new profile:", error);
+          alert("Unable to load new profile. Please try again.");
+        } finally {
+          // Hiển thị lại hồ sơ sau khi tải xong
+          this.currentProfileVisible = true;
+        }
+      }, 500); // Đặt độ trễ 500ms để tạo hiệu ứng chuyển đổi
     },
 
     like() {
@@ -263,9 +254,10 @@ async loadProfiles() {
           this.swipeRight = true;
           this.swipeLeft = false;
           this.showLike = true;
+          // Tự động tải hồ sơ mới sau khi swipe
           setTimeout(() => {
             this.nextProfile(); // Chuyển sang hồ sơ tiếp theo thay vì changeProfile
-            this.showLike = false;
+            this.showDislike = false;
           }, 500);
         })
         .catch((error) => {
@@ -290,6 +282,7 @@ async loadProfiles() {
           this.swipeLeft = true;
           this.swipeRight = false;
           this.showDislike = true;
+          // Tự động tải hồ sơ mới sau khi swipe
           setTimeout(() => {
             this.nextProfile(); // Chuyển sang hồ sơ tiếp theo thay vì changeProfile
             this.showDislike = false;
@@ -333,7 +326,6 @@ async loadProfiles() {
       if (token) {
         const separator = url.includes("?") ? "&" : "?";
         const authorizedUrl = `${url}${separator}Authorization=Bearer ${token}`;
-        console.log("Authorized URL:", authorizedUrl); // Log để kiểm tra URL
         return authorizedUrl;
       } else {
         console.error("User token not found.");
@@ -355,7 +347,7 @@ async loadProfiles() {
 /* Main Layout */
 .main-layout {
   display: flex;
-  height: 100vh;
+  height: calc(100vh - 56px);
 }
 
 /* Sidebar */
@@ -417,16 +409,16 @@ async loadProfiles() {
 .profile-card {
   width: 550px;
   text-align: center;
-  border-radius: 10px;
-  padding: 20px;
+  border-radius: 20px;
+  padding: 40px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   position: relative;
   transition: transform 0.5s ease, opacity 0.5s ease;
 }
 
-.profile-image {
-  width: 100%;
-  height: auto;
+.profile-image-card {
+  width: 450px;
+  height: 500px;
   border-radius: 10px;
   object-fit: cover; /* Đảm bảo ảnh phù hợp với container */
 }

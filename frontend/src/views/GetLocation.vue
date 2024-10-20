@@ -28,6 +28,7 @@ import LoveBellSidebar from "@/views/sidebar/LoveBellSidebar.vue";
 import { createLocation } from '@/services/location-service';
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import {ElNotification} from "element-plus";
 
 export default {
   components: {
@@ -160,10 +161,17 @@ export default {
         // Save the location data to the database
         await createLocation(locationData);
 
-        alert('Location saved successfully!');
+        ElNotification({
+          title: 'Success',
+          message: `Location saved successfully!`,
+          type: 'success',
+        });
       } catch (error) {
-        console.error(error);
-        // alert('Failed to save location');
+        ElNotification({
+          title: 'Error',
+          message: error?.message,
+          type: 'error',
+        });
       }
     }
 

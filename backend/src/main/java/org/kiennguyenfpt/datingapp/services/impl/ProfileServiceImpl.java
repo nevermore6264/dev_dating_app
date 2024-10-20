@@ -97,19 +97,19 @@ public class ProfileServiceImpl implements ProfileService {
         }
     }
 
-    @Override
-    public Profile updateProfile(String email, UpdateProfileRequest updateProfileRequest, List<MultipartFile> files) {
-        /*
-        Profile profile = profileRepository.findByUser_Email(email);
-        if (profile != null) {
-            // Cập nhật các trường của profile từ updateProfileRequest
-            profile.setName(updateProfileRequest.getName());
-            profile.setAge(updateProfileRequest.getAge());
-            profile.setBio(updateProfileRequest.getBio());
-
-         */
-        return null;
-    }
+//    @Override
+//    public Profile updateProfile(String email, UpdateProfileRequest updateProfileRequest, List<MultipartFile> files) {
+//        /*
+//        Profile profile = profileRepository.findByUser_Email(email);
+//        if (profile != null) {
+//            // Cập nhật các trường của profile từ updateProfileRequest
+//            profile.setName(updateProfileRequest.getName());
+//            profile.setAge(updateProfileRequest.getAge());
+//            profile.setBio(updateProfileRequest.getBio());
+//
+//         */
+//        return null;
+//    }
 
 
 }

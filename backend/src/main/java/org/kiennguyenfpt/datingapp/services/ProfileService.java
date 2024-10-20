@@ -13,7 +13,7 @@ public interface ProfileService {
     Profile getProfileByUserId(Long userId);
     Profile getRandomUserProfileExcludingCurrentUser(String email);
     List<Profile> getAllProfilesExcludingCurrentUserAndSwiped(String email);
-    Profile updateProfile(String email, UpdateProfileRequest updateProfileRequest, List<MultipartFile> files);
+//    Profile updateProfile(String email, UpdateProfileRequest updateProfileRequest, List<MultipartFile> files);
 //    Profile saveProfile(Profile profile);
 
 //    Profile createProfile(ProfileCreateRequest createRequest, String email, List<MultipartFile> files);

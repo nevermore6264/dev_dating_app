@@ -166,74 +166,74 @@ public class ProfileController {
         }
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<CommonResponse<ProfileResponse>> createProfile(
-            @AuthenticationPrincipal UserDetails userDetails,
-            @ModelAttribute UpdateProfileRequest updateProfileRequest,
-            @RequestParam(value = "files", required = false) List<MultipartFile> files) {
-
-        CommonResponse<ProfileResponse> response = new CommonResponse<>();
-        if (userDetails == null) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.setMessage("User is not authenticated.");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-        }
-
-        try {
-            if (updateProfileRequest.getName() == null || updateProfileRequest.getAge() == null) {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                response.setMessage("Name and age are required.");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            }
-
-            String email = userDetails.getUsername();
-            Profile profile = profileService.updateProfile(email, updateProfileRequest, files);
-            if (profile != null) {
-                ProfileResponse profileResponse = profileMapper.profileToProfileResponse(profile);
-                response.setStatus(HttpStatus.CREATED.value());
-                response.setMessage("Profile created successfully.");
-                response.setData(profileResponse);
-                return ResponseEntity.status(HttpStatus.CREATED).body(response);
-            } else {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                response.setMessage("Failed to create profile.");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            }
-        } catch (Exception e) {
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.setMessage("Error creating profile: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-    }
-
-    @PutMapping("/update")
-    public ResponseEntity<CommonResponse<ProfileResponse>> updateProfile(@AuthenticationPrincipal UserDetails userDetails,
-                                                                         @Valid @RequestBody UpdateProfileRequest updateProfileRequest) {
-        CommonResponse<ProfileResponse> response = new CommonResponse<>();
-        if (userDetails == null) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.setMessage("User is not authenticated.");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-        }
-
-        try {
-            String email = userDetails.getUsername();
-            Profile profile = profileService.updateProfile(email, updateProfileRequest, null); // null for photo uploads
-            if (profile != null) {
-                ProfileResponse profileResponse = profileMapper.profileToProfileResponse(profile);
-                response.setStatus(HttpStatus.OK.value());
-                response.setMessage("Profile updated successfully.");
-                response.setData(profileResponse);
-                return ResponseEntity.ok(response);
-            } else {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                response.setMessage("Failed to update profile.");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            }
-        } catch (Exception e) {
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.setMessage("Error updating profile: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-    }
+//    @PostMapping("/create")
+//    public ResponseEntity<CommonResponse<ProfileResponse>> createProfile(
+//            @AuthenticationPrincipal UserDetails userDetails,
+//            @ModelAttribute UpdateProfileRequest updateProfileRequest,
+//            @RequestParam(value = "files", required = false) List<MultipartFile> files) {
+//
+//        CommonResponse<ProfileResponse> response = new CommonResponse<>();
+//        if (userDetails == null) {
+//            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+//            response.setMessage("User is not authenticated.");
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+//        }
+//
+//        try {
+//            if (updateProfileRequest.getName() == null || updateProfileRequest.getAge() == null) {
+//                response.setStatus(HttpStatus.BAD_REQUEST.value());
+//                response.setMessage("Name and age are required.");
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+//            }
+//
+//            String email = userDetails.getUsername();
+//            Profile profile = profileService.updateProfile(email, updateProfileRequest, files);
+//            if (profile != null) {
+//                ProfileResponse profileResponse = profileMapper.profileToProfileResponse(profile);
+//                response.setStatus(HttpStatus.CREATED.value());
+//                response.setMessage("Profile created successfully.");
+//                response.setData(profileResponse);
+//                return ResponseEntity.status(HttpStatus.CREATED).body(response);
+//            } else {
+//                response.setStatus(HttpStatus.BAD_REQUEST.value());
+//                response.setMessage("Failed to create profile.");
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+//            }
+//        } catch (Exception e) {
+//            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//            response.setMessage("Error creating profile: " + e.getMessage());
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+//        }
+//    }
+//
+//    @PutMapping("/update")
+//    public ResponseEntity<CommonResponse<ProfileResponse>> updateProfile(@AuthenticationPrincipal UserDetails userDetails,
+//                                                                         @Valid @RequestBody UpdateProfileRequest updateProfileRequest) {
+//        CommonResponse<ProfileResponse> response = new CommonResponse<>();
+//        if (userDetails == null) {
+//            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+//            response.setMessage("User is not authenticated.");
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+//        }
+//
+//        try {
+//            String email = userDetails.getUsername();
+//            Profile profile = profileService.updateProfile(email, updateProfileRequest, null); // null for photo uploads
+//            if (profile != null) {
+//                ProfileResponse profileResponse = profileMapper.profileToProfileResponse(profile);
+//                response.setStatus(HttpStatus.OK.value());
+//                response.setMessage("Profile updated successfully.");
+//                response.setData(profileResponse);
+//                return ResponseEntity.ok(response);
+//            } else {
+//                response.setStatus(HttpStatus.BAD_REQUEST.value());
+//                response.setMessage("Failed to update profile.");
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+//            }
+//        } catch (Exception e) {
+//            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//            response.setMessage("Error updating profile: " + e.getMessage());
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+//        }
+//    }
 }

@@ -71,8 +71,7 @@ public class UserController {
             User user = userService.updateProfile(email, updateProfileRequest, files);
 
             if (user != null) {
-                List<String> imageUrls = photoService.uploadPhotos(email, files);
-                updateProfileWithImages(user, imageUrls); // Cập nhật avatar ở đây
+                List<String> imageUrls = photoService.uploadPhotos(user.getProfile(), files);                updateProfileWithImages(user, imageUrls); // Cập nhật avatar ở đây
 
                 Map<String, Object> responseData = createResponseData(user);
                 response.setStatus(HttpStatus.OK.value());
@@ -131,6 +130,7 @@ public class UserController {
         }
     }
 
+    /*
     @PostMapping("/update-avatar")
     public ResponseEntity<CommonResponse<String>> updateAvatar(
             @RequestPart("file") MultipartFile file,
@@ -156,6 +156,8 @@ public class UserController {
             return createErrorResponseString(response, HttpStatus.INTERNAL_SERVER_ERROR, "Error updating avatar: " + e.getMessage());
         }
     }
+
+     */
 
     @GetMapping("/location")
     public ResponseEntity getCurrentLocation(

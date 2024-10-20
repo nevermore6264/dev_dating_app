@@ -21,18 +21,12 @@ import ManageUsers from "@/views/admin/ManageUsers.vue";
 import ManageContacts from "@/views/admin/ManageContacts.vue";
 import ManageMatches from "@/views/admin/ManageMatches.vue";
 import GetLocation from "@/views/GetLocation.vue";
-import HelloWorld from "@/components/HelloWorld.vue";
 
 const routes = [
   {
     path: "/",
     name: "Login",
     component: LoginPage, // Trang Login sẽ là trang mặc định
-  },
-  {
-    path: "/test",
-    name: "HelloWorld",
-    component: HelloWorld,
   },
   {
     path: "/changePassFirstLogin",

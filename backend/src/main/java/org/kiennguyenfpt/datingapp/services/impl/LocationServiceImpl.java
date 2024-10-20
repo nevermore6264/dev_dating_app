@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Optional;
+
 @Service
 public class LocationServiceImpl implements LocationService {
 
@@ -44,22 +46,32 @@ public class LocationServiceImpl implements LocationService {
     private LocationRepository locationRepository;
 
     public void saveLocation(UserLocationRequest userLocationRequest) {
-        // Create a new UserLocation entity
-        UserLocation userLocation = new UserLocation();
+        // Tìm User entity dựa trên userId
+        User user = userRepository.findById(userLocationRequest.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Map fields from the request to the entity
+        // Tìm UserLocation entity dựa trên User
+        Optional<UserLocation> existingLocation = locationRepository.findByUserId(user.getUserId());
+
+        UserLocation userLocation;
+
+        if (existingLocation.isPresent()) {
+            // Nếu đã có thông tin location cho user thì cập nhật
+            userLocation = existingLocation.get();
+        } else {
+            // Nếu chưa có thì tạo mới
+            userLocation = new UserLocation();
+            userLocation.setUser(user); // Set the User entity
+        }
+
+        // Cập nhật các thông tin vị trí từ request
         userLocation.setLatitude(userLocationRequest.getLatitude());
         userLocation.setLongitude(userLocationRequest.getLongitude());
         userLocation.setWard(userLocationRequest.getWard());
         userLocation.setDistrict(userLocationRequest.getDistrict());
         userLocation.setProvince(userLocationRequest.getProvince());
 
-        // Assuming you have a way to get the User entity from the userId
-        User user = userRepository.findById(userLocationRequest.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        userLocation.setUser(user); // Set the User entity
-
-        // Save the mapped entity to the database
+        // Lưu lại thông tin vị trí của user vào cơ sở dữ liệu
         locationRepository.save(userLocation);
     }
 

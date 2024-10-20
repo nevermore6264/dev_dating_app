@@ -1,8 +1,5 @@
 package org.kiennguyenfpt.datingapp.services.impl;
 
-import java.io.IOException;
-import java.util.List;
-
 import org.kiennguyenfpt.datingapp.dtos.requests.UpdateProfileRequest;
 import org.kiennguyenfpt.datingapp.entities.Photo;
 import org.kiennguyenfpt.datingapp.entities.Profile;
@@ -14,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -40,7 +40,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> searchUsers(String keyword) {
-        return null;
+        return userRepository.searchUsersByKeyword(keyword);
+    }
+
+    @Override
+    public int lockOrUnLockUser(Long id) {
+        return userRepository.lockOrUnLockUser(id);
+    }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.getReferenceById(id);
     }
 
     /*

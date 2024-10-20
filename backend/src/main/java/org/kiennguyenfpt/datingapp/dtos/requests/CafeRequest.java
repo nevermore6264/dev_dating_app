@@ -11,9 +11,17 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CafeRequest {
     private String name;
+
     private String address;
+
     private String bio;
+
     private double priceRangeMin;
+
     private double priceRangeMax;
+
     private String imageUrl;
+
+    private String status;
+
 }

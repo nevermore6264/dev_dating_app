@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar">
+  <div class="sidebarr">
     <div class="sidebar-content">
       <LoveBellSidebar />
       <div class="notification-container">
@@ -135,7 +135,7 @@
   </script>
   
   <style scoped>
-.sidebar {
+.sidebarr {
   display: flex;
   flex-direction: column; /* Giúp các phần tử con xếp dọc nhau */
   height: 100vh;

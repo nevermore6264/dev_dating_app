@@ -1,74 +1,74 @@
 <template>
-  <div class="chat-app">
+  <div class="custom-chat-app">
     <LoveBellSidebar />
 
     <!-- Sidebar -->
-    <div class="sidebar-chat">
-      <div class="profile">
-        <h3 class="profile-name">{{ profileName }}</h3>
+    <div class="custom-sidebar-chat">
+      <div class="custom-profile">
+        <h3 class="custom-profile-name">{{ profileName }}</h3>
       </div>
-      <ul class="contact-list">
+      <ul class="custom-contact-list">
         <li
           v-for="contact in contacts"
           :key="contact.targetUserId"
-          class="contact-item"
+          class="custom-contact-item"
           @click="selectContact(contact)"
         >
           <img
             :src="contact.targetUserAvatar"
             alt="Contact Image"
-            class="contact-avatar"
+            class="custom-contact-avatar"
           />
-          <div class="contact-info">
-            <span class="contact-name">{{ contact.targetUserName }}</span>
-            <span class="contact-message">{{ contact.lastMessage }}</span>
+          <div class="custom-contact-info">
+            <span class="custom-contact-name">{{ contact.targetUserName }}</span>
+            <span class="custom-contact-message">{{ contact.lastMessage }}</span>
           </div>
         </li>
       </ul>
     </div>
 
     <!-- Chat Window -->
-    <div class="chat-window">
-      <div v-if="selectedContact" class="chat-header">
+    <div class="custom-chat-window">
+      <div v-if="selectedContact" class="custom-chat-header">
         <img
           :src="selectedContact.targetUserAvatar"
           alt="Profile"
-          class="chat-avatar"
+          class="custom-chat-avatar"
         />
         <h3>{{ selectedContact.targetUserName }}</h3>
-        <div class="chat-controls">
-          <button class="chat-control-button" @click="callUser">
+        <div class="custom-chat-controls">
+          <button class="custom-chat-control-button" @click="callUser">
             <span class="material-icons">phone</span>
           </button>
-          <button class="chat-control-button" @click="videoCallUser">
+          <button class="custom-chat-control-button" @click="videoCallUser">
             <span class="material-icons">videocam</span>
           </button>
-          <button class="chat-control-button" @click="viewInfo">
+          <button class="custom-chat-control-button" @click="viewInfo">
             <span class="material-icons">info</span>
           </button>
         </div>
       </div>
-      <div v-if="selectedContact" class="chat-content" ref="chatContent">
+      <div v-if="selectedContact" class="custom-chat-content" ref="chatContent">
         <div
-          class="message"
+          class="custom-message"
           v-for="(message, index) in selectedContact.messages"
           :key="index"
           :class="{
-            'my-message': message.sender === 'me',
-            'other-message': message.sender !== 'me',
+            'custom-my-message': message.sender === 'me',
+            'custom-other-message': message.sender !== 'me',
           }"
         >
           <img
             v-if="message.sender !== 'me'"
             :src="selectedContact.targetUserAvatar"
-            class="chat-avatar"
+            class="custom-chat-avatar"
             alt="Profile"
           />
           <p>{{ message.text }}</p>
         </div>
       </div>
 
-      <div v-if="selectedContact" class="chat-input">
+      <div v-if="selectedContact" class="custom-chat-input">
         <input v-model="newMessage" placeholder="Nhắn tin..." />
         <button @click="sendMessage">Gửi</button>
       </div>
@@ -289,20 +289,20 @@ export default {
 </script>
 
 <style scoped>
-.chat-app {
+.custom-chat-app {
   display: flex;
   height: 100vh;
   font-family: Arial, sans-serif;
 }
 
-.sidebar-chat {
+.custom-sidebar-chat {
   width: 450px !important; /* Thêm !important để đảm bảo quy tắc được áp dụng */
   background-color: #fafafa;
   border-right: 1px solid #e6e6e6;
   overflow-y: auto;
 }
 
-.profile {
+.custom-profile {
   padding: 5px;
   margin-left: 20px;
   margin-top: 40px;
@@ -312,13 +312,13 @@ export default {
   border-bottom: 1px solid #e6e6e6;
 }
 
-.contact-list {
+.custom-contact-list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.contact-item {
+.custom-contact-item {
   display: flex;
   align-items: center;
   padding: 15px;
@@ -327,130 +327,141 @@ export default {
   font-size: 19px;
 }
 
-.contact-item:hover {
+.custom-contact-item:hover {
   background-color: #f1f1f1;
 }
 
-.contact-avatar {
+.custom-contact-avatar {
   width: 50px;
   height: 50px;
   border-radius: 50%;
   margin-right: 10px;
 }
 
-.contact-info {
+.custom-contact-info {
   display: flex;
   flex-direction: column;
 }
 
-.contact-name {
+.custom-contact-name {
   font-weight: bold;
   margin-left: 10px;
 }
 
-.contact-message {
+.custom-contact-message {
   font-size: 14px;
   color: #888;
 }
 
-.chat-window {
+.custom-chat-window {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: #fff;
+  margin-bottom: 30px;
 }
 
-.chat-header {
+.custom-chat-header {
   display: flex;
-  justify-content: space-between; /* Đảm bảo khoảng cách giữa avatar và các nút */
+  justify-content: space-between;
   align-items: center;
   padding: 5px;
   border-bottom: 1px solid #e6e6e6;
 }
 
-.chat-avatar {
+.custom-chat-avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   margin-right: 15px;
 }
 
-.chat-content {
+.custom-chat-header h3{
+  font-weight: bold;
+  font-size: 18px;
+  text-align: left;
+  align-items: center;
+}
+.custom-chat-window {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* Đảm bảo nội dung chat nằm ở cuối */
-  padding: 20px;
-  overflow-y: auto;
+  overflow: hidden;
+  background-color: #fff;
 }
 
-.message {
+.custom-chat-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+.custom-chat-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-chat-content::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.custom-chat-content::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+.custom-message {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  max-width: 70%; /* Giới hạn độ rộng tối đa của tin nhắn */
-  word-wrap: break-word; /* Cho phép ngắt dòng nếu văn bản quá dài */
+  max-width: 70%;
+  word-wrap: break-word;
 }
 
-.other-message {
-  justify-content: flex-start; /* Tin nhắn của người nhận căn về bên trái */
+.custom-other-message {
+  justify-content: flex-start;
 }
 
-.my-message {
-  justify-content: flex-end; /* Tin nhắn của người gửi căn về bên phải */
-  align-self: flex-end; /* Căn tin nhắn của người gửi về bên phải của chính khung chat */
+.custom-my-message {
+  justify-content: flex-end;
+  align-self: flex-end;
   background-color: #3897f0;
   color: white;
   border-radius: 15px;
-  max-width: fit-content; /* Đảm bảo chiều rộng tự động thay đổi theo nội dung */
+  max-width: fit-content;
 }
 
-.message p {
+.custom-message p {
   margin: 0;
   padding: 15px;
   background-color: #f1f1f1;
   border-radius: 15px;
-  display: inline-block; /* Để tin nhắn co lại theo nội dung */
-  width: auto; /* Đảm bảo chiều rộng tự động thay đổi theo nội dung */
+  display: inline-block;
+  width: auto;
 }
 
-.my-message p {
+.custom-my-message p {
   background-color: #3897f0;
   color: white;
-  display: inline-block; /* Để tin nhắn co lại theo nội dung */
-  width: auto; /* Đảm bảo chiều rộng tự động thay đổi theo nội dung */
-  max-width: fit-content; /* Giới hạn chiều rộng tối đa theo nội dung */
+  display: inline-block;
+  width: auto;
+  max-width: fit-content;
 }
 
-.other-message p {
-  background-color: #f1f1f1; /* Màu nền của tin nhắn người nhận */
+.custom-other-message p {
+  background-color: #f1f1f1;
 }
 
-.message small {
-  font-size: 12px;
-  color: #888;
-  margin-left: 10px;
-}
-
-.my-message small {
-  margin-left: 10px;
-  color: #ddd;
-}
-
-.chat-window {
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  overflow-y: auto;
-}
-
-.chat-input {
+.custom-chat-input {
   display: flex;
   padding: 15px;
   border-top: 1px solid #e6e6e6;
+  margin-bottom: 30px;
 }
 
-.chat-input input {
+.custom-chat-input input {
   flex: 1;
   padding: 15px;
   border: 1px solid #e6e6e6;
@@ -459,7 +470,7 @@ export default {
   font-size: 16px;
 }
 
-.chat-input button {
+.custom-chat-input button {
   background-color: #3897f0;
   color: #fff;
   border: none;
@@ -468,28 +479,29 @@ export default {
   cursor: pointer;
 }
 
-.chat-input button:hover {
+.custom-chat-input button:hover {
   background-color: #0073e6;
 }
 
-.chat-controls {
+.custom-chat-controls {
   display: flex;
-  gap: 0px; /* Khoảng cách giữa các nút */
+  gap: 0px;
 }
 
-.chat-control-button {
+.custom-chat-control-button {
   background: none;
   border: none;
-  font-size: 24px; /* Kích thước của biểu tượng Material Icons */
+  font-size: 24px;
   cursor: pointer;
   color: #000;
 }
 
-.chat-control-button:hover {
-  color: #0073e6; /* Đổi màu khi di chuột */
+.custom-chat-control-button:hover {
+  color: #0073e6;
 }
 
 .material-icons {
-  font-size: 24px; /* Kích thước biểu tượng Material Icons */
+  font-size: 24px;
 }
 </style>
+

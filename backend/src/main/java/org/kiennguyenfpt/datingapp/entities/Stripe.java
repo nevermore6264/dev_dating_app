@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 @Table(name = "Stripe")
 public class Stripe {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long stripeId;
 
     @ManyToOne

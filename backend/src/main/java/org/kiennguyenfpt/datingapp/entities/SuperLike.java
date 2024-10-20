@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 @Table(name = "SuperLike")
 public class SuperLike {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long superlikeId;
 
     @ManyToOne

@@ -28,7 +28,7 @@ import lombok.ToString;
 @Table(name = "Photos")
 public class Photo {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long photoId;
 
     @ManyToOne

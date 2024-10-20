@@ -1,41 +1,41 @@
 <template>
-  <div class="login-page-container">
-    <div class="white-container">
+  <div class="lovebell-login-page-container">
+    <div class="lovebell-white-container">
       <!-- Logo section -->
-      <div class="logo-container">
-        <div class="logo">
+      <div class="lovebell-logo-container">
+        <div class="lovebell-logo">
           <img :src="require('@/assets/lovebell.jpg')" alt="Logo" />
           <h1>LOVE-BELL</h1>
         </div>
       </div>
 
       <!-- Form section -->
-      <div class="form-container">
+      <div class="lovebell-form-container">
         <!-- Create account text -->
         <h2>Create an account</h2>
         <p>Enter your email to sign up for this app</p>
 
         <!-- Email input field -->
-        <input type="email" v-model="email" placeholder="email@domain.com" class="email-input" />
+        <input type="email" v-model="email" placeholder="email@domain.com" class="lovebell-email-input" />
 
         <!-- Sign up with email button -->
-        <button @click="signUpWithEmail" class="sign-up-email-button">Sign up with email</button>
+        <button @click="signUpWithEmail" class="lovebell-sign-up-email-button">Sign up with email</button>
 
         <!-- Already have an account? Log in link -->
-        <p class="already-have-account">
+        <p class="lovebell-already-have-account">
           Already have an account?
-          <a @click="goToLogin" class="login-link">Log in</a>
+          <a @click="goToLogin" class="lovebell-login-link">Log in</a>
         </p>
 
         <!-- OR separator -->
-        <div class="separator">
-          <hr class="line">
+        <div class="lovebell-separator">
+          <hr class="lovebell-line">
           <span>OR</span>
-          <hr class="line">
+          <hr class="lovebell-line">
         </div>
 
         <!-- Sign in options -->
-        <button @click="signUpWithGoogle" class="google-login-button">
+        <button @click="signUpWithGoogle" class="lovebell-google-login-button">
           <svg width="20" height="20" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" style="margin-right: 10px;">
             <path fill="#4285F4" d="M24 9.5c3.14 0 5.99 1.09 8.25 2.85l6.15-6.15C34.8 3.04 29.6 0 24 0 14.76 0 7 5.83 3.68 14.23l7.14 5.65C12.68 12.09 17.9 9.5 24 9.5z"/>
             <path fill="#34A853" d="M46.74 24.5c0-1.66-.15-3.25-.44-4.79H24v9.09h12.8c-.58 3.05-2.35 5.64-4.96 7.37v6.1h8.01c4.68-4.31 7.39-10.66 7.39-17.77z"/>
@@ -45,16 +45,16 @@
           LOG IN WITH GOOGLE
         </button>
 
-        <button @click="signUpWithPhoneNumber" class="phone-login-button">
+        <button @click="signUpWithPhoneNumber" class="lovebell-phone-login-button">
           LOG IN WITH PHONE NUMBER
         </button>
 
-        <button @click="signUpWithFacebook" class="facebook-login-button">
+        <button @click="signUpWithFacebook" class="lovebell-facebook-login-button">
           LOG IN WITH FACEBOOK
         </button>
 
         <!-- Terms of Service and Privacy Policy -->
-        <p class="terms">
+        <p class="lovebell-terms">
           By clicking continue, you agree to our
           <a href="#">Terms of Service</a> and
           <a href="#">Privacy Policy</a>
@@ -63,12 +63,12 @@
     </div>
     
     <!-- Notifications -->
-    <div class="notifications" v-if="notifications.length > 0">
-      <div v-for="notification in notifications" :key="notification.id" :class="['notification', notification.type]">
+    <div class="lovebell-notifications" v-if="notifications.length > 0">
+      <div v-for="notification in notifications" :key="notification.id" :class="['lovebell-notification', notification.type]">
         <i :class="iconClass(notification.type)" :style="iconStyle(notification.type)"></i>
-        <span class="message">{{ notification.message }}</span>
+        <span class="lovebell-message">{{ notification.message }}</span>
         <button @click="closeNotification(notification.id)">×</button>
-        <div :class="['progress-bar', notification.type]"></div>
+        <div :class="['lovebell-progress-bar', notification.type]"></div>
       </div>
     </div>
   </div>
@@ -78,7 +78,7 @@
 import { registerUser } from "@/services/register-service"; // Import your API service
 
 export default {
-  name: "RegisterPage",
+  name: "LovebellRegisterPage",
   data() {
     return {
       email: '',
@@ -163,7 +163,7 @@ body {
   font-family: Arial, sans-serif;
 }
 
-.login-page-container {
+.lovebell-login-page-container {
   display: flex;
   height: 100vh; /* Chiều cao bằng toàn bộ trang */
   justify-content: center; /* Căn giữa nội dung */
@@ -172,7 +172,7 @@ body {
   background-color: #ff85a1; /* Màu hồng đậm hơn */
 }
 
-.logo-container {
+.lovebell-logo-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -182,7 +182,7 @@ body {
   margin-right: 20px; /* Khoảng cách bên phải */
 }
 
-.white-container {
+.lovebell-white-container {
   display: flex;
   background-color: #fff; /* Nền trắng cho cả khung */
   border-radius: 20px; /* Bo góc cho khung */
@@ -190,7 +190,7 @@ body {
   padding: 50px; /* Padding cho khung trắng */
 }
 
-.logo img {
+.lovebell-logo img {
   width: 300px; /* Điều chỉnh kích thước hình ảnh */
   height: auto;
   margin-bottom: 40px;
@@ -203,7 +203,7 @@ h1 {
   text-align: center;
 }
 
-.form-container {
+.lovebell-form-container {
   width: 100%;
   max-width: 400px; /* Kích thước tối đa cho phần form */
   padding: 20px;
@@ -211,20 +211,23 @@ h1 {
   border-radius: 10px; /* Bo góc cho phần form */
 }
 
-h2 {
+.lovebell-form-container h2 {
   color: #ff4d95;
   font-size: 30px;
   text-align: center;
+  margin-left: 20px;
 }
 
-p {
+.lovebell-form-container p {
   color: #999;
   text-align: center;
   margin-bottom: 20px;
+  margin-left: 20px;
+
 }
 
-.email-input {
-  width: 94%;
+.lovebell-email-input {
+  width: 100%;
   padding: 10px;
   margin-bottom: 20px;
   margin-left: 20px;
@@ -233,7 +236,7 @@ p {
   font-size: 16px;
 }
 
-.sign-up-email-button {
+.lovebell-sign-up-email-button {
   width: 100%;
   padding: 15px;
   margin-bottom: 5px;
@@ -245,24 +248,26 @@ p {
   cursor: pointer;
 }
 
-.already-have-account {
+.lovebell-already-have-account {
   color: #999;
   font-size: 14px;
   text-align: center;
   margin-top: 10px;
+  margin-left: 20px;
+
 }
 
-.login-link {
+.lovebell-login-link {
   color: #ff4d95;
   text-decoration: none;
   cursor: pointer;
 }
 
-.login-link:hover {
+.lovebell-login-link:hover {
   text-decoration: underline;
 }
 
-.separator {
+.lovebell-separator {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -270,20 +275,20 @@ p {
   margin: 20px 0;
 }
 
-.separator .line {
+.lovebell-separator .lovebell-line {
   border: none;
   border-top: 1px solid #ccc;
   margin: 0 10px;
   flex-grow: 1;
 }
 
-.separator span {
+.lovebell-separator span {
   color: #999;
   font-weight: bold;
   padding: 0 10px;
 }
 
-.google-login-button, .phone-login-button, .facebook-login-button {
+.lovebell-google-login-button, .lovebell-phone-login-button, .lovebell-facebook-login-button {
   width: 100%;
   padding: 15px;
   margin-bottom: 15px;
@@ -294,7 +299,7 @@ p {
   cursor: pointer;
 }
 
-.google-login-button {
+.lovebell-google-login-button {
   background-color: #d0d0d0;
   color: #555;
   border: 1px solid #ddd;
@@ -303,33 +308,33 @@ p {
   justify-content: center;
 }
 
-.google-login-button img {
+.lovebell-google-login-button img {
   margin-right: 10px;
 }
 
-.phone-login-button {
+.lovebell-phone-login-button {
   background-color: black;
 }
 
-.facebook-login-button {
+.lovebell-facebook-login-button {
   background-color: #3b5998;
 }
 
-.terms {
+.lovebell-terms {
   color: #999;
   text-align: center;
   font-size: 12px;
   margin-top: 20px;
 }
 
-.terms a {
+.lovebell-terms a {
   color: #ff4d95;
   text-decoration: none;
 }
 
 /* Existing styles plus notification styles */
 
-.notifications {
+.lovebell-notifications {
   max-width: 400px;
   position: absolute;
   top: 30px;
@@ -341,7 +346,7 @@ p {
   padding: 20px;
 }
 
-.notification {
+.lovebell-notification {
   display: flex;
   align-items: center;
   padding: 10px;
@@ -353,13 +358,13 @@ p {
   overflow: hidden;
 }
 
-.notification i {
+.lovebell-notification i {
   margin-right: 10px;
   font-size: 20px;
   font-weight: bold;
 }
 
-.message {
+.lovebell-message {
   color: #000; /* Black text */
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
@@ -376,7 +381,7 @@ button {
 }
 
 /* Progress bar at the bottom */
-.progress-bar {
+.lovebell-progress-bar {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -386,15 +391,15 @@ button {
 }
 
 /* Colors for the progress bar based on notification type */
-.success.progress-bar {
+.success.lovebell-progress-bar {
   background-color: #4caf50; /* Green progress bar for success */
 }
 
-.error.progress-bar {
+.error.lovebell-progress-bar {
   background-color: #f44336; /* Red progress bar for error */
 }
 
-.warning.progress-bar {
+.warning.lovebell-progress-bar {
   background-color: #ff9800; /* Yellow progress bar for warning */
 }
 
@@ -408,7 +413,7 @@ button {
   }
 }
 
-.progress-bar {
+.lovebell-progress-bar {
   animation: progress 5000ms linear forwards;
   animation-fill-mode: forwards;
 }

@@ -1,37 +1,27 @@
 package org.kiennguyenfpt.datingapp.services.impl;
 
-import org.kiennguyenfpt.datingapp.dtos.requests.ProfileCreateRequest;
 import org.kiennguyenfpt.datingapp.dtos.requests.UpdateProfileRequest;
-import org.kiennguyenfpt.datingapp.entities.Photo;
 import org.kiennguyenfpt.datingapp.entities.Profile;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.repositories.ProfileRepository;
-import org.kiennguyenfpt.datingapp.services.AvatarService;
-import org.kiennguyenfpt.datingapp.services.PhotoService;
 import org.kiennguyenfpt.datingapp.services.ProfileService;
 import org.kiennguyenfpt.datingapp.services.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Service
 public class ProfileServiceImpl implements ProfileService {
+    private final ProfileRepository profileRepository;
     private static final Logger logger = Logger.getLogger(ProfileServiceImpl.class.getName());
 
-    private final ProfileRepository profileRepository;
-    private final UserService userService;
-    private final AvatarService avatarService;
-    private final PhotoService photoService;
-
-    public ProfileServiceImpl(ProfileRepository profileRepository, UserService userService, AvatarService avatarService, PhotoService photoService) {
+    public ProfileServiceImpl(ProfileRepository profileRepository) {
         this.profileRepository = profileRepository;
-        this.userService = userService;
-        this.avatarService = avatarService;
-        this.photoService = photoService;
     }
 
     @Override
@@ -116,66 +106,10 @@ public class ProfileServiceImpl implements ProfileService {
             profile.setName(updateProfileRequest.getName());
             profile.setAge(updateProfileRequest.getAge());
             profile.setBio(updateProfileRequest.getBio());
-            profile.setGender(updateProfileRequest.getGender());
-            profile.setPhone(updateProfileRequest.getPhone());
-
-            // Xử lý upload ảnh nếu cần
-            if (files != null && !files.isEmpty()) {
-                // Logic xử lý upload ảnh
-            }
-
-            // Lưu profile đã cập nhật
-            return profileRepository.save(profile);
-        }
 
          */
         return null;
     }
 
-    @Override
-    public Profile saveProfile(Profile profile) {
-        return profileRepository.save(profile);
-    }
-
-    @Override
-    public Profile createProfile(ProfileCreateRequest createRequest, String email, List<MultipartFile> files) {
-        Profile profile = new Profile();
-        profile.setName(createRequest.getName());
-        profile.setAge(createRequest.getAge());
-        profile.setBio(createRequest.getBio());
-        profile.setGender(createRequest.getGender());
-        profile.setPhone(createRequest.getPhone());
-
-        User user = userService.findByEmail(email);
-        if (user == null) {
-            throw new IllegalStateException("User not found");
-        }
-        profile.setUser(user);
-        Profile savedProfile = profileRepository.save(profile);
-
-        // Upload avatar if present
-        if (createRequest.getAvatar() != null) {
-            try {
-                logger.info("Uploading avatar: " + createRequest.getAvatar().getOriginalFilename());
-                String avatarUrl = avatarService.uploadAvatar(savedProfile, createRequest.getAvatar());
-                savedProfile.setAvatar(avatarUrl);
-            } catch (Exception e) {
-                logger.severe("Error uploading avatar: " + e.getMessage());
-            }
-        }
-
-        // Upload photos if present
-        if (createRequest.getPhotos() != null && !createRequest.getPhotos().isEmpty()) {
-            try {
-                logger.info("Number of photos to upload: " + createRequest.getPhotos().size());
-                List<String> photoUrls = photoService.uploadPhotos(savedProfile, createRequest.getPhotos());
-                savedProfile.setPhotos(photoUrls.stream().map(url -> new Photo(savedProfile, url)).collect(Collectors.toList()));
-            } catch (Exception e) {
-                logger.severe("Error uploading photos: " + e.getMessage());
-            }
-        }
-
-        return profileRepository.save(savedProfile);
-    }
 
 }

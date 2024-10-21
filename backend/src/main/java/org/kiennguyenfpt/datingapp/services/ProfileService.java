@@ -11,11 +11,6 @@ public interface ProfileService {
     List<Profile> getAllProfiles();
     Profile getProfileByEmail(String email);
     Profile getProfileByUserId(Long userId);
-    Profile getRandomUserProfileExcludingCurrentUser(String email);
+//    Profile getRandomUserProfileExcludingCurrentUser(String email);
     List<Profile> getAllProfilesExcludingCurrentUserAndSwiped(String email);
-//    Profile updateProfile(String email, UpdateProfileRequest updateProfileRequest, List<MultipartFile> files);
-//    Profile saveProfile(Profile profile);
-
-//    Profile createProfile(ProfileCreateRequest createRequest, String email, List<MultipartFile> files);
-
 }

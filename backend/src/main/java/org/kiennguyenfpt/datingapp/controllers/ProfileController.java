@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -38,22 +39,13 @@ public class ProfileController {
     }
 
     @GetMapping
-    public ResponseEntity<CommonResponse<List<ProfileResponse>>> getAllProfiles(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<CommonResponse<List<ProfileResponse>>> getAllProfiles() {
         CommonResponse<List<ProfileResponse>> response = new CommonResponse<>();
         try {
-            if (userDetails == null) {
-                response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                response.setMessage("User is not authenticated.");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-            }
-
-            String email = userDetails.getUsername();
-            List<Profile> profiles = profileService.getAllProfilesExcludingCurrentUserAndSwiped(email);
-
+            List<Profile> profiles = profileService.getAllProfiles();
             List<ProfileResponse> profileResponses = profiles.stream()
                     .map(profileMapper::profileToProfileResponse)
                     .collect(Collectors.toList());
-
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Profiles retrieved successfully.");
             response.setData(profileResponses);
@@ -125,23 +117,42 @@ public class ProfileController {
     }
 
     @GetMapping("/random")
-    public ResponseEntity<SimpleProfileResponse> getRandomUserProfile(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<CommonResponse<SimpleProfileResponse>> getRandomProfile(@AuthenticationPrincipal UserDetails userDetails) {
+        CommonResponse<SimpleProfileResponse> response = new CommonResponse<>();
+
+        if (userDetails == null) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("User is not authenticated.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
         try {
-            if (userDetails == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            List<Profile> availableProfiles = profileService.getAllProfilesExcludingCurrentUserAndSwiped(userDetails.getUsername());
+
+            if (availableProfiles.isEmpty()) {
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+                response.setMessage("No available profiles found.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             }
 
-            String email = userDetails.getUsername();
-            Profile randomUserProfile = profileService.getRandomUserProfileExcludingCurrentUser(email);
-            if (randomUserProfile == null) {
-                return ResponseEntity.noContent().build();
-            }
-            SimpleProfileResponse response = profileMapper.profileToSimpleProfileResponse(randomUserProfile);
+            // Lấy một profile ngẫu nhiên
+            Random random = new Random();
+            Profile randomProfile = availableProfiles.get(random.nextInt(availableProfiles.size()));
+
+            SimpleProfileResponse profileResponse = profileMapper.profileToSimpleProfileResponse(randomProfile);
+
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("Available profile retrieved successfully.");
+            response.setData(profileResponse);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage("Error retrieving profile: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
+
 
     @GetMapping("/{profileId}")
     public ResponseEntity<CommonResponse<ProfileResponse>> getProfileById(@PathVariable Long profileId) {

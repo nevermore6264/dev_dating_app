@@ -149,7 +149,7 @@ export default {
 
 .content {
   flex: 5;
-  padding-left: 100px;
+  padding-left: 50px;
   padding-top: 50px;
 }
 
@@ -177,7 +177,7 @@ export default {
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* Chia ảnh thành 3 cột */
   gap: 16px; /* Tăng khoảng cách giữa các ảnh */
-  max-height: 800px; /* Giới hạn chiều cao */
+  max-height: 650px; /* Giới hạn chiều cao */
   overflow-y: auto; /* Thêm thanh cuộn dọc khi vượt quá chiều cao */
   padding: 0 70px; /* Căn giữa lưới ảnh */
 }

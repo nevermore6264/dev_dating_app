@@ -18,12 +18,13 @@
               <h2>{{ profileData.name }} - {{ profileData.age }}</h2>
               <h5>{{ profileData.gender }}</h5>
               <p>{{ profileData.bio }}</p>
-            </div>
-            <div class="edit-profile">
-              <button @click="showEditProfile = true">
+              
+              <button class="edit-profile" @click="showEditProfile = true">
                 Chỉnh sửa trang cá nhân
               </button>
+            
             </div>
+           
           </div>
 
           <!-- Photo Grid -->
@@ -68,7 +69,7 @@
 import LoveBellSidebar from "@/views/sidebar/LoveBellSidebar.vue";
 import ChangeProfilePage from "@/views/ChangeProfilePage.vue"; // Import trang chỉnh sửa
 import { getMyProfile } from "@/services/viewProfile-service.js"; // Import hàm lấy profile
-
+// import EventBus from '@/services/event-bus.js';
 export default {
   data() {
     return {
@@ -102,6 +103,7 @@ export default {
       this.profileData.gender = profile.gender || "Unknown";
       this.profileData.bio = profile.bio || "No bio available";
       this.profileData.photos = profile.photos || [];
+      
     } catch (error) {
       console.error("Error loading profile data:", error);
     }
@@ -122,13 +124,22 @@ export default {
 }
 
 .edit-profile {
-  position: fixed; /* Cố định vị trí trên màn hình */
-  right: 30px; /* Khoảng cách từ cạnh phải */
-  top: 100px; /* Khoảng cách từ cạnh trên */
-  z-index: 1000; /* Đảm bảo hiển thị trên các phần tử khác */
-
+  position: fixed; /* Vị trí cố định cho màn hình lớn */
+  right: 30px;
+  top: 100px;
+  z-index: 100;
 }
 
+/* CSS cho màn hình nhỏ hơn */
+@media (max-width: 1500px) {
+  .edit-profile {
+    position: static; /* Đổi sang vị trí static để nút nằm trong dòng chảy tự nhiên của phần tử */
+    margin-top: 20px; /* Thêm khoảng cách phía trên nút */
+    display: block; /* Đảm bảo nút hiển thị dưới dạng block */
+    width: 100%; /* Cho nút chiếm toàn bộ chiều rộng */
+    text-align: center; /* Căn giữa văn bản trong nút */
+  }
+}
 
 .sidebar-content {
   display: flex;
@@ -138,7 +149,7 @@ export default {
 
 .content {
   flex: 5;
-  padding-left: 200px;
+  padding-left: 100px;
   padding-top: 50px;
 }
 
@@ -164,14 +175,22 @@ export default {
 /* Photo Grid */
 .photo-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(3, 1fr); /* Chia ảnh thành 3 cột */
+  gap: 16px; /* Tăng khoảng cách giữa các ảnh */
+  max-height: 800px; /* Giới hạn chiều cao */
+  overflow-y: auto; /* Thêm thanh cuộn dọc khi vượt quá chiều cao */
+  padding: 0 70px; /* Căn giữa lưới ảnh */
 }
 
 .photo-item {
-  text-align: center;
+    position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
 }
-
+.photo-item:hover {
+  transform: scale(1.05);
+}
 .photo-thumbnail {
   width: 90%;
   height: auto;
@@ -184,6 +203,8 @@ export default {
   margin-top: 5px;
   font-size: 14px;
   font-weight: bold;
+  text-align: center;
+  color: #555;
 }
 
 /* Style cho modal */

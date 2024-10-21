@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface LocationRepository extends JpaRepository<UserLocation, Long> {
+public interface UserLocationRepository extends JpaRepository<UserLocation, Long> {
 
     @Query("SELECT ul FROM UserLocation ul WHERE ul.user.userId = :userId")
     Optional<UserLocation> findByUserId(Long userId);

@@ -86,6 +86,10 @@
 
 <script>
 import LoveBellSidebar from "@/views/sidebar/LoveBellSidebar.vue";
+import { checkUserLocation } from '@/services/location-service';
+import {ElNotification} from "element-plus";
+import {useRouter} from "vue-router";
+const router = useRouter();
 
 export default {
   components: {
@@ -108,10 +112,12 @@ export default {
           'https://via.placeholder.com/200x200.png?text=Photo+2',
           'https://via.placeholder.com/200x200.png?text=Photo+3'
         ]
-      }
+      },
+      userId: localStorage.getItem('userId'),
     };
   },
   mounted() {
+    this.checkUserLocation();
     this.randomizeUsers(); // Initialize random user positions when the app loads
   },
   methods: {
@@ -171,7 +177,31 @@ export default {
     },
     like() {
       alert("Liked!");
-    }
+    },
+    async checkUserLocation() {
+      try {
+        const userId = localStorage.getItem('userId');
+        const response = await checkUserLocation(userId);
+        const data = await response.json();
+
+        // If the location is not set (you can customize based on your API response)
+        if (!data) {
+          // Show notification using Element Plus
+          ElNotification({
+            title: 'Missing Location',
+            message: 'Please set your location to continue using Love Bell Radar.',
+            type: 'warning',
+          });
+
+          // Redirect to the location setup page after a delay (2 seconds)
+          setTimeout(() => {
+            router.push('/location'); // Redirect to location page
+          }, 2000);
+        }
+      } catch (error) {
+        console.error("Error checking user location:", error);
+      }
+    },
   },
 };
 </script>

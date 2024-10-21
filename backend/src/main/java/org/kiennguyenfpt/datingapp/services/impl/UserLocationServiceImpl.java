@@ -6,9 +6,9 @@ import org.kiennguyenfpt.datingapp.dtos.requests.UserLocationRequest;
 import org.kiennguyenfpt.datingapp.dtos.responses.LocationResponse;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.entities.UserLocation;
-import org.kiennguyenfpt.datingapp.repositories.LocationRepository;
+import org.kiennguyenfpt.datingapp.repositories.UserLocationRepository;
 import org.kiennguyenfpt.datingapp.repositories.UserRepository;
-import org.kiennguyenfpt.datingapp.services.LocationService;
+import org.kiennguyenfpt.datingapp.services.UserLocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -16,13 +16,13 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Optional;
 
 @Service
-public class LocationServiceImpl implements LocationService {
+public class UserLocationServiceImpl implements UserLocationService {
 
     private final RestTemplate restTemplate;
 
     private final UserRepository userRepository;
 
-    public LocationServiceImpl(RestTemplate restTemplate, UserRepository userRepository) {
+    public UserLocationServiceImpl(RestTemplate restTemplate, UserRepository userRepository) {
         this.restTemplate = restTemplate;
         this.userRepository = userRepository;
     }
@@ -43,15 +43,16 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Autowired
-    private LocationRepository locationRepository;
+    private UserLocationRepository userLocationRepository;
 
+    @Override
     public void saveLocation(UserLocationRequest userLocationRequest) {
         // Tìm User entity dựa trên userId
         User user = userRepository.findById(userLocationRequest.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         // Tìm UserLocation entity dựa trên User
-        Optional<UserLocation> existingLocation = locationRepository.findByUserId(user.getUserId());
+        Optional<UserLocation> existingLocation = userLocationRepository.findByUserId(user.getUserId());
 
         UserLocation userLocation;
 
@@ -72,7 +73,7 @@ public class LocationServiceImpl implements LocationService {
         userLocation.setProvince(userLocationRequest.getProvince());
 
         // Lưu lại thông tin vị trí của user vào cơ sở dữ liệu
-        locationRepository.save(userLocation);
+        userLocationRepository.save(userLocation);
     }
 
     public LocationResponse parseLocationResponse(String jsonResponse) throws Exception {
@@ -92,5 +93,12 @@ public class LocationServiceImpl implements LocationService {
         String formatted = propertiesNode.path("formatted").asText();
 
         return new LocationResponse(name, city, country, latitude, longitude, formatted);
+    }
+
+    @Override
+    public boolean isLocationSetForUser(Long userId) {
+        // Query the database to see if the user has a location set
+        Optional<UserLocation> userLocation = userLocationRepository.findByUserId(userId);
+        return userLocation.isPresent();
     }
 }

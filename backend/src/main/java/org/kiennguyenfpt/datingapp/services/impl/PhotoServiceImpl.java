@@ -28,7 +28,6 @@ public class PhotoServiceImpl implements PhotoService {
         this.photoRepository = photoRepository;
     }
 
-    @Override
     public List<String> uploadPhotos(String email, List<MultipartFile> files) throws IOException {
         List<String> imageUrls = new ArrayList<>();
         Bucket bucket = StorageClient.getInstance().bucket();
@@ -52,7 +51,7 @@ public class PhotoServiceImpl implements PhotoService {
             }
         }
 
-        return null;
+        return imageUrls;
     }
 
 

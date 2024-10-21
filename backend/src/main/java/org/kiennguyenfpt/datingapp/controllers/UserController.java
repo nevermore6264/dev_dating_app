@@ -57,42 +57,42 @@ public class UserController {
         this.locationService = locationService;
     }
 
-//    private ResponseEntity<CommonResponse<Map<String, Object>>> handleUpdateProfile(
-//            String updateProfileRequestJson, List<MultipartFile> files, String authorizationHeader) {
-//
-//        CommonResponse<Map<String, Object>> response = new CommonResponse<>();
-//
-//        try {
-//            // Parse the JSON string to UpdateProfileRequest object
-//            UpdateProfileRequest updateProfileRequest = new ObjectMapper().readValue(updateProfileRequestJson, UpdateProfileRequest.class);
-//            String email = validateJwt(authorizationHeader, response);
-//            if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-//
-//            User user = userService.updateProfile(email, updateProfileRequest, files);
-//
-//            if (user != null) {
-//                List<String> imageUrls = photoService.uploadPhotos(email, files);
-//                updateProfileWithImages(user, imageUrls); // Cập nhật avatar ở đây
-//
-//                Map<String, Object> responseData = createResponseData(user);
-//                response.setStatus(HttpStatus.OK.value());
-//                response.setMessage("Profile updated successfully.");
-//                response.setData(responseData);
-//                return ResponseEntity.ok(response);
-//            } else {
-//                return createErrorResponseMap(response, HttpStatus.NOT_FOUND, "User not found.");
-//            }
-//        } catch (Exception e) {
-//            return createErrorResponseMap(response, HttpStatus.INTERNAL_SERVER_ERROR, "Error updating profile: " + e.getMessage());
-//        }
-//    }
+    private ResponseEntity<CommonResponse<Map<String, Object>>> handleUpdateProfile(
+            String updateProfileRequestJson, List<MultipartFile> files, String authorizationHeader) {
+
+        CommonResponse<Map<String, Object>> response = new CommonResponse<>();
+
+        try {
+            // Parse the JSON string to UpdateProfileRequest object
+            UpdateProfileRequest updateProfileRequest = new ObjectMapper().readValue(updateProfileRequestJson, UpdateProfileRequest.class);
+            String email = validateJwt(authorizationHeader, response);
+            if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+
+            User user = userService.updateProfile(email, updateProfileRequest, files);
+
+            if (user != null) {
+                List<String> imageUrls = photoService.uploadPhotos(email, files);
+                updateProfileWithImages(user, imageUrls); // Cập nhật avatar ở đây
+
+                Map<String, Object> responseData = createResponseData(user);
+                response.setStatus(HttpStatus.OK.value());
+                response.setMessage("Profile updated successfully.");
+                response.setData(responseData);
+                return ResponseEntity.ok(response);
+            } else {
+                return createErrorResponseMap(response, HttpStatus.NOT_FOUND, "User not found.");
+            }
+        } catch (Exception e) {
+            return createErrorResponseMap(response, HttpStatus.INTERNAL_SERVER_ERROR, "Error updating profile: " + e.getMessage());
+        }
+    }
 
     @PostMapping(value = "/update-profile", consumes = "multipart/form-data")
     public ResponseEntity<CommonResponse<Map<String, Object>>> updateProfile(
             @RequestPart("updateProfileRequest") String updateProfileRequestJson,
             @RequestPart("files") List<MultipartFile> files,
             @RequestHeader("Authorization") String authorizationHeader) {
-        return null;
+        return handleUpdateProfile(updateProfileRequestJson, files, authorizationHeader);
     }
 
     @PutMapping(value = "/update-profile", consumes = "multipart/form-data")

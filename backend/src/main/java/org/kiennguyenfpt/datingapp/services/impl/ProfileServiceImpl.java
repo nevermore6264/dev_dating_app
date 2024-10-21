@@ -39,35 +39,35 @@ public class ProfileServiceImpl implements ProfileService {
         return profileRepository.findByUser_UserId(userId);
     }
 
-    @Override
-    public Profile getRandomUserProfileExcludingCurrentUser(String email) {
-        try {
-            Profile currentUserProfile = profileRepository.findByUser_Email(email);
-            if (currentUserProfile == null) {
-                logger.warning("Current user profile not found");
-                throw new IllegalStateException("Current user profile not found");
-            }
-
-            Long currentUserId = currentUserProfile.getUser().getUserId();
-
-            // Lấy tất cả các profile chưa được swipe bởi current user
-            List<Profile> profiles = profileRepository.findAllByUser_UserIdNotInAndUser_UserIdNot(
-                    profileRepository.findSwipedUserIdsByUserId(currentUserId),
-                    currentUserId
-            );
-
-            if (profiles.isEmpty()) {
-                logger.info("No other profiles found");
-                return null;
-            }
-
-            Random random = new Random();
-            return profiles.get(random.nextInt(profiles.size()));
-        } catch (Exception e) {
-            logger.severe("Error in getRandomUserProfileExcludingCurrentUser: " + e.getMessage());
-            throw e;
-        }
-    }
+//    @Override
+//    public Profile getRandomUserProfileExcludingCurrentUser(String email) {
+//        try {
+//            Profile currentUserProfile = profileRepository.findByUser_Email(email);
+//            if (currentUserProfile == null) {
+//                logger.warning("Current user profile not found");
+//                throw new IllegalStateException("Current user profile not found");
+//            }
+//
+//            Long currentUserId = currentUserProfile.getUser().getUserId();
+//
+//            // Lấy tất cả các profile chưa được swipe bởi current user
+//            List<Profile> profiles = profileRepository.findAllByUser_UserIdNotInAndUser_UserIdNot(
+//                    profileRepository.findSwipedUserIdsByUserId(currentUserId),
+//                    currentUserId
+//            );
+//
+//            if (profiles.isEmpty()) {
+//                logger.info("No other profiles found");
+//                return null;
+//            }
+//
+//            Random random = new Random();
+//            return profiles.get(random.nextInt(profiles.size()));
+//        } catch (Exception e) {
+//            logger.severe("Error in getRandomUserProfileExcludingCurrentUser: " + e.getMessage());
+//            throw e;
+//        }
+//    }
 
     @Override
     public List<Profile> getAllProfilesExcludingCurrentUserAndSwiped(String email) {
@@ -80,15 +80,16 @@ public class ProfileServiceImpl implements ProfileService {
             }
 
             Long currentUserId = currentUserProfile.getUser().getUserId();
-
-            // Lấy danh sách ID của những người mà current user đã swipe
             List<Long> swipedUserIds = profileRepository.findSwipedUserIdsByUserId(currentUserId);
 
-            // Lấy tất cả profile không phải của current user và không nằm trong danh sách đã swipe
             List<Profile> profiles = profileRepository.findAllByUser_UserIdNotInAndUser_UserIdNot(
                     swipedUserIds,
                     currentUserId
             );
+
+            if (profiles.isEmpty()) {
+                logger.info("No available profiles to swipe.");
+            }
 
             return profiles; // Trả về danh sách profile đã được lọc
         } catch (Exception e) {
@@ -96,20 +97,4 @@ public class ProfileServiceImpl implements ProfileService {
             throw e; // Ném lại exception nếu có lỗi
         }
     }
-
-    @Override
-    public Profile updateProfile(String email, UpdateProfileRequest updateProfileRequest, List<MultipartFile> files) {
-        /*
-        Profile profile = profileRepository.findByUser_Email(email);
-        if (profile != null) {
-            // Cập nhật các trường của profile từ updateProfileRequest
-            profile.setName(updateProfileRequest.getName());
-            profile.setAge(updateProfileRequest.getAge());
-            profile.setBio(updateProfileRequest.getBio());
-
-         */
-        return null;
-    }
-
-
 }

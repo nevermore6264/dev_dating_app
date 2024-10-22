@@ -87,7 +87,11 @@ export default {
       const nearbyUsers = await fetchNearbyUsers(this.userId, this.range);
       if (nearbyUsers?.data) {
         this.isScanning = false;
-
+        ElNotification({
+          title: 'Success',
+          message: 'Fetch Nearby Users Successfully.',
+          type: 'success',
+        });
         // Clear existing markers
         this.clearMap();
 

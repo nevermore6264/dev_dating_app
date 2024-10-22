@@ -88,6 +88,10 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<UserRole> userRoles; // Danh sách vai trò của người dùng
 
+    @OneToOne
+    @JoinColumn(name = "location_id")
+    private UserLocation userLocation;
+
     @ManyToMany
     @JoinTable(
             name = "user_friends",

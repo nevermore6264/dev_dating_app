@@ -2,6 +2,9 @@ package org.kiennguyenfpt.datingapp.services;
 
 import org.kiennguyenfpt.datingapp.dtos.requests.UserLocationRequest;
 import org.kiennguyenfpt.datingapp.dtos.responses.LocationResponse;
+import org.kiennguyenfpt.datingapp.entities.UserLocation;
+
+import java.util.Optional;
 
 public interface UserLocationService {
 
@@ -11,4 +14,5 @@ public interface UserLocationService {
 
     boolean isLocationSetForUser(Long userId);
 
+    Optional<UserLocation> getUserLocation(Long userId);
 }

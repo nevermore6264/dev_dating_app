@@ -101,4 +101,9 @@ public class UserLocationServiceImpl implements UserLocationService {
         Optional<UserLocation> userLocation = userLocationRepository.findByUserId(userId);
         return userLocation.isPresent();
     }
+
+    @Override
+    public Optional<UserLocation> getUserLocation(Long userId) {
+        return Optional.empty();
+    }
 }

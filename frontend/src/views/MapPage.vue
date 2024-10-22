@@ -97,11 +97,33 @@ export default {
 
         // Add users to the map
         nearbyUsers.data.forEach((user) => {
-          const { latitude, longitude, name } = user;
+          const { latitude, longitude, email, address, phone, userId: userOnMapId } = user;
 
-          // Create marker for each user position
-          const marker = L.marker([latitude, longitude]).addTo(this.map);
-          marker.bindPopup(`<b>${name || "Anonymous"}</b>`).openPopup();
+          // Kiểm tra xem latitude và longitude có hợp lệ không
+          if (latitude && longitude) {
+            const marker = L.marker([latitude, longitude]).addTo(this.map);
+
+            // Điều kiện để kiểm tra nếu người dùng trên map không phải người đang đăng nhập
+            const isCurrentUser = this.userId == userOnMapId;
+
+            // Tạo nội dung popup
+            const popupContent = `
+              <div>
+                <b>Email:</b> ${email || "Anonymous"}<br/>
+                <b>Address:</b> ${address || "Unknown"}<br/>
+                <b>Phone:</b> ${phone || "Unknown"}<br/>
+                ${!isCurrentUser ? `
+                  <button onclick="handleLike('${userOnMapId}')">👍 Like</button>
+                  <button onclick="handleUnlike('${userOnMapId}')">👎 Unlike</button>
+                ` : ''}
+              </div>
+            `;
+
+            // Hiển thị popup với nội dung đã tạo
+            marker.bindPopup(popupContent).openPopup();
+          } else {
+            console.warn("Missing latitude or longitude for user:", user);
+          }
         });
 
         this.users = nearbyUsers.data; // Update users list
@@ -140,6 +162,20 @@ export default {
         console.error("Error checking user location:", error);
       }
     },
+    async handleLike(userId) {
+      ElNotification({
+        title: 'Liked',
+        message: 'You have liked this user.' + userId,
+        type: 'success',
+      });
+    },
+    async handleUnlike(userId) {
+      ElNotification({
+        title: 'Unliked',
+        message: 'You have unliked this user.' + userId,
+        type: 'success',
+      });
+    }
   },
 };
 </script>

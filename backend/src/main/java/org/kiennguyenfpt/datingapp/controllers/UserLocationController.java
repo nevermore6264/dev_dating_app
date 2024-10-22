@@ -81,16 +81,16 @@ public class UserLocationController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Location not set"));
         CommonResponse response = new CommonResponse<>();
 
-//        try {
+        try {
             List<NearlyUserResponse> nearbyUsers = userService.findNearbyUsers(currentLocation, range);
             response.setStatus(HttpStatus.OK.value());
             response.setData(nearbyUsers);
             return ResponseEntity.ok(response);
-//        } catch (Exception e) {
-//            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-//            response.setMessage("Error: " + e.getMessage());
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-//        }
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage("Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
 }

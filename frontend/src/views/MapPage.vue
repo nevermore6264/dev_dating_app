@@ -247,8 +247,6 @@ hr{
 .content-map {
   display: flex;
   flex: 1;
-  padding-top: 120px;
-  margin-right: 100px;
 }
 
 /* Radar section */
@@ -357,7 +355,7 @@ hr{
   left: 0;
   width: auto;
   height: auto;
-background-color: white;  
+background-color: white;
 display: flex;
   justify-content: center;
   align-items: center;

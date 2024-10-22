@@ -28,13 +28,7 @@ public class UserLocation {
 
     private Double longitude;
 
-    private String ward;
-
-    private String district;
-
-    private String province;
-
-    private String country;
+    private String address;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

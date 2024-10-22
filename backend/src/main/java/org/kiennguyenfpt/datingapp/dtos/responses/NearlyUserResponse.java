@@ -1,4 +1,4 @@
-package org.kiennguyenfpt.datingapp.dtos.requests;
+package org.kiennguyenfpt.datingapp.dtos.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,17 +7,19 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class UserLocationRequest {
-    private Long id;
+@AllArgsConstructor
+public class NearlyUserResponse {
+    private long userId;
+
+    private String email;
+
+    private String phone;
 
     private Double latitude;
 
     private Double longitude;
 
     private String address;
-
-    private Long userId;
 
 }

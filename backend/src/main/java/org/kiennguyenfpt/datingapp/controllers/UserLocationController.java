@@ -1,6 +1,7 @@
 package org.kiennguyenfpt.datingapp.controllers;
 
 import org.kiennguyenfpt.datingapp.dtos.requests.UserLocationRequest;
+import org.kiennguyenfpt.datingapp.dtos.responses.NearlyUserResponse;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.entities.UserLocation;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
@@ -60,15 +61,13 @@ public class UserLocationController {
         CommonResponse response = new CommonResponse<>();
         try {
             boolean isLocationSet = userLocationService.isLocationSetForUser(userId);
+            response.setStatus(HttpStatus.OK.value());
             if (isLocationSet) {
-                response.setStatus(HttpStatus.OK.value());
                 response.setMessage("Configured location for user");
-                return ResponseEntity.ok(response);
             } else {
-                response.setStatus(HttpStatus.OK.value());
                 response.setMessage("Location not configured for user");
-                return ResponseEntity.ok(response);
             }
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setMessage("Error: " + e.getMessage());
@@ -80,8 +79,18 @@ public class UserLocationController {
     public ResponseEntity getNearbyUsers(@RequestParam Long userId, @RequestParam double range) {
         UserLocation currentLocation = userLocationService.getUserLocation(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Location not set"));
-        List<User> nearbyUsers = userService.findNearbyUsers(currentLocation, range);
-        return ResponseEntity.ok(nearbyUsers);
+        CommonResponse response = new CommonResponse<>();
+
+//        try {
+            List<NearlyUserResponse> nearbyUsers = userService.findNearbyUsers(currentLocation, range);
+            response.setStatus(HttpStatus.OK.value());
+            response.setData(nearbyUsers);
+            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//            response.setMessage("Error: " + e.getMessage());
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+//        }
     }
 
 }

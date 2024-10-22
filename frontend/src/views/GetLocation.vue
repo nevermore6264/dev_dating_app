@@ -137,24 +137,12 @@ export default {
 
         // Remove the 'Address: ' prefix and split the address by commas
         const addressString = this.address.replace('Address: ', '');
-        const addressParts = addressString.split(', ');
-
-        // Map each part to its corresponding entity field
-        const ward = addressParts[0] || '';                // Phường Hòa Quý
-        const district = addressParts[1] || '';            // Ngũ Hành Sơn District
-        const province = addressParts[2] || '';            // Da Nang
-        const postalCode = addressParts[3] || '';          // 50507 (optional if required in your entity)
-        const country = addressParts[4] || '';             // Vietnam
 
         // Create the location data object with latitude, longitude, and the parsed address components
         const locationData = {
           latitude: this.latitude,
           longitude: this.longitude,
-          ward: ward,
-          district: district,
-          province: province,
-          postalCode: postalCode,
-          country: country,
+          address: addressString,
           userId: userId
         };
 

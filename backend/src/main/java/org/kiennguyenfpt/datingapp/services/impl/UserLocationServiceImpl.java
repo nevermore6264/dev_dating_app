@@ -22,9 +22,16 @@ public class UserLocationServiceImpl implements UserLocationService {
 
     private final UserRepository userRepository;
 
-    public UserLocationServiceImpl(RestTemplate restTemplate, UserRepository userRepository) {
+    private final UserLocationRepository userLocationRepository;
+
+    public UserLocationServiceImpl(
+            RestTemplate restTemplate,
+            UserRepository userRepository,
+            UserLocationRepository userLocationRepository
+    ) {
         this.restTemplate = restTemplate;
         this.userRepository = userRepository;
+        this.userLocationRepository = userLocationRepository;
     }
 
     @Override
@@ -41,9 +48,6 @@ public class UserLocationServiceImpl implements UserLocationService {
             throw new RuntimeException(e);
         }
     }
-
-    @Autowired
-    private UserLocationRepository userLocationRepository;
 
     @Override
     public void saveLocation(UserLocationRequest userLocationRequest) {
@@ -68,9 +72,7 @@ public class UserLocationServiceImpl implements UserLocationService {
         // Cập nhật các thông tin vị trí từ request
         userLocation.setLatitude(userLocationRequest.getLatitude());
         userLocation.setLongitude(userLocationRequest.getLongitude());
-        userLocation.setWard(userLocationRequest.getWard());
-        userLocation.setDistrict(userLocationRequest.getDistrict());
-        userLocation.setProvince(userLocationRequest.getProvince());
+        userLocation.setAddress(userLocationRequest.getAddress());
 
         // Lưu lại thông tin vị trí của user vào cơ sở dữ liệu
         userLocationRepository.save(userLocation);
@@ -104,6 +106,7 @@ public class UserLocationServiceImpl implements UserLocationService {
 
     @Override
     public Optional<UserLocation> getUserLocation(Long userId) {
-        return Optional.empty();
+        Optional<UserLocation> userLocation = userLocationRepository.findByUserId(userId);
+        return userLocation;
     }
 }

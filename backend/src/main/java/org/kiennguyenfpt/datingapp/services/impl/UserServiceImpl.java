@@ -1,6 +1,7 @@
 package org.kiennguyenfpt.datingapp.services.impl;
 
 import org.kiennguyenfpt.datingapp.dtos.requests.UpdateProfileRequest;
+import org.kiennguyenfpt.datingapp.dtos.responses.NearlyUserResponse;
 import org.kiennguyenfpt.datingapp.entities.Photo;
 import org.kiennguyenfpt.datingapp.entities.Profile;
 import org.kiennguyenfpt.datingapp.entities.User;
@@ -55,8 +56,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findNearbyUsers(UserLocation currentLocation, double range) {
-        return null;
+    public List<NearlyUserResponse> findNearbyUsers(UserLocation currentLocation, double rangeInMeters) {
+        return userRepository.findNearbyUsers(currentLocation.getLatitude(), currentLocation.getLongitude(), rangeInMeters);
     }
 
     /*

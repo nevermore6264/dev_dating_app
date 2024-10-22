@@ -77,7 +77,7 @@
 import LoveBellSidebar from "@/views/sidebar/LoveBellSidebar.vue";
 import ChangeProfilePage from "@/views/ChangeProfilePage.vue"; // Import trang chỉnh sửa
 import { getMyProfile } from "@/services/viewProfile-service.js"; // Import hàm lấy profile
-import EventBus from '@/services/event-bus.js';
+// import EventBus from '@/services/event-bus.js';
 export default {
   data() {
     return {
@@ -110,7 +110,7 @@ export default {
       this.profileData.gender = profile.gender || "Unknown";
       this.profileData.bio = profile.bio || "No bio available";
       this.profileData.photos = profile.photos || [];
-      EventBus.on('profile-updated', this.updateProfileData);
+      // EventBus.on('profile-updated', this.updateProfileData);
     } catch (error) {
       console.error("Error loading profile data:", error);
     }
@@ -157,7 +157,7 @@ export default {
 .content {
   flex: 5;
   padding-left: 100px;
-  padding-top: 50px;
+  padding-top: 10px;
 }
 
 /* Profile Header */

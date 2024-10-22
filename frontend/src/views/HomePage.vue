@@ -39,12 +39,14 @@
       <!-- Main content area: Profile card -->
       <div
         class="profile-section"
-        v-if="currentProfile && currentProfile.avatar && currentProfile.name"
+        v-if="
+          currentProfile && (currentProfile.avatar || currentProfile.imageUrl)
+        "
       >
         <transition name="swipe" @after-enter="resetCardPosition">
           <div
             class="profile-card"
-            :key="profileIndex"
+            :key="profileIndex + '-' + currentProfile.profileId"
             :class="{
               'swipe-left': swipeLeft,
               'swipe-right': swipeRight,
@@ -183,26 +185,10 @@ export default {
         const profileData = await loadRandomProfile();
         console.log("Profiles loaded:", profileData);
 
-        const currentUserId = parseInt(localStorage.getItem("userId"), 10);
-
-        // Lọc danh sách hồ sơ để loại bỏ người dùng hiện tại và những người đã swipe
-        const filteredProfiles = profileData.filter(
-          (profile) =>
-            profile.userId !== currentUserId &&
-            (!this.likedProfiles ||
-              !this.likedProfiles.some(
-                (liked) => liked.userId === profile.userId
-              )) &&
-            (!this.dislikedProfiles ||
-              !this.dislikedProfiles.some(
-                (disliked) => disliked.userId === profile.userId
-              ))
-        );
-
-        if (filteredProfiles.length > 0) {
-          this.profiles = [...filteredProfiles]; // Spread operator đảm bảo tạo ra mảng mới
+        if (profileData.length > 0) {
+          this.profiles = [...profileData]; // Use the spread operator to ensure a new array is created
           this.profileIndex = 0;
-          this.currentProfile = { ...this.profiles[this.profileIndex] }; // Spread để tạo ra đối tượng mới
+          this.currentProfile = { ...this.profiles[this.profileIndex] };
           console.log("Current Profile set:", this.currentProfile);
         } else {
           console.warn("No profiles available.");
@@ -214,50 +200,51 @@ export default {
     },
 
     async nextProfile() {
-      this.currentProfileVisible = false; // Ẩn hồ sơ hiện tại để tạo hiệu ứng
+      this.currentProfileVisible = false;
 
       setTimeout(async () => {
         try {
-          // Gọi hàm loadProfiles để tải hồ sơ mới
           await this.loadProfiles();
-
-          // Kiểm tra nếu currentProfile đã được cập nhật bởi loadProfiles
-          if (this.currentProfile) {
+          if (this.currentProfile && this.profiles.length > 0) {
+            // Ensure that Vue reacts to this new object
+            this.currentProfile = { ...this.profiles[this.profileIndex] };
             console.log("New profile loaded:", this.currentProfile);
           } else {
             console.log("No more profiles available.");
-            alert("You have viewed all profiles. Please try again later.");
+            // Show an alert or notification when no profiles are left
+            alert(
+              "You have viewed all available profiles. Please try again later."
+            );
+            this.currentProfile = null; // Optional: Clear the current profile display
           }
         } catch (error) {
           console.error("Error loading new profile:", error);
           alert("Unable to load new profile. Please try again.");
         } finally {
-          // Hiển thị lại hồ sơ sau khi tải xong
           this.currentProfileVisible = true;
         }
-      }, 500); // Đặt độ trễ 500ms để tạo hiệu ứng chuyển đổi
+      }, 500);
     },
 
     like() {
-      // Kiểm tra xem currentProfile và userId có hợp lệ không
       if (!this.currentProfile || !this.currentProfile.userId) {
         console.error("targetUserId is missing:", this.currentProfile);
         alert("Unable to perform swipe action due to missing profile data.");
         return;
       }
 
-      // Gọi hàm swipeAction với userId
-      swipeAction(this.currentProfile.userId, true) // Thay đổi từ targetUserId thành userId
+      swipeAction(this.currentProfile.userId, true)
         .then((response) => {
           console.log("Swipe action completed:", response);
           this.likedProfiles.push(this.currentProfile);
           this.swipeRight = true;
           this.swipeLeft = false;
           this.showLike = true;
-          // Tự động tải hồ sơ mới sau khi swipe
+
+          // Automatically load a new profile after the like action
           setTimeout(() => {
-            this.nextProfile(); // Chuyển sang hồ sơ tiếp theo thay vì changeProfile
-            this.showDislike = false;
+            this.showLike = false;
+            this.nextProfile(); // Call the function to load a new profile
           }, 500);
         })
         .catch((error) => {
@@ -267,25 +254,24 @@ export default {
     },
 
     dislike() {
-      // Kiểm tra xem currentProfile và userId có hợp lệ không
       if (!this.currentProfile || !this.currentProfile.userId) {
         console.error("targetUserId is missing:", this.currentProfile);
         alert("Unable to perform swipe action due to missing profile data.");
         return;
       }
 
-      // Gọi hàm swipeAction với userId
-      swipeAction(this.currentProfile.userId, false) // Thay đổi từ targetUserId thành userId
+      swipeAction(this.currentProfile.userId, false)
         .then((response) => {
           console.log("Swipe action completed:", response);
           this.dislikedProfiles.push(this.currentProfile);
           this.swipeLeft = true;
           this.swipeRight = false;
           this.showDislike = true;
-          // Tự động tải hồ sơ mới sau khi swipe
+
+          // Automatically load a new profile after the dislike action
           setTimeout(() => {
-            this.nextProfile(); // Chuyển sang hồ sơ tiếp theo thay vì changeProfile
             this.showDislike = false;
+            this.nextProfile(); // Call the function to load a new profile
           }, 500);
         })
         .catch((error) => {
@@ -293,6 +279,7 @@ export default {
           alert("Có lỗi xảy ra khi thực hiện hành động dislike.");
         });
     },
+
     superLike() {
       alert("You super liked the profile");
     },
@@ -325,13 +312,13 @@ export default {
       const token = localStorage.getItem("userToken");
       if (token) {
         const separator = url.includes("?") ? "&" : "?";
-        const authorizedUrl = `${url}${separator}Authorization=Bearer ${token}`;
-        return authorizedUrl;
+        return `${url}${separator}Authorization=Bearer ${token}`;
       } else {
         console.error("User token not found.");
         return url;
       }
     },
+
     getRandomDistance() {
       return Math.floor(Math.random() * 10) + 1;
     },

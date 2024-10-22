@@ -15,7 +15,14 @@
         <div class="info">
           <h3>Looking for someone?</h3>
           <p>{{ users.length }} users are close to you, let's find them !!</p>
-          <p>Within {{ range }}m</p>
+          <label for="range-input">Within
+            <input
+                type="number"
+                id="range-input"
+                v-model="range"
+                min="50"
+                max="1000"
+            /> meters</label>
           <p>
             Make sure to look and check, then decide whether you should catch
             up with them!
@@ -63,7 +70,7 @@
 
 <script>
 import LoveBellSidebar from "@/views/sidebar/LoveBellSidebar.vue";
-import { checkUserLocation } from '@/services/location-service';
+import {checkUserLocation, fetchNearbyUsers} from '@/services/location-service';
 import { ElNotification } from "element-plus";
 
 export default {
@@ -100,13 +107,16 @@ export default {
         id: Math.random().toString(36).substring(7), // Generate random ID
       }));
     },
-    startScanning() {
+    async startScanning() {
       // Start scanning, enable the animation
       this.isScanning = true;
       this.selectedUser = null; // Hide any active profile
 
-      // Call your API to get nearby users here
-      // Example: this.getNearbyUsers();
+      const nearbyUsers = await fetchNearbyUsers(this.userId, this.range);
+      if (nearbyUsers?.data) {
+        this.isScanning = false;
+      }
+      console.log(nearbyUsers);
 
       // Randomize user positions
       this.randomizeUsers();
@@ -178,14 +188,11 @@ export default {
 .page-title {
   display: flex;
   align-items: center;
-  padding: 15px 40px;
-  width: 50%; /* Nằm ngang với phần còn lại của nội dung */
 }
 
 .page-title h2 {
   font-size: 35px;
   color: #ff33cc;
-  margin: 35px;
 }
 
 hr {

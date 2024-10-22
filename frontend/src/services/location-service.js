@@ -28,9 +28,9 @@ export const checkUserLocation = async (userId) => {
   }
 };
 
-export async function fetchNearbyUsers(userId) {
+export async function fetchNearbyUsers(userId, range) {
   try {
-    const response = await instance.get(`/location/nearby/${userId}`, {
+    const response = await instance.get(`/location/nearby?userId=${userId}&range=${range}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('userToken')}`, // Gửi token trong header
       },

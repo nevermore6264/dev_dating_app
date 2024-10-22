@@ -35,11 +35,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "cos(radians(ul.longitude) - radians(:longitude)) + sin(radians(:latitude)) * sin(radians(ul.latitude)))) " +
             "<= :rangeInMeters",
             nativeQuery = true)
-    List<Object[]> findNearbyUsersRaw(
-            @Param("latitude") double latitude,
+    List<Object[]> findNearbyUsersRaw(@Param("latitude") double latitude,
                                       @Param("longitude") double longitude,
-                                      @Param("rangeInMeters") double rangeInMeters
-    );
+                                      @Param("rangeInMeters") double rangeInMeters);
+
     default List<NearlyUserResponse> findNearbyUsers(@Param("latitude") double latitude,
                                                      @Param("longitude") double longitude,
                                                      @Param("rangeInMeters") double rangeInMeters) {

@@ -53,9 +53,9 @@ public class UserLocationController {
                 response.setMessage("Configured location for user");
                 return ResponseEntity.ok(response);
             } else {
-                response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                response.setStatus(HttpStatus.OK.value());
                 response.setMessage("Location not configured for user");
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+                return ResponseEntity.ok(response);
             }
         } catch (Exception e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());

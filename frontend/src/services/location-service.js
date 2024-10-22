@@ -17,7 +17,7 @@ export const createLocation = async (locationData) => {
 // Hàm tạo mới quán cafe
 export const checkUserLocation = async (userId) => {
   try {
-    const response = await instance.get(`/location/isConfigLocation/${userId}`, null, {
+    const response = await instance.get(`/location/isConfigLocation/${userId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('userToken')}`, // Gửi token trong header
       },

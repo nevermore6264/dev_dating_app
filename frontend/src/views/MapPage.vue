@@ -88,8 +88,6 @@
 import LoveBellSidebar from "@/views/sidebar/LoveBellSidebar.vue";
 import { checkUserLocation } from '@/services/location-service';
 import {ElNotification} from "element-plus";
-import {useRouter} from "vue-router";
-const router = useRouter();
 
 export default {
   components: {
@@ -182,10 +180,9 @@ export default {
       try {
         const userId = localStorage.getItem('userId');
         const response = await checkUserLocation(userId);
-        const data = await response.json();
 
         // If the location is not set (you can customize based on your API response)
-        if (!data) {
+        if (response?.message === "Location not configured for user" ) {
           // Show notification using Element Plus
           ElNotification({
             title: 'Missing Location',
@@ -195,7 +192,7 @@ export default {
 
           // Redirect to the location setup page after a delay (2 seconds)
           setTimeout(() => {
-            router.push('/location'); // Redirect to location page
+            this.$router.push('/getLocation'); // Redirect to location page
           }, 2000);
         }
       } catch (error) {

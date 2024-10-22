@@ -128,6 +128,7 @@ export default {
 .sidebarr {
   flex-direction: column;
   height: 100vh;
+  overflow-y: hidden;
 }
 
 .edit-profile {

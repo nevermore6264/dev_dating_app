@@ -35,43 +35,20 @@
         >
           {{ isScanning ? "Scanning..." : "Re-scanning" }}
         </button>
-
-        <!-- Profile Popup (conditional rendering) -->
-        <div v-if="selectedUser" class="modal-overlay-map">
-          <div class="modal-content full-image-modal" @click.stop>
-            <button class="close-button" @click="closeProfile">
-              <i class="fas fa-times"></i>
-            </button>
-            <h2>{{ currentProfile.name }} - {{ currentProfile.age }}</h2>
-            <p>{{ currentProfile.bio }}</p>
-            <div class="images-wrapper">
-              <div class="image-item" v-for="(image, index) in currentProfile.images" :key="index">
-                <img :src="image" :alt="'Photo ' + (index + 1)" class="profile-image-full" />
-                <span class="image-label">Photo {{ index + 1 }}</span>
-              </div>
-            </div>
-            <div class="action-buttons-modal">
-              <button class="button dislike-button" @click="dislike">
-                <i class="fas fa-times"></i>
-              </button>
-              <button class="button super-like-button" @click="superLike">
-                <i class="fas fa-star"></i>
-              </button>
-              <button class="button like-button" @click="like">
-                <i class="fas fa-heart"></i>
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
+
+      <!-- OpenStreetMap container -->
+      <div id="map" style="height: 500px;"></div> <!-- Map container -->
     </div>
   </div>
 </template>
 
 <script>
 import LoveBellSidebar from "@/views/sidebar/LoveBellSidebar.vue";
-import {checkUserLocation, fetchNearbyUsers} from '@/services/location-service';
+import { checkUserLocation, fetchNearbyUsers } from '@/services/location-service';
 import { ElNotification } from "element-plus";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 export default {
   components: {
@@ -82,62 +59,60 @@ export default {
       range: 500, // Distance range
       users: [], // Store user positions
       isScanning: false, // Controls scanning animation
-      selectedUser: null, // Stores the user clicked for profile display
-      currentProfile: {
-        name: 'Le Quang Huy',
-        age: 22,
-        bio: 'This is a sample bio for you.',
-        images: [
-          'https://via.placeholder.com/200x200.png?text=Photo+1',
-          'https://via.placeholder.com/200x200.png?text=Photo+2',
-          'https://via.placeholder.com/200x200.png?text=Photo+3'
-        ]
-      },
       userId: localStorage.getItem('userId'),
+      map: null, // The Leaflet map object
     };
   },
   mounted() {
     this.checkUserLocation();
-    this.randomizeUsers(); // Initialize random user positions when the app loads
+    this.initMap(); // Initialize the map when the component is mounted
   },
   methods: {
-    randomizeUsers() {
-      // Create random user positions (x, y between 0 and 1)
-      this.users = Array.from({ length: 6 }, () => ({
-        id: Math.random().toString(36).substring(7), // Generate random ID
-      }));
-    },
-    async startScanning() {
-      // Start scanning, enable the animation
-      this.isScanning = true;
-      this.selectedUser = null; // Hide any active profile
+    // Initialize the map
+    initMap() {
+      // Create the map centered at a default location (change if needed)
+      this.map = L.map("map").setView([10.762622, 106.660172], 13); // Center at HCM city
 
+      // Add OpenStreetMap tiles
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(this.map);
+    },
+
+    // Start scanning for nearby users and display them on the map
+    async startScanning() {
+      this.isScanning = true; // Enable scanning animation
+
+      // Fetch nearby users
       const nearbyUsers = await fetchNearbyUsers(this.userId, this.range);
       if (nearbyUsers?.data) {
         this.isScanning = false;
-      }
-      console.log(nearbyUsers);
 
-      // Randomize user positions
-      this.randomizeUsers();
+        // Clear existing markers
+        this.clearMap();
+
+        // Add users to the map
+        nearbyUsers.data.forEach((user) => {
+          const { latitude, longitude, name } = user;
+
+          // Create marker for each user position
+          const marker = L.marker([latitude, longitude]).addTo(this.map);
+          marker.bindPopup(`<b>${name || "Anonymous"}</b>`).openPopup();
+        });
+
+        this.users = nearbyUsers.data; // Update users list
+      }
     },
-    showProfile(user) {
-      // Set the selected user to display their profile
-      this.selectedUser = user;
+
+    // Clear all markers from the map
+    clearMap() {
+      this.map.eachLayer((layer) => {
+        if (layer instanceof L.Marker) {
+          this.map.removeLayer(layer);
+        }
+      });
     },
-    closeProfile() {
-      // Close the profile popup
-      this.selectedUser = null;
-    },
-    dislike() {
-      alert("Disliked!");
-    },
-    superLike() {
-      alert("Super Liked!");
-    },
-    like() {
-      alert("Liked!");
-    },
+
     async checkUserLocation() {
       try {
         const userId = localStorage.getItem('userId');
@@ -180,9 +155,9 @@ export default {
 /* Main content area */
 .main-content {
   display: flex;
-  flex-direction: column; /* Bố trí theo cột cho tiêu đề và phần radar/info */
+  flex-direction: column;
   flex: 1;
-  padding-left: 20px; /* Thụt vào ngang với sidebar */
+  padding-left: 20px;
 }
 
 .page-title {
@@ -196,13 +171,12 @@ export default {
 }
 
 hr {
-  border: none; /* Loại bỏ viền mặc định */
-  height: 2px; /* Độ dày của hr */
-  background-color: #ff66ff; /* Màu sắc */
-  margin: 20px 0; /* Khoảng cách trên và dưới */
+  border: none;
+  height: 2px;
+  background-color: #ff66ff;
+  margin: 20px 0;
 }
 
-/* Information section and button */
 .info-section {
   flex: 1;
   display: flex;
@@ -236,109 +210,5 @@ hr {
 
 .scan-btn:hover:not(:disabled) {
   background-color: #ff66ff;
-}
-
-/* Modal Overlay */
-.modal-overlay-map {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: auto;
-  height: auto;
-  background-color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  margin-left: 1000px;
-  margin-top: 360px;
-}
-
-/* Modal Content */
-.modal-content {
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  position: relative;
-  max-width: 90%;
-  max-height: 90%;
-  overflow: auto;
-  width: 700px;
-}
-
-/* Close Button */
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.5rem;
-}
-
-.close-button:hover {
-  transform: scale(1.1);
-}
-
-.close-button:active {
-  transform: scale(0.95);
-}
-
-/* Image Wrapper */
-.images-wrapper {
-  display: flex;
-  gap: 20px;
-  margin-top: 20px;
-  justify-content: center;
-}
-
-.image-item {
-  flex: 1;
-  text-align: center;
-  max-width: 200px;
-}
-
-.profile-image-full {
-  width: 100%;
-  height: auto;
-  border-radius: 10px;
-  object-fit: cover;
-}
-
-.image-label {
-  margin-top: 5px;
-  font-size: 14px;
-}
-
-.action-buttons-modal {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  margin-top: 20px;
-}
-
-.button {
-  position: relative;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: white;
-  border: 3px solid #ddd; /* Thêm viền cho nút */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.button:hover {
-  background-color: #f0f0f0; /* Thay đổi màu nền khi hover */
-  border-color: #ff99ff; /* Đổi màu viền khi hover */
-}
-
-.button i {
-  font-size: 24px; /* Kích thước biểu tượng */
 }
 </style>

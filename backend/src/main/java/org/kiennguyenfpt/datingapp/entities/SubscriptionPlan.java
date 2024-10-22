@@ -37,3 +37,5 @@ public class SubscriptionPlan {
 
     @Column(nullable = true)
     private String imageUrl;
+
+}

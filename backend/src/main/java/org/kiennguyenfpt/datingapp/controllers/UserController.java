@@ -68,9 +68,11 @@ public class UserController {
             String email = validateJwt(authorizationHeader, response);
             if (email == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
 
+
             User user = userService.updateProfile(email, updateProfileRequest, files);
 
             if (user != null) {
+
                 List<String> imageUrls = photoService.uploadPhotos(email, files);
                 updateProfileWithImages(user, imageUrls); // Cập nhật avatar ở đây
 
@@ -116,6 +118,7 @@ public class UserController {
 
             // Tiến hành cập nhật hồ sơ
             user = userService.updateProfile(email, updateProfileRequest, files);
+
 
             if (user != null) {
                 Map<String, Object> responseData = createResponseData(user);

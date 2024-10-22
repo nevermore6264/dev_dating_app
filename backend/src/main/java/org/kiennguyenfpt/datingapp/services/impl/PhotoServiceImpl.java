@@ -37,7 +37,7 @@ public class PhotoServiceImpl implements PhotoService {
         }
 
         for (MultipartFile file : files) {
-            String fileName = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
+            String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
             Blob blob = bucket.create(fileName, file.getBytes(), file.getContentType());
             String imageUrl = blob.getMediaLink();
 

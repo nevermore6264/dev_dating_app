@@ -157,7 +157,7 @@ export default {
 .content {
   flex: 5;
   padding-left: 100px;
-  padding-top: 50px;
+  padding-top: 10px;
 }
 
 /* Profile Header */

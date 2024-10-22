@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -139,6 +140,9 @@ public class UserServiceImpl implements UserService {
             for (Photo photo : photos) {
                 photo.setProfile(profile); // Ensure the profile field is set
                 photoService.savePhoto(photo); // Save each photo to persist changes
+            }
+            if (profile.getPhotos() == null) {
+                profile.setPhotos(new ArrayList<>());
             }
 
             // Update the existing photos list instead of replacing it

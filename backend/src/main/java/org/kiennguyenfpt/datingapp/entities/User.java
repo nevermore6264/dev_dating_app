@@ -140,7 +140,7 @@ public class User {
     private int dailySwipeCount; // Số lần quẹt trong ngày
 
     @Column(nullable = false)
-    private LocalDate lastSwipeReset; // Ngày cuối cùng reset số lần quẹt
+    private LocalDate lastSwipeReset = LocalDate.now(); // Ngày cuối cùng reset số lần quẹt
 
     @Override
     public boolean equals(Object o) {

@@ -6,20 +6,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
+@Table(name = "Payments")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "MatchAnalytics")
-public class MatchAnalytic {
+public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long analyticsId;
+    private Long paymentId;
 
     @ManyToOne
-    @JoinColumn(name = "match_id", nullable = false)
-    private Match match;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    private double successRate;
+    @Column(nullable = false)
+    private double amount;
+
+    @Column(nullable = false)
+    private LocalDateTime date = LocalDateTime.now();
+
 }

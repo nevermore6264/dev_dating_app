@@ -1,20 +1,5 @@
 import { instance } from "./api-instance-provider";
 
-// export const getRandomUserProfile = async () => {
-//   try {
-//     const response = await instance.get('/profiles/random', {
-//       headers: {
-//         Authorization: `Bearer ${localStorage.getItem('userToken')}`,
-//       },
-//     });
-//     console.log('Response received:', response);
-
-//     return response.data;
-//   } catch (error) {
-//     console.error('Error fetching random profile:', error);
-//     throw error;
-//   }
-// };
 
 // Hàm để tải một hồ sơ ngẫu nhiên
 export async function loadRandomProfile() {
@@ -25,32 +10,27 @@ export async function loadRandomProfile() {
       },
     });
 
-    if (response.status === 204) {
-      console.warn('No random profile available.');
-      return null;
+    // Log the response to see the structure
+    console.log("API Response:", response);
+
+    // Ensure response contains the expected data
+    if (!response.data || !response.data.profileId) {
+      throw new Error("Invalid API response format");
     }
 
-    const profile = response.data;
-    return {
-      profileId: profile.profileId,
-      userId: profile.userId,
-      imageUrl: profile.avatar || profile.imageUrl,
-      name: profile.name,
-      age: profile.age,
-      bio: profile.bio,
+    // Adjust the returned profile format to match the expected output (even though it's a single object)
+    const profile = {
+      ...response.data,
+      imageUrl: response.data.avatar || response.data.imageUrl, // Adjust based on actual API response
     };
+
+    // Return the profile in an array format to keep the rest of the code compatible
+    return [profile];
   } catch (error) {
-    if (error.response && error.response.status === 401) {
-      console.error('Unauthorized access. Token might be missing or invalid.');
-      alert('Không có quyền truy cập. Vui lòng đăng nhập lại.');
-    } else {
-      console.error('Error loading random profile:', error);
-      alert('Không thể tải hồ sơ, vui lòng thử lại sau.');
-    }
+    console.error("Error loading random profiles:", error);
     throw error;
   }
 }
-
 
 // Hàm để gọi API tải tất cả hồ sơ người dùng
 export async function loadAllProfiles() {

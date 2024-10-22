@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container_cafe">
     <!-- Sidebar -->
     <LoveBellSidebar />
 
@@ -115,7 +115,7 @@ export default {
 
 <style scoped>
 /* Container chứa cả sidebar và phần chính */
-.container {
+.container_cafe {
   display: flex;
   align-items: flex-start;
   background-color: #f5f5f5;

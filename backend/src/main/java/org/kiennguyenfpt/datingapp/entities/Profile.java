@@ -4,20 +4,34 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
+import javax.annotation.PostConstruct;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.kiennguyenfpt.datingapp.enums.Gender;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PostLoad;
+import jakarta.persistence.PostPersist;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.annotation.PostConstruct;
 
 @Entity
 @Getter
@@ -26,8 +40,9 @@ import javax.annotation.PostConstruct;
 @NoArgsConstructor
 @Table(name = "Profiles")
 public class Profile {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long profileId;
 
     @OneToOne
@@ -49,19 +64,6 @@ public class Profile {
     private String avatar;
     private String phone;
 
-    //private String avatar;
-
-    @PostLoad
-    @PostPersist
-    @PostConstruct
-    private void setAvatar() {
-        if(photos != null && !photos.isEmpty()) {
-            this.avatar = photos.get(0).getUrl();
-        }
-    }
-
-    //private String phone;
-
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
@@ -70,8 +72,7 @@ public class Profile {
     @Column(name = "updated_at", nullable = false)
     private Timestamp updatedAt;
 
-
-    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Photo> photos; // Danh sách ảnh của hồ sơ
 
@@ -82,6 +83,7 @@ public class Profile {
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProfileVerification> verifications; // Danh sách xác minh của hồ sơ
 
+    /*
     public List<Photo> getPhotos() {
         if (photos == null) {
             photos = new ArrayList<>();
@@ -89,5 +91,6 @@ public class Profile {
         return photos;
     }
 
+     */
 
 }

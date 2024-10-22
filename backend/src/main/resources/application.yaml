@@ -41,18 +41,18 @@ spring:
       ddl-auto: update
     show-sql: true
 
-#firebase:
-#  storage:
-#    bucket: gs://datingapp-f4ecb.appspot.com
+firebase:
+  storage:
+    bucket: gs://datingapp-f4ecb.appspot.com
 
 #########
 jwt:
   #secret: kien_key
   expiration: 3600
 
-#cloud:
-#  storage:
-#    bucket-name: gs://datingapp-f4ecb.appspot.com
+cloud:
+  storage:
+    bucket-name: gs://datingapp-f4ecb.appspot.com
 
 
 

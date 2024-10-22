@@ -89,6 +89,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:8080")); // Chỉ định các nguồn (origins) được phép truy cập
+        configuration.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:8081")); // Chỉ định các nguồn (origins) được phép truy cập
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Chỉ định các phương thức được phép
         configuration.setAllowedHeaders(List.of("*")); // Cho phép tất cả các header
         configuration.setExposedHeaders(List.of("Authorization", "Content-Type")); // Các header được cho phép hiển thị

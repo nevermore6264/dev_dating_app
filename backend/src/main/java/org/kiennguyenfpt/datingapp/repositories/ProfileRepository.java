@@ -16,5 +16,6 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     List<Long> findSwipedUserIdsByUserId(@Param("currentUserId") Long currentUserId);
 
     // Lấy tất cả profile không nằm trong danh sách đã swipe và khác current user
-    List<Profile> findAllByUser_UserIdNotInAndUser_UserIdNot(List<Long> excludedUserIds, Long currentUserId);
+    @Query("SELECT p FROM Profile p WHERE p.user.userId NOT IN :excludedUserIds AND p.user.userId <> :currentUserId")
+    List<Profile> findAllByUser_UserIdNotInAndUser_UserIdNot(@Param("excludedUserIds") List<Long> excludedUserIds, @Param("currentUserId") Long currentUserId);
 }

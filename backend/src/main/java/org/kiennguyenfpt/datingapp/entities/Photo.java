@@ -28,7 +28,7 @@ import lombok.ToString;
 @Table(name = "Photos")
 public class Photo {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long photoId;
 
     @ManyToOne
@@ -42,4 +42,9 @@ public class Photo {
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
+
+    public Photo(Profile profile, String url) {
+        this.profile = profile;
+        this.url = url;
+    }
 }

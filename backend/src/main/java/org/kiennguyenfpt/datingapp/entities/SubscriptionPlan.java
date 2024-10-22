@@ -12,33 +12,30 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "SubscriptionPlans")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Cafes")
-public class Cafe {
+public class SubscriptionPlan {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long cafeId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long planId;
 
     @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
-    private String address;
-
-    @Column(length = 500)
-    private String bio;
+    private int duration; // Duration in days
 
     @Column(nullable = false)
-    private double priceRangeMin;
+    private double price;
 
-    @Column(nullable = false)
-    private double priceRangeMax;
+    @Column(columnDefinition = "TEXT")
+    private String features;
 
-    @Column
-    private String status;
-
+    @Column(nullable = true)
     private String imageUrl;
+
 }

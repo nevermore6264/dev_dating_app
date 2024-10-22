@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 @Table(name = "ProfileVerification")
 public class ProfileVerification {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long verificationId;
 
     @ManyToOne

@@ -1,11 +1,10 @@
 package org.kiennguyenfpt.datingapp.dtos.requests;
 
-import org.kiennguyenfpt.datingapp.enums.Gender;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.kiennguyenfpt.datingapp.enums.Gender;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.*;
@@ -13,9 +12,9 @@ import java.util.List;
 
 @Getter
 @Setter
-public class UpdateProfileRequest {
-
-    private List<MultipartFile> files;
+@AllArgsConstructor
+@NoArgsConstructor
+public class ProfileCreateRequest {
     @NotBlank(message = "Name is mandatory")
     private String name;
 
@@ -30,10 +29,9 @@ public class UpdateProfileRequest {
     @NotNull(message = "Gender is mandatory")
     private Gender gender;
 
-    private String avatar;
-
     @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Phone number is invalid")
     private String phone;
 
-
+    private MultipartFile avatar;
+    private List<MultipartFile> photos;
 }

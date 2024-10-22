@@ -1,11 +1,7 @@
 package org.kiennguyenfpt.datingapp.entities;
 
-import java.sql.Timestamp;
-
-import org.hibernate.annotations.CreationTimestamp;
-
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,21 +18,26 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Matches")
-public class Match {
+@Table(name = "Locations")
+public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long matchId;
+    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user1_id", nullable = false)
-    private User user1;
+    private Double latitude;
 
-    @ManyToOne
-    @JoinColumn(name = "user2_id", nullable = false)
-    private User user2;
+    private Double longitude;
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Timestamp createdAt;
+    private String street;
+
+    private String ward;
+
+    private String district;
+
+    private String province;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
 }

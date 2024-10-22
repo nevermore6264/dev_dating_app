@@ -32,8 +32,8 @@ public class SubscriptionPlan {
     @Column(nullable = false)
     private double price;
 
-    @Column(columnDefinition = "TEXT")
-    private String features;
+    @Column(nullable = false)
+    private int LikeCount;
 
     @Column(nullable = true)
     private String imageUrl;

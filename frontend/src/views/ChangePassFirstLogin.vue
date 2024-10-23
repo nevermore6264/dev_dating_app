@@ -53,6 +53,7 @@
 
 <script>
 import { changePassword } from '@/services/change-password-service';
+import { ElNotification } from "element-plus"; // Thêm import ElNotification
 
 export default {
   data() {
@@ -69,6 +70,11 @@ export default {
       // Check if the new password and confirm password match
       if (this.newPassword !== this.confirmPassword) {
         this.passwordMismatch = true;
+        ElNotification({
+          title: "Error",
+          message: "New password and confirmation do not match.",
+          type: "error",
+        });
         return;
       }
 
@@ -77,21 +83,33 @@ export default {
       console.log(localStorage.getItem('email'));
 
       if (!email) {
-        alert('Email is missing. Please log in again.');
+        ElNotification({
+          title: "Error",
+          message: "Email is missing. Please log in again.",
+          type: "error",
+        });
         return;
       }
 
       try {
         const response = await changePassword(email, this.oldPassword, this.newPassword);
-        alert(response.message); // Show message from the server
-        console.log(email, this.oldPassword, this.newPassword);
+        
+        ElNotification({
+          title: response.status === 200 ? "Success" : "Error",
+          message: response.message,
+          type: response.status === 200 ? "success" : "error",
+        });
 
         // Redirect to home page after successful password change
         if (response.status === 200) {
           this.$router.push('/');
         }
       } catch (error) {
-        alert(error.message);
+        ElNotification({
+          title: "Error",
+          message: error.message,
+          type: "error",
+        });
       }
     }
   },

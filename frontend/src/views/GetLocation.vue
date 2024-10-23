@@ -11,17 +11,24 @@
         <button class="emergency-button" @click="getLocation">Get Location</button>
       </div>
       <p class="mt-4" v-if="location" v-html="location"></p> <!-- Sử dụng v-html để hiển thị vị trí -->
+      <p class="mt-4" v-if="address" v-text="address"></p> <!-- Sử dụng v-html để hiển thị vị trí -->
 
       <!-- Thêm bản đồ -->
       <div id="map" class="map" v-if="latitude && longitude"></div>
+
+      <button class="save-location-button" @click="saveLocation" v-if="latitude && longitude">
+        Save Location
+      </button>
     </div>
   </div>
 </template>
 
 <script>
 import LoveBellSidebar from "@/views/sidebar/LoveBellSidebar.vue";
+import { createLocation } from '@/services/location-service';
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import {ElNotification} from "element-plus";
 
 export default {
   components: {
@@ -32,6 +39,7 @@ export default {
       location: null, // Biến để lưu thông tin vị trí
       latitude: null,  // Lưu trữ vĩ độ
       longitude: null, // Lưu trữ kinh độ
+      address: null,
       map: null,      // Biến bản đồ
       mapInitialized: false, // Biến trạng thái để kiểm tra xem bản đồ đã được khởi tạo chưa
     };
@@ -51,6 +59,7 @@ export default {
         this.location = "Geolocation is not supported by this browser.";
       }
     },
+
     showPosition(position) {
       this.latitude = position.coords.latitude;
       this.longitude = position.coords.longitude;
@@ -63,17 +72,19 @@ export default {
         this.initMap(); // Khởi tạo bản đồ khi có vị trí
       });
     },
+
     async getAddress(lat, lng) {
       try {
         const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
         const data = await response.json();
         if (data && data.display_name) {
-          this.location += `<br/> Address: ${data.display_name}`; // Cập nhật địa chỉ vào biến location
+          this.address = `Address: ${data.display_name}`; // Cập nhật địa chỉ vào biến location
         }
       } catch (error) {
         console.error("Error fetching address:", error);
       }
     },
+
     initMap() {
       if (this.mapInitialized) {
         // Nếu bản đồ đã được khởi tạo, không cần khởi tạo lại
@@ -96,6 +107,7 @@ export default {
         this.mapInitialized = true; // Đánh dấu là bản đồ đã được khởi tạo
       }
     },
+
     handleError(error) {
       switch (error.code) {
         case error.PERMISSION_DENIED:
@@ -112,7 +124,47 @@ export default {
           break;
       }
     },
+
+    async saveLocation() {
+      try {
+        // Retrieve the userId from localStorage
+        const userId = localStorage.getItem('userId');
+
+        if (!userId) {
+          alert('User is not logged in.');
+          return;
+        }
+
+        // Remove the 'Address: ' prefix and split the address by commas
+        const addressString = this.address.replace('Address: ', '');
+
+        // Create the location data object with latitude, longitude, and the parsed address components
+        const locationData = {
+          latitude: this.latitude,
+          longitude: this.longitude,
+          address: addressString,
+          userId: userId
+        };
+
+        // Save the location data to the database
+        await createLocation(locationData);
+
+        ElNotification({
+          title: 'Success',
+          message: `Location saved successfully!`,
+          type: 'success',
+        });
+      } catch (error) {
+        ElNotification({
+          title: 'Error',
+          message: error?.message,
+          type: 'error',
+        });
+      }
+    }
+
   },
+
 };
 </script>
 
@@ -151,5 +203,20 @@ export default {
 .map {
   height: 400px; /* Chiều cao của bản đồ */
   margin-top: 20px;
+}
+
+.save-location-button {
+  background-color: #28a745;
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.save-location-button:hover {
+  background-color: #218838;
+  transform: scale(1.05); /* Adds a zoom effect */
 }
 </style>

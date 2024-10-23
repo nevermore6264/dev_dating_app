@@ -22,6 +22,7 @@ import ManageContacts from "@/views/admin/ManageContacts.vue";
 import ManageMatches from "@/views/admin/ManageMatches.vue";
 import ManagePayments from "@/views/admin/ManagePayments.vue";
 import GetLocation from "@/views/GetLocation.vue";
+import ManagePackages from "@/views/admin/ManagePackages.vue";
 
 const routes = [
   {
@@ -143,6 +144,11 @@ const routes = [
         path: 'payments',
         component: ManagePayments, // Đường dẫn đến component quản lý payments,
         meta: { breadcrumb: 'Manage Payments' }
+      },
+      {
+        path: 'packages',
+        component: ManagePackages, // Đường dẫn đến component quản lý Packages,
+        meta: { breadcrumb: 'Manage Packages' }
       },
     ],
   }];

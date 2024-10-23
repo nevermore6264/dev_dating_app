@@ -101,10 +101,6 @@
               </button>
             </div>
           </div>
-
-          <!-- Error message -->
-          <p v-if="profileError" class="profile-error">{{ profileError }}</p>
-
           <!-- Update profile button -->
           <button @click="handleChangeProfile" class="change-profile-button">
             Update Profile
@@ -118,6 +114,7 @@
 
 <script>
 import { updateProfile } from "@/services/update-profile-service";
+import { ElNotification } from "element-plus"; // Thêm import ElNotification
 
 export default {
   data() {
@@ -147,6 +144,11 @@ export default {
       // Kiểm tra các trường bắt buộc
       if (!this.name || !this.age || !this.bio || !this.gender) {
         this.profileError = "All fields are required.";
+        ElNotification({
+          title: "Error",
+          message: "All fields are required.",
+          type: "error",
+        });
         return;
       }
 
@@ -161,13 +163,22 @@ export default {
           this.files
         );
 
-        alert(response.message);
+        ElNotification({
+          title: response.status === 200 ? "Success" : "Error",
+          message: response.message,
+          type: response.status === 200 ? "success" : "error",
+        });
 
         if (response.status === 200) {
           this.$router.push("/homePage");
         }
       } catch (error) {
         this.profileError = error.message;
+        ElNotification({
+          title: "Error",
+          message: error.message,
+          type: "error",
+        });
       }
     },
     handleFileUpload(event) {

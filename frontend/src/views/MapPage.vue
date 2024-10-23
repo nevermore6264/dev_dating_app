@@ -115,7 +115,7 @@ export default {
 
         // Add users to the map
         nearbyUsers.data.forEach((user) => {
-          const { latitude, longitude, name,age, email, address, phone, userId: userOnMapId, gender } = user;
+          const { latitude, longitude, name, age, bio, address, userId: userOnMapId, gender } = user;
 
           // Check if latitude and longitude are valid
           if (latitude && longitude) {
@@ -129,9 +129,8 @@ export default {
               <div>
                 <b>Name:</b> ${name || "-"}<br/>
                 <b>Age:</b> ${age || "-"}<br/>
-                <b>Email:</b> ${email || "Anonymous"}<br/>
                 <b>Address:</b> ${address || "-"}<br/>
-                <b>Phone:</b> ${phone || "-"}<br/>
+                <b>Bio:</b> ${bio || "-"}<br/>
                 <b>Gender:</b> ${gender || "-"}<br/>
                 ${!isCurrentUser ? `
                   <button onclick="handleLike('${userOnMapId}')">👍 Like</button>

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,13 +31,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "SELECT u.user_id as userId, u.email, u.phone, " +
             "ul.latitude, ul.longitude, ul.address, " +
-            "p.name, p.age, p.gender " +
+            "p.name, p.age, p.gender, p.bio, p.avatar, " +
+            "GROUP_CONCAT(ph.url) as photoUrls " +  // Sử dụng GROUP_CONCAT để gộp các URL lại thành một chuỗi
             "FROM users u " +
             "JOIN user_location ul ON ul.user_id = u.user_id " +
             "LEFT JOIN profiles p ON p.user_id = u.user_id " +
+            "LEFT JOIN photos ph ON ph.profile_id = p.profile_id " +  // Liên kết với bảng photos
             "WHERE (6371000 * acos(cos(radians(:latitude)) * cos(radians(ul.latitude)) * " +
             "cos(radians(ul.longitude) - radians(:longitude)) + sin(radians(:latitude)) * sin(radians(ul.latitude)))) " +
-            "<= :rangeInMeters",
+            "<= :rangeInMeters " +
+            "GROUP BY u.user_id, ul.latitude, ul.longitude, ul.address, p.name, p.age, p.gender, p.bio, p.avatar",
             nativeQuery = true)
     List<Object[]> findNearbyUsersRaw(@Param("latitude") double latitude,
                                       @Param("longitude") double longitude,
@@ -56,7 +60,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
                         (String) result[5],  // address
                         result[6] != null ? (String) result[6] : "-",  // Default name if null
                         (Integer) result[7], // age (Profile)
-                        result[8] != null ? Gender.valueOf((String) result[8]) : Gender.OTHER // gender (Profile)
+                        result[8] != null ? Gender.valueOf((String) result[8]) : Gender.OTHER, // gender (Profile)
+                        result[9] != null ? (String) result[9] : "-",  // bio (Profile)
+                        result[10] != null ? (String) result[10] : "-", // avatar (Profile)
+                        result[11] != null ? List.of(((String) result[11]).split(",")) : Collections.emptyList() // photoUrls (Profile)
                 ))
                 .collect(Collectors.toList());
     }

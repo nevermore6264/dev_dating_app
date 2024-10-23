@@ -97,7 +97,7 @@ export default {
 
         // Add users to the map
         nearbyUsers.data.forEach((user) => {
-          const { latitude, longitude, email, address, phone, userId: userOnMapId } = user;
+          const { latitude, longitude, name,age, email, address, phone, userId: userOnMapId, gender } = user;
 
           // Kiểm tra xem latitude và longitude có hợp lệ không
           if (latitude && longitude) {
@@ -109,9 +109,12 @@ export default {
             // Tạo nội dung popup
             const popupContent = `
               <div>
+                <b>Name:</b> ${name || "-"}<br/>
+                <b>Age:</b> ${age || "-"}<br/>
                 <b>Email:</b> ${email || "Anonymous"}<br/>
-                <b>Address:</b> ${address || "Unknown"}<br/>
-                <b>Phone:</b> ${phone || "Unknown"}<br/>
+                <b>Address:</b> ${address || "-"}<br/>
+                <b>Phone:</b> ${phone || "-"}<br/>
+                <b>Gender:</b> ${gender || "-"}<br/>
                 ${!isCurrentUser ? `
                   <button onclick="handleLike('${userOnMapId}')">👍 Like</button>
                   <button onclick="handleUnlike('${userOnMapId}')">👎 Unlike</button>

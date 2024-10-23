@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.kiennguyenfpt.datingapp.enums.Gender;
 
 @Getter
 @Setter
@@ -21,5 +22,11 @@ public class NearlyUserResponse {
     private Double longitude;
 
     private String address;
+
+    private String name;
+
+    private Integer age;
+
+    private Gender gender;
 
 }

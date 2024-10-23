@@ -33,11 +33,10 @@ public class AdminUserController {
     public ResponseEntity searchUsers(@RequestParam(value = "keyword", required = false) String keyword) {
         CommonResponse response = new CommonResponse<>();
         try {
-            List<User> users = userService.searchUsers(keyword);
-            List<AdminUserResponse> userResponse = users.stream().map(this::userToAdminUserResponse).toList();
+            List<AdminUserResponse> responses = userService.searchAdminUsers(keyword);
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Get list user successfully!");
-            response.setData(userResponse);
+            response.setData(responses);
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -70,23 +69,6 @@ public class AdminUserController {
             response.setMessage("Error: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-    }
-
-    private AdminUserResponse userToAdminUserResponse(User user) {
-        AdminUserResponse adminUserResponse = new AdminUserResponse();
-        adminUserResponse.setUserId(user.getUserId());
-        adminUserResponse.setEmail(user.getEmail());
-        adminUserResponse.setPhone(user.getPhone());
-        adminUserResponse.setCreatedAt(user.getCreatedAt());
-        if (user.getStatus() != null) {
-            adminUserResponse.setStatus(user.getStatus().name());
-        }
-        List<UserRole> list = user.getUserRoles();
-        if (list != null) {
-            adminUserResponse.setRole(list.get(0).getRole());
-        }
-
-        return adminUserResponse;
     }
 
 }

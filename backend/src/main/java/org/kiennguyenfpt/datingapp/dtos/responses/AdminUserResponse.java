@@ -15,14 +15,10 @@ import java.sql.Timestamp;
 public class AdminUserResponse {
     private long userId;
 
+    private String name;
+
     private String email;
 
-    private String phone;
-
-    private Timestamp createdAt;
-
-    private String status;
-
-    private Role role;
+    private String address;
     
 }

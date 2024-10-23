@@ -1,6 +1,7 @@
 package org.kiennguyenfpt.datingapp.repositories;
 
 import jakarta.transaction.Transactional;
+import org.kiennguyenfpt.datingapp.dtos.responses.AdminUserResponse;
 import org.kiennguyenfpt.datingapp.dtos.responses.NearlyUserResponse;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.enums.Gender;
@@ -26,6 +27,33 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "WHERE r.roleName = 'User' " +
             "AND (:keyword IS NULL OR :keyword = '' OR u.email LIKE %:keyword% OR u.phone LIKE %:keyword%)")
     List<User> searchUsersByKeyword(@Param("keyword") String keyword);
+
+    @Query(value = "SELECT u.user_id, p.name, u.email, l.address\n" +
+            "FROM users u\n" +
+            "JOIN user_roles ur ON u.user_id = ur.user_id\n" +
+            "JOIN roles r ON ur.role_id = r.role_id\n" +
+            "LEFT JOIN profiles p ON u.user_id = p.user_id\n" +
+            "LEFT JOIN user_location l ON u.user_id = l.user_id\n" +
+            "WHERE r.role_name = 'User'\n" +
+            "AND (:keyword IS NULL OR :keyword = '' " +
+            "OR u.email LIKE CONCAT('%', :keyword, '%') " +
+            "OR p.name LIKE CONCAT('%', :keyword, '%'))", nativeQuery = true)
+    List<Object[]> searchAdminUsersByKeywordRaw(@Param("keyword") String keyword);
+
+    default List<AdminUserResponse> searchAdminUsersByKeyword(@Param("keyword") String keyword) {
+        // Execute the raw query method
+        List<Object[]> results = searchAdminUsersByKeywordRaw(keyword);
+
+        // Convert raw results to UserSearchResponse DTOs
+        return results.stream()
+                .map(result -> new AdminUserResponse(
+                        (Long) result[0],      // userId
+                        result[1] != null ? (String) result[1] : "-",  // name, default "-" if null
+                        (String) result[2],    // email
+                        result[3] != null ? (String) result[3] : "-"   // address, default "-" if null
+                ))
+                .collect(Collectors.toList());
+    }
 
     @Modifying
     @Query("UPDATE User u SET u.status = CASE WHEN u.status = 'ACTIVE' THEN 'INACTIVE' ELSE 'ACTIVE' END WHERE u.userId = :id")

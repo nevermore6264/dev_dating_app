@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,9 +16,11 @@ public class PaymentResponse {
 
     private Double amount;
 
-    private String date;
+    private Timestamp date;
 
     private Long userId;
 
     private String address;
+
+    private String email;
 }

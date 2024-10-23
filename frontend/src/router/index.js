@@ -20,6 +20,7 @@ import ManageCafes from "@/views/admin/ManageCafes.vue";
 import ManageUsers from "@/views/admin/ManageUsers.vue";
 import ManageContacts from "@/views/admin/ManageContacts.vue";
 import ManageMatches from "@/views/admin/ManageMatches.vue";
+import ManagePayments from "@/views/admin/ManagePayments.vue";
 import GetLocation from "@/views/GetLocation.vue";
 
 const routes = [
@@ -137,6 +138,11 @@ const routes = [
         path: 'matches',
         component: ManageMatches, // Đường dẫn đến component quản lý matches,
         meta: { breadcrumb: 'Manage Matches' }
+      },
+      {
+        path: 'payments',
+        component: ManagePayments, // Đường dẫn đến component quản lý payments,
+        meta: { breadcrumb: 'Manage Payments' }
       },
     ],
   }];

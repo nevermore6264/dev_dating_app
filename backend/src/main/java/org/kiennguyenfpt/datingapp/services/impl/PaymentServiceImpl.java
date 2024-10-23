@@ -7,6 +7,8 @@ import org.kiennguyenfpt.datingapp.repositories.UserRepository;
 import org.kiennguyenfpt.datingapp.services.PaymentService;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,9 +47,10 @@ public class PaymentServiceImpl implements PaymentService {
                 .map(result -> new PaymentResponse(
                         (Long) result[0],    // payment_id
                         (Double) result[1],  // amount
-                        (String) result[2],  // date
+                        (Timestamp)(result[2]),  // date
                         (Long) result[3],    // user_id
-                        (String) result[4]   // address
+                        (String) result[4],   // address
+                        (String) result[5]   // address
                 ))
                 .collect(Collectors.toList());
     }

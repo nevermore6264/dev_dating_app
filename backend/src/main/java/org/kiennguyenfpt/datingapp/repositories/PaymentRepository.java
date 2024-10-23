@@ -15,14 +15,14 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     @Query(value = "SELECT p.payment_id, p.amount, p.date, u.user_id, l.address " +
             "FROM payments p " +
             "JOIN users u ON p.user_id = u.user_id " +
-            "LEFT JOIN locations l ON u.user_id = l.user_id " +
+            "LEFT JOIN user_location l ON u.user_id = l.user_id " +
             "WHERE p.user_id = :userId", nativeQuery = true)
     List<Object[]> findPaymentsByUserId(@Param("userId") Long userId);
 
     // Fetch all payments with user and location details (if needed)
-    @Query(value = "SELECT p.payment_id, p.amount, p.date, u.user_id, l.address " +
+    @Query(value = "SELECT p.payment_id, p.amount, p.date, u.user_id, l.address, u.email " +
             "FROM payments p " +
             "JOIN users u ON p.user_id = u.user_id " +
-            "LEFT JOIN locations l ON u.user_id = l.user_id", nativeQuery = true)
+            "LEFT JOIN user_location l ON u.user_id = l.user_id", nativeQuery = true)
     List<Object[]> findAllPayments();
 }

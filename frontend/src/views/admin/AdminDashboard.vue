@@ -22,6 +22,9 @@
           <li @click="navigateTo('Matches')">
             <el-icon><Money/></el-icon> Manage Matches
           </li>
+          <li @click="navigateTo('Payments')">
+            <el-icon><TrendCharts/></el-icon> Manage Payments
+          </li>
         </ul>
 
         <!-- Logout button at the bottom -->
@@ -42,7 +45,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import {House, CoffeeCup, User, SwitchButton, ChatLineRound, Money} from '@element-plus/icons-vue';
+import {House, CoffeeCup, TrendCharts, User, SwitchButton, ChatLineRound, Money} from '@element-plus/icons-vue';
 import Breadcrumb from "@/views/admin/Breadcrumb.vue"; // Import Footer
 
 const router = useRouter();

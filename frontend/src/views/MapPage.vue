@@ -70,13 +70,31 @@ export default {
   methods: {
     // Initialize the map
     initMap() {
-      // Create the map centered at a default location (change if needed)
-      this.map = L.map("map").setView([10.762622, 106.660172], 13); // Center at HCM city
+      this.map = L.map("map", {
+        minZoom: 10, // Mức zoom tối thiểu
+        maxZoom: 18, // Mức zoom tối đa
+      }).setView([10.762622, 106.660172], 13); // Center at HCM city
 
-      // Add OpenStreetMap tiles
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(this.map);
+
+      // Chặn click vào bản đồ
+      this.map.on('click', (e) => {
+        let clickedMarker = false;
+        this.map.eachLayer((layer) => {
+          if (layer instanceof L.Marker && layer.getLatLng().equals(e.latlng)) {
+            clickedMarker = true;
+            // Thực hiện hành động khi click vào marker
+            console.log("Clicked on marker:", layer);
+          }
+        });
+
+        if (!clickedMarker) {
+          // Nếu không click vào marker, bạn có thể ngăn chặn hành động
+          console.log("Clicked on empty space, no action performed.");
+        }
+      });
     },
 
     // Start scanning for nearby users and display them on the map
@@ -99,7 +117,7 @@ export default {
         nearbyUsers.data.forEach((user) => {
           const { latitude, longitude, name,age, email, address, phone, userId: userOnMapId, gender } = user;
 
-          // Kiểm tra xem latitude và longitude có hợp lệ không
+          // Check if latitude and longitude are valid
           if (latitude && longitude) {
             const marker = L.marker([latitude, longitude]).addTo(this.map);
 
@@ -122,7 +140,7 @@ export default {
               </div>
             `;
 
-            // Hiển thị popup với nội dung đã tạo
+            // Bind the popup
             marker.bindPopup(popupContent).openPopup();
           } else {
             console.warn("Missing latitude or longitude for user:", user);
@@ -135,13 +153,16 @@ export default {
 
     // Clear all markers from the map
     clearMap() {
-      this.map.eachLayer((layer) => {
-        if (layer instanceof L.Marker) {
-          this.map.removeLayer(layer);
-        }
-      });
+      if (this.map) {
+        this.map.eachLayer((layer) => {
+          if (layer instanceof L.Marker) {
+            this.map.removeLayer(layer);
+          }
+        });
+      } else {
+        console.error("Map is not initialized or has been destroyed.");
+      }
     },
-
     async checkUserLocation() {
       try {
         const userId = localStorage.getItem('userId');

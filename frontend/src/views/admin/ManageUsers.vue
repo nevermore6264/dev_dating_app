@@ -21,9 +21,8 @@
       <tr>
         <th>ID</th>
         <th>Email</th>
-        <th>Phone</th>
-        <th>Status</th>
-        <th>Role</th>
+        <th>Name</th>
+        <th>Address</th>
         <th style="width: 120px">Operations</th>
       </tr>
       </thead>
@@ -31,9 +30,8 @@
       <tr v-for="user in filteredUsers" :key="user.userId">
         <td>{{ user.userId }}</td>
         <td>{{ user.email }}</td>
-        <td>{{ user.phone ? user.phone : 'Not set' }}</td>
-        <td>{{ user.status }}</td>
-        <td>{{ user?.role?.roleName }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.address }}</td>
         <td>
           <el-button type="danger" @click="lockOrUnLockUser(user.userId)">
             {{ user.status === 'INACTIVE' ? 'Activate' : 'Deactivate' }}
@@ -62,7 +60,7 @@ const filteredUsers = computed(() => {
   const query = searchQuery.value.toLowerCase();
   return users.value.filter(user =>
       user.email.toLowerCase().includes(query) ||
-      user.phone?.toLowerCase().includes(query)
+      user.name?.toLowerCase().includes(query)
   );
 });
 

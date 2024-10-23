@@ -26,16 +26,16 @@ public class SubscriptionPlan {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column
     private int duration; // Duration in days
 
-    @Column(nullable = false)
+    @Column
     private double price;
 
-    @Column(columnDefinition = "TEXT")
+    @Column
     private String features;
 
-    @Column(nullable = true)
+    @Column
     private String imageUrl;
 
 }

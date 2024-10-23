@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <changeSet author="Dev" id="10">
+        <!-- admin -->
+        <sql>
+            <![CDATA[
+                -- Chèn gói Trial
+                INSERT INTO packages (package_id, name, description, duration, unlimited_swipe, see_likes, see_profile_views, price)
+                VALUES (1, 'Trial', 'Trải nghiệm quyền lợi Premium trong 7 ngày', 7, TRUE, TRUE, TRUE, 0.00);
+
+                -- Chèn gói Premium
+                INSERT INTO packages (package_id, name, description, duration, unlimited_swipe, see_likes, see_profile_views, price)
+                VALUES (2, 'Premium', 'Swipe không giới hạn, xem ai đã like và xem ai đã xem profile', 30, TRUE, TRUE, TRUE, 9.99);
+            ]]>
+        </sql>
+    </changeSet>
+</databaseChangeLog>

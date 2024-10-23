@@ -2,55 +2,68 @@
   <div class="app-wrapper">
     <!-- Sidebar component -->
     <LoveBellSidebar />
+    <div class="main-content-head">
+      <h1>LOVE BELL RADAR</h1>
+      <!-- Main content area -->
+      <div class="main-content">
+        <!-- OpenStreetMap container bên trái -->
+        <div id="map"></div>
 
-    <!-- Main content area -->
-    <div class="main-content">
-      <!-- OpenStreetMap container bên trái -->
-      <div id="map"></div>
+        <!-- Information and button section bên phải -->
+        <div class="info-section">
+          <div class="info">
+            <h3>Looking for someone?</h3>
+            <p>{{ users.length }} users are close to you, let's find them !!</p>
 
-      <!-- Information and button section bên phải -->
-      <div class="info-section">
-        <div class="info">
-          <h3>Looking for someone?</h3>
-          <p>{{ users.length }} users are close to you, let's find them !!</p>
+            <!-- Range slider -->
+            <label for="range-slider">Within {{ range }} meters</label>
+            <input
+              type="range"
+              id="range-slider"
+              v-model="range"
+              min="1000"
+              max="100000"
+              step="500"
+              @input="updateSliderStyle"
+              class="range-slider"
+            />
 
-          <!-- Range slider -->
-          <label for="range-slider">Within {{ range }} meters</label>
-          <input
-            type="range"
-            id="range-slider"
-            v-model="range"
-            min="1000"
-            max="100000"
-            step="500"
-            @input="updateSliderStyle"
-            class="range-slider"
-          />
+            <p>
+              Make sure to look and check, then decide whether you should catch
+              up with them!
+            </p>
+          </div>
+          <button
+            class="scan-btn"
+            :class="{ scanning: isScanning }"
+            @click="startScanning"
+            :disabled="isScanning"
+          >
+            {{ isScanning ? "Scanning..." : "Re-scanning" }}
+          </button>
 
-          <p>
-            Make sure to look and check, then decide whether you should catch up
-            with them!
-          </p>
-        </div>
-        <button class="scan-btn" @click="startScanning" :disabled="isScanning">
-          {{ isScanning ? "Scanning..." : "Re-scanning" }}
-        </button>
-
-        <!-- User details displayed below scan button -->
-        <div v-if="selectedUser" class="user-details">
-          <button class="close-button" @click="closeProfile">×</button>
-          <h2>{{ selectedUser.name }} - {{ selectedUser.age }}</h2>
-          <p>{{ selectedUser.bio || 'No bio available' }}</p>
-          <div class="action-buttons-modal">
-            <button class="button dislike-button" @click="handleUnlike(selectedUser.userId)">
-              <i class="fas fa-times"></i>
-            </button>
-            <button class="button super-like-button" @click="superLike">
-              <i class="fas fa-star"></i>
-            </button>
-            <button class="button like-button" @click="handleLike(selectedUser.userId)">
-              <i class="fas fa-heart"></i>
-            </button>
+          <!-- User details displayed below scan button -->
+          <div v-if="selectedUser" class="user-details">
+            <button class="close-button" @click="closeProfile">×</button>
+            <h2>{{ selectedUser.name }} - {{ selectedUser.age }}</h2>
+            <p>{{ selectedUser.bio || "No bio available" }}</p>
+            <div class="action-buttons-modal">
+              <button
+                class="button dislike-button"
+                @click="handleUnlike(selectedUser.userId)"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+              <button class="button super-like-button" @click="superLike">
+                <i class="fas fa-star"></i>
+              </button>
+              <button
+                class="button like-button"
+                @click="handleLike(selectedUser.userId)"
+              >
+                <i class="fas fa-heart"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -146,82 +159,84 @@ export default {
     },
 
     async startScanning() {
-        this.isScanning = true; // Bắt đầu hiệu ứng scan
+      this.isScanning = true; // Bắt đầu hiệu ứng scan
+      const markers = document.querySelectorAll(".leaflet-marker-icon");
+      markers.forEach((marker) => marker.classList.add("scanning-marker"));
+      // Tạo hiệu ứng scan ảo trong 5 giây trước khi hiển thị kết quả thực
+      await this.fakeScanAnimation(5000);
 
-        // Tạo hiệu ứng scan ảo trong 5 giây trước khi hiển thị kết quả thực
-        await this.fakeScanAnimation(5000);
+      // Thực hiện việc quét thực tế sau hiệu ứng scan ảo
+      const nearbyUsers = await fetchNearbyUsers(this.userId, this.range);
+      if (nearbyUsers?.data) {
+        this.isScanning = false;
+        markers.forEach((marker) => marker.classList.remove("scanning-marker"));
 
-        // Thực hiện việc quét thực tế sau hiệu ứng scan ảo
-        const nearbyUsers = await fetchNearbyUsers(this.userId, this.range);
-        if (nearbyUsers?.data) {
-            this.isScanning = false;
+        ElNotification({
+          title: "Success",
+          message: "Fetch Nearby Users Successfully.",
+          type: "success",
+        });
 
-            ElNotification({
-                title: "Success",
-                message: "Fetch Nearby Users Successfully.",
-                type: "success",
-            });
+        // Lọc người dùng để loại trừ chính mình
+        const filteredUsers = nearbyUsers.data.filter(
+          (user) => user.userId !== this.userId
+        );
 
-            // Lọc người dùng để loại trừ chính mình
-            const filteredUsers = nearbyUsers.data.filter(
-                (user) => user.userId !== this.userId
-            );
+        // Clear existing markers
+        this.clearMap();
 
-            // Clear existing markers
-            this.clearMap();
+        // Add users to the map
+        filteredUsers.forEach((user) => {
+          const { latitude, longitude, userId: userOnMapId } = user;
 
-            // Add users to the map
-            filteredUsers.forEach((user) => {
-                const { latitude, longitude, userId: userOnMapId } = user;
+          if (latitude && longitude) {
+            const marker = L.marker([latitude, longitude]).addTo(this.map);
+            const isCurrentUser = this.userId == userOnMapId;
 
-                if (latitude && longitude) {
-                    const marker = L.marker([latitude, longitude]).addTo(this.map);
-                    const isCurrentUser = this.userId == userOnMapId;
-
-                    if (!isCurrentUser) {
-                        marker.on("click", () => {
-                            this.onMarkerClick(user); // Hiển thị chi tiết người dùng khi click
-                        });
-                    }
-                } else {
-                    console.warn("Missing latitude or longitude for user:", user);
-                }
-            });
-
-            // Cập nhật danh sách người dùng hiển thị (không bao gồm chính mình)
-            this.users = filteredUsers;
-
-            // Cập nhật số lượng người dùng hiển thị
-            if (filteredUsers.length === 0) {
-                ElNotification({
-                    title: "Info",
-                    message: "No users found nearby except you.",
-                    type: "info",
-                });
+            if (!isCurrentUser) {
+              marker.on("click", () => {
+                this.onMarkerClick(user); // Hiển thị chi tiết người dùng khi click
+              });
             }
+          } else {
+            console.warn("Missing latitude or longitude for user:", user);
+          }
+        });
+
+        // Cập nhật danh sách người dùng hiển thị (không bao gồm chính mình)
+        this.users = filteredUsers;
+
+        // Cập nhật số lượng người dùng hiển thị
+        if (filteredUsers.length === 0) {
+          ElNotification({
+            title: "Info",
+            message: "No users found nearby except you.",
+            type: "info",
+          });
         }
+      }
     },
 
     // Function to create a fake scan animation (tạo độ trễ trước khi quét thật)
     async fakeScanAnimation(duration) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve();
-            }, duration);
-        });
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, duration);
+      });
     },
 
     // Clear all markers from the map
     clearMap() {
-        if (this.map) {
-            this.map.eachLayer((layer) => {
-                if (layer instanceof L.Marker) {
-                    this.map.removeLayer(layer);
-                }
-            });
-        } else {
-            console.error("Map is not initialized or has been destroyed.");
-        }
+      if (this.map) {
+        this.map.eachLayer((layer) => {
+          if (layer instanceof L.Marker) {
+            this.map.removeLayer(layer);
+          }
+        });
+      } else {
+        console.error("Map is not initialized or has been destroyed.");
+      }
     },
     async checkUserLocation() {
       try {
@@ -259,13 +274,13 @@ export default {
       });
     },
     updateSliderStyle() {
-    const slider = document.getElementById("range-slider");
-    const percentage = ((this.range - 500 ) / (100000 - 1000)) * 100;
-    slider.style.background = `linear-gradient(90deg, #ff99ff ${percentage}%, #ffffff ${percentage}%)`;
-  }, 
-  closeProfile() {
+      const slider = document.getElementById("range-slider");
+      const percentage = ((this.range - 500) / (100000 - 1000)) * 100;
+      slider.style.background = `linear-gradient(90deg, #ff99ff ${percentage}%, #ffffff ${percentage}%)`;
+    },
+    closeProfile() {
       this.selectedUser = null;
-    }
+    },
   },
 };
 </script>
@@ -275,6 +290,14 @@ export default {
 .app-wrapper {
   display: flex;
   height: 100vh;
+}
+.main-content-head h1 {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 35px;
+  color: #ff6699;
+  font-size: 40px;
+  font-weight: 600;
 }
 
 /* Main content area */
@@ -292,7 +315,7 @@ export default {
   width: 700px;
   overflow: hidden;
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
-  margin: 100px 0px 0px 50px;
+  margin: 0px 0px 0px 50px;
   position: relative;
 }
 
@@ -308,6 +331,7 @@ export default {
 
 .info {
   font-size: 21px;
+  text-align: center;
 }
 
 .info h3 {
@@ -348,11 +372,9 @@ export default {
   position: relative; /* Để định vị nút "Close" */
 }
 
-
-
 .range-slider {
   -webkit-appearance: none;
-  width:80%;
+  width: 80%;
   height: 10px;
   background: linear-gradient(90deg, #ff99ff 0%, #ffffff 0%);
   border-radius: 5px;
@@ -398,39 +420,49 @@ export default {
   margin-top: 20px;
 }
 
+/* Action buttons */
 .button {
   position: relative;
   width: 60px;
   height: 60px;
   border-radius: 50%;
   background-color: white;
-  border: 3px solid #ddd;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
   cursor: pointer;
-  transition: transform 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease;
+  border: none;
 }
 
-.button::before {
-  content: "";
-  position: absolute;
-  top: -3px;
-  left: -3px;
-  width: 66px;
-  height: 66px;
-  border-radius: 50%;
-  background: linear-gradient(45deg, red, orange);
-  z-index: -1;
+.dislike-button {
+  background-color: #ff5a5f; /* Red color for dislike */
+  box-shadow: 0 0 15px rgba(255, 90, 95, 0.3);
 }
 
-.super-like-button::before {
-  background: linear-gradient(45deg, blue, cyan);
+.super-like-button {
+  background-color: #3498db; /* Blue color for super-like */
+  box-shadow: 0 0 15px rgba(52, 152, 219, 0.3);
 }
 
-.like-button::before {
-  background: linear-gradient(45deg, green, lime);
+.like-button {
+  background-color: #2ecc71; /* Green color for like */
+  box-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
+}
+
+.button:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.button:active {
+  transform: scale(0.95);
+}
+
+.button i {
+  font-size: 1.5rem;
+  color: white; /* Set icon color to white */
 }
 
 .button:hover {
@@ -441,25 +473,77 @@ export default {
   transform: scale(0.95);
 }
 
-.button i {
-  font-size: 1.5rem;
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
-.dislike-button i {
-  color: #ff5a5f;
+.scan-btn.scanning {
+  animation: pulse 1.5s infinite;
 }
 
-.super-like-button i {
-  color: #3498db;
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.like-button i {
-  color: #2ecc71;
+.user-details {
+  animation: slideIn 0.5s ease-out;
 }
 
-.button:hover i {
-  color: white;
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
+.leaflet-marker-icon {
+  transition: transform 0.5s ease;
+}
 
+.map .scanning-marker {
+  animation: rotate 2s infinite linear;
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.app-wrapper .sidebar {
+  animation: slideInLeft 0.5s forwards;
+}
+
+.app-wrapper .sidebar.hidden {
+  animation: slideOutLeft 0.5s forwards;
+}
 </style>

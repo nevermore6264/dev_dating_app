@@ -14,7 +14,6 @@ import java.util.List;
 @Getter
 @Setter
 public class UpdateProfileRequest {
-
     private List<MultipartFile> files;
     @NotBlank(message = "Name is mandatory")
     private String name;
@@ -34,6 +33,4 @@ public class UpdateProfileRequest {
 
     @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Phone number is invalid")
     private String phone;
-
-
 }

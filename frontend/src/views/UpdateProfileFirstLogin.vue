@@ -2,112 +2,119 @@
   <div class="login-page-container">
     <div class="white-container">
       <div class="form-container">
-        <h2>Update Profile</h2>
-        <p>Please update your profile to continue using the app</p>
-
-        <!-- File upload input -->
-        <div class="input-field">
-          <label for="files">Upload Photos:</label>
-          <input type="file" @change="handleFileUpload" multiple />
+        <!-- Fixed header -->
+        <div class="fixed-header">
+          <h2>Update Profile</h2>
+          <p>Please update your profile to continue using the app</p>
         </div>
-        <!-- Preview uploaded images -->
-        <div v-if="filePreviews.length > 0" class="image-preview-container">
-          <div
-            v-for="(preview, index) in filePreviews"
-            :key="index"
-            class="image-preview"
-          >
-            <img :src="preview" alt="Image preview" />
+
+        <!-- Scrollable content -->
+        <div class="scrollable-content">
+          <!-- File upload input -->
+          <div class="input-field">
+            <label for="files">Upload Photos:</label>
+            <input type="file" @change="handleFileUpload" multiple />
           </div>
-        </div>
-
-        <!-- Name input field -->
-        <div class="input-field">
-          <label for="username">Name:</label>
-          <input
-            type="text"
-            v-model="name"
-            placeholder="Name"
-            class="string-input"
-          />
-        </div>
-        <!-- Phone input field -->
-        <div class="input-field">
-          <label for="phone">Phone:</label>
-          <input
-            type="number"
-            v-model="phone"
-            placeholder="Phone"
-            class="string-input"
-          />
-        </div>
-        <!-- Age slider field -->
-        <div class="age-slider-container">
-          <label for="ageRange"
-            >Age: <strong>{{ age }}</strong></label
-          >
-          <input
-            type="range"
-            v-model="age"
-            min="18"
-            max="100"
-            class="age-slider"
-            id="ageRange"
-            @input="updateSliderStyle"
-          />
-        </div>
-
-        <!-- Bio input field -->
-        <div class="input-field">
-          <label for="bio">Bio:</label>
-          <textarea
-            v-model="bio"
-            :maxlength="bioMaxLength"
-            placeholder="Bio"
-            class="string-input bio-textarea"
-            rows="4"
-          ></textarea>
-          <small class="char-counter">
-            Remaining characters: {{ remainingBioChars }}
-          </small>
-        </div>
-
-        <!-- Gender selection -->
-        <div class="gender-selection input-field">
-          <label for="gender">Gender:</label>
-          <div class="options">
-            <button
-              :class="{ selected: gender === 'MALE' }"
-              @click="selectGender('MALE')"
+          <!-- Preview uploaded images -->
+          <div v-if="filePreviews.length > 0" class="image-preview-container">
+            <div
+              v-for="(preview, index) in filePreviews"
+              :key="index"
+              class="image-preview"
             >
-              MALE
-            </button>
-            <button
-              :class="{ selected: gender === 'FEMALE' }"
-              @click="selectGender('FEMALE')"
-            >
-              FEMALE
-            </button>
-            <button
-              :class="{ selected: gender === 'OTHER' }"
-              @click="selectGender('OTHER')"
-            >
-              OTHER
-            </button>
+              <img :src="preview" alt="Image preview" />
+            </div>
           </div>
+
+          <!-- Name input field -->
+          <div class="input-field">
+            <label for="username">Name:</label>
+            <input
+              type="text"
+              v-model="name"
+              placeholder="Name"
+              class="string-input"
+            />
+          </div>
+          <!-- Phone input field -->
+          <div class="input-field">
+            <label for="phone">Phone:</label>
+            <input
+              type="number"
+              v-model="phone"
+              placeholder="Phone"
+              class="string-input"
+            />
+          </div>
+          <!-- Age slider field -->
+          <div class="age-slider-container">
+            <label for="ageRange">
+              Age: <strong>{{ age }}</strong>
+            </label>
+            <input
+              type="range"
+              v-model="age"
+              min="18"
+              max="100"
+              class="age-slider"
+              id="ageRange"
+              @input="updateSliderStyle"
+            />
+          </div>
+
+          <!-- Bio input field -->
+          <div class="input-field">
+            <label for="bio">Bio:</label>
+            <textarea
+              v-model="bio"
+              :maxlength="bioMaxLength"
+              placeholder="Bio"
+              class="string-input bio-textarea"
+              rows="4"
+            ></textarea>
+            <small class="char-counter">
+              Remaining characters: {{ remainingBioChars }}
+            </small>
+          </div>
+
+          <!-- Gender selection -->
+          <div class="gender-selection input-field">
+            <label for="gender">Gender:</label>
+            <div class="options">
+              <button
+                :class="{ selected: gender === 'MALE' }"
+                @click="selectGender('MALE')"
+              >
+                MALE
+              </button>
+              <button
+                :class="{ selected: gender === 'FEMALE' }"
+                @click="selectGender('FEMALE')"
+              >
+                FEMALE
+              </button>
+              <button
+                :class="{ selected: gender === 'OTHER' }"
+                @click="selectGender('OTHER')"
+              >
+                OTHER
+              </button>
+            </div>
+          </div>
+
+          <!-- Error message -->
+          <p v-if="profileError" class="profile-error">{{ profileError }}</p>
+
+          <!-- Update profile button -->
+          <button @click="handleChangeProfile" class="change-profile-button">
+            Update Profile
+          </button>
         </div>
-
-        <!-- Error message -->
-        <p v-if="profileError" class="profile-error">{{ profileError }}</p>
-
-        <!-- Update profile button -->
-        <button @click="handleChangeProfile" class="change-profile-button">
-          Update Profile
-        </button>
       </div>
     </div>
   </div>
 </template>
+
 
 <script>
 import { updateProfile } from "@/services/update-profile-service";
@@ -117,7 +124,7 @@ export default {
     return {
       name: "",
       phone: "",
-      age: 25, // Default value for the slider
+      age: 50, // Default value for the slider
       bio: "",
       gender: "",
       files: [], // Tệp ảnh
@@ -192,13 +199,14 @@ export default {
 };
 </script>
 <style>
-/* General form styling */
 .login-page-container {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   justify-content: center;
   align-items: center;
   background-color: #ff85a1;
+  overflow: hidden;
+  padding: 20px; /* Ensures padding when the screen is smaller */
 }
 
 .white-container {
@@ -207,14 +215,50 @@ export default {
   border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   padding: 50px;
+  max-width: 600px; /* Sets a maximum width */
+  width: 100%; /* Ensures it fits within the screen */
+  max-height: 90vh; /* Restricts maximum height to keep it within the viewport */
+  overflow: hidden; /* Prevents the whole container from scrolling */
+  margin-bottom: 50px;
 }
 
 .form-container {
   width: 100%;
-  max-width: 400px;
-  padding: 20px;
+  max-width: 500px;
   background-color: #fff;
   border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.fixed-header {
+  text-align: center;
+  background-color: #fff;
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+  position: sticky; /* Fixes the header */
+  top: 0;
+  z-index: 1; /* Ensures it stays above the scrollable content */
+}
+
+.scrollable-content {
+  padding: 20px;
+  overflow-y: auto; /* Enables vertical scrolling */
+  max-height: calc(80vh - 80px); /* Adjusts the height to ensure content doesn't overflow */
+}
+
+.scrollable-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb {
+  background-color: #ff4d95;
+  border-radius: 4px;
+}
+
+.scrollable-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
 }
 
 .form-container h2 {
@@ -276,11 +320,10 @@ export default {
   width: 100%;
   appearance: none;
   height: 10px;
-  background: #ccc;
+  background: linear-gradient(90deg, #ff4d95 0%, #ccc 0%); /* Default background */
   border-radius: 5px;
   outline: none;
-  opacity: 0.9;
-  transition: opacity 0.2s;
+  transition: background 0.3s;
 }
 
 .age-slider:hover {
@@ -288,19 +331,24 @@ export default {
 }
 
 .age-slider::-webkit-slider-thumb {
+  appearance: none;
   width: 15px;
   height: 15px;
   background: #ff4d95;
   border-radius: 50%;
   cursor: pointer;
+  border: 2px solid #fff; /* Add a white border to make it stand out */
+  position: relative;
+  z-index: 10; /* Ensure it stays above the track */
 }
 
 .age-slider::-moz-range-thumb {
-  width: 25px;
-  height: 25px;
+  width: 15px;
+  height: 15px;
   background: #ff4d95;
   border-radius: 50%;
   cursor: pointer;
+  border: 2px solid #fff;
 }
 
 /* Gender selection styling */

@@ -1,16 +1,16 @@
 <template>
-  <div class="login-page-container">
-    <div class="white-container">
+  <div class="change-password-page-container">
+    <div class="change-password-white-container">
       <!-- Logo section -->
-      <div class="logo-container">
-        <div class="logo">
+      <div class="change-password-logo-container">
+        <div class="change-password-logo">
           <img :src="require('@/assets/lovebell.jpg')" alt="Logo" />
           <h1>LOVE-BELL</h1>
         </div>
       </div>
 
       <!-- Form section -->
-      <div class="form-container">
+      <div class="change-password-form-container">
         <h2>Change Your Password</h2>
         <p>Please update your password to continue using the app</p>
 
@@ -19,7 +19,7 @@
           type="password"
           v-model="oldPassword"
           placeholder="Current Password"
-          class="password-input"
+          class="change-password-input"
         />
 
         <!-- New Password input field -->
@@ -27,7 +27,7 @@
           type="password"
           v-model="newPassword"
           placeholder="New Password"
-          class="password-input"
+          class="change-password-input"
         />
 
         <!-- Confirm Password input field -->
@@ -35,10 +35,10 @@
           type="password"
           v-model="confirmPassword"
           placeholder="Confirm New Password"
-          class="password-input"
+          class="change-password-input"
         />
 
-        <p v-if="passwordMismatch" class="password-error">
+        <p v-if="passwordMismatch" class="change-password-error">
           New password and confirmation do not match.
         </p>
 
@@ -60,20 +60,19 @@ export default {
       oldPassword: '',
       newPassword: '',
       confirmPassword: '',
-      email: '', // Thêm email từ localStorage
+      email: '', // Get email from localStorage
       passwordMismatch: false,
     };
   },
   methods: {
     async handleChangePassword() {
-      // Kiểm tra xem mật khẩu mới và xác nhận mật khẩu có khớp nhau không
+      // Check if the new password and confirm password match
       if (this.newPassword !== this.confirmPassword) {
         this.passwordMismatch = true;
         return;
       }
 
-
-      // Lấy email từ localStorage, nếu email không tồn tại thì báo lỗi
+      // Get email from localStorage, if email is missing show an error
       const email = localStorage.getItem('email');
       console.log(localStorage.getItem('email'));
 
@@ -84,10 +83,10 @@ export default {
 
       try {
         const response = await changePassword(email, this.oldPassword, this.newPassword);
-        alert(response.message); // Hiển thị thông báo từ server
+        alert(response.message); // Show message from the server
         console.log(email, this.oldPassword, this.newPassword);
 
-        // Chuyển hướng về trang chủ sau khi thay đổi mật khẩu thành công
+        // Redirect to home page after successful password change
         if (response.status === 200) {
           this.$router.push('/');
         }
@@ -97,16 +96,13 @@ export default {
     }
   },
   mounted() {
-    // Khi component được mount, kiểm tra xem email đã được lưu chưa
+    // When component is mounted, check if email is saved
     this.email = localStorage.getItem('userEmail');
   }
 };
 </script>
 
-
-
 <style scoped>
-/* Style giống như bạn đã thiết lập trong phần trước */
 body {
   background-color: #ffb3c1;
   margin: 0;
@@ -114,7 +110,7 @@ body {
   font-family: Arial, sans-serif;
 }
 
-.login-page-container {
+.change-password-page-container {
   display: flex;
   height: 100vh;
   justify-content: center;
@@ -123,7 +119,7 @@ body {
   background-color: #ff85a1;
 }
 
-.logo-container {
+.change-password-logo-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -133,7 +129,7 @@ body {
   margin-right: 20px;
 }
 
-.white-container {
+.change-password-white-container {
   display: flex;
   background-color: #fff;
   border-radius: 20px;
@@ -141,7 +137,7 @@ body {
   padding: 50px;
 }
 
-.logo img {
+.change-password-logo img {
   width: 300px;
   height: auto;
   margin-bottom: 40px;
@@ -154,7 +150,7 @@ h1 {
   text-align: center;
 }
 
-.form-container {
+.change-password-form-container {
   width: 100%;
   max-width: 400px;
   padding: 20px;
@@ -174,8 +170,8 @@ p {
   margin-bottom: 20px;
 }
 
-.password-input {
-  width: 95%;
+.change-password-input {
+  width: 100%;
   padding: 10px;
   margin-bottom: 15px;
   border-radius: 5px;
@@ -183,7 +179,7 @@ p {
   font-size: 16px;
 }
 
-.password-error {
+.change-password-error {
   color: red;
   text-align: center;
   margin-bottom: 20px;

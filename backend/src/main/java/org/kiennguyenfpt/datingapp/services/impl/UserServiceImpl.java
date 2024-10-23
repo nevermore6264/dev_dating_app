@@ -1,9 +1,11 @@
 package org.kiennguyenfpt.datingapp.services.impl;
 
 import org.kiennguyenfpt.datingapp.dtos.requests.UpdateProfileRequest;
+import org.kiennguyenfpt.datingapp.dtos.responses.NearlyUserResponse;
 import org.kiennguyenfpt.datingapp.entities.Photo;
 import org.kiennguyenfpt.datingapp.entities.Profile;
 import org.kiennguyenfpt.datingapp.entities.User;
+import org.kiennguyenfpt.datingapp.entities.UserLocation;
 import org.kiennguyenfpt.datingapp.repositories.UserRepository;
 import org.kiennguyenfpt.datingapp.services.PhotoService;
 import org.kiennguyenfpt.datingapp.services.UserService;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -51,6 +54,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Long id) {
         return userRepository.getReferenceById(id);
+    }
+
+    @Override
+    public List<NearlyUserResponse> findNearbyUsers(UserLocation currentLocation, double rangeInMeters) {
+        return userRepository.findNearbyUsers(currentLocation.getLatitude(), currentLocation.getLongitude(), rangeInMeters);
     }
 
     /*
@@ -139,6 +147,9 @@ public class UserServiceImpl implements UserService {
             for (Photo photo : photos) {
                 photo.setProfile(profile); // Ensure the profile field is set
                 photoService.savePhoto(photo); // Save each photo to persist changes
+            }
+            if (profile.getPhotos() == null) {
+                profile.setPhotos(new ArrayList<>());
             }
 
             // Update the existing photos list instead of replacing it

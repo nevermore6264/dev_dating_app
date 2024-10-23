@@ -201,8 +201,9 @@ export default {
         );
 
         if (response.status === 200) {
-          alert("Cập nhật thành công!");
+          this.$emit("close"); 
           this.$router.push("/profile");
+          window.location.reload(); 
         }
       } catch (error) {
         console.error("Error saving profile:", error);

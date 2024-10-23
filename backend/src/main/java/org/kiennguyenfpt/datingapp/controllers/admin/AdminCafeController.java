@@ -1,4 +1,4 @@
-package org.kiennguyenfpt.datingapp.controllers;
+package org.kiennguyenfpt.datingapp.controllers.admin;
 
 import org.kiennguyenfpt.datingapp.dtos.requests.CafeRequest;
 import org.kiennguyenfpt.datingapp.dtos.responses.CafeResponse;

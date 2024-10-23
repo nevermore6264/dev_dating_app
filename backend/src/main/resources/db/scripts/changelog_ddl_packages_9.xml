@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <changeSet author="Dev" id="9">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="packages"/>
+            </not>
+        </preConditions>
+        <!-- admin -->
+        <sql>
+            <![CDATA[
+                CREATE TABLE packages (
+                    package_id INT AUTO_INCREMENT PRIMARY KEY,    -- Khóa chính, mã định danh của gói
+                    name VARCHAR(100) NOT NULL,                   -- Tên của gói (Trial, Premium)
+                    description TEXT,                             -- Mô tả gói dịch vụ
+                    duration INT NOT NULL,                        -- Thời gian gói dịch vụ (ngày)
+                    unlimited_swipe BOOLEAN DEFAULT FALSE,        -- Quyền swipe không giới hạn
+                    see_likes BOOLEAN DEFAULT FALSE,              -- Quyền xem ai đã like mình
+                    see_profile_views BOOLEAN DEFAULT FALSE,      -- Quyền xem ai đã xem profile của mình
+                    price DECIMAL(10, 2) NOT NULL,                -- Giá gói dịch vụ
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo gói
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Ngày cập nhật gói
+                );
+            ]]>
+        </sql>
+    </changeSet>
+</databaseChangeLog>

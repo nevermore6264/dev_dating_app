@@ -119,10 +119,13 @@ export default {
   display: flex;
   align-items: flex-start;
   background-color: #f5f5f5;
+  overflow: hidden;
 }
 
 /* Phần chính chiếm 80% chiều rộng */
 .cafe-details {
+  overflow-y: scroll;
+  height: calc(100vh - 56px);
   flex: 4;
   padding: 40px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

@@ -1,6 +1,20 @@
 package org.kiennguyenfpt.datingapp.entities;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.kiennguyenfpt.datingapp.enums.UserStatus;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,17 +35,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.kiennguyenfpt.datingapp.enums.UserStatus;
-
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -41,6 +44,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name = "Users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long userId;
@@ -131,21 +135,24 @@ public class User {
 
     //@Column(name = "profile_updated", nullable = false)
     //private boolean profileUpdated = false;
-
     public boolean isSecondLogin() {
         return loginCount == 1;
     }
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private int dailySwipeCount; // Số lần quẹt trong ngày
 
-    @Column(nullable = false)
-    private LocalDate lastSwipeReset; // Ngày cuối cùng reset số lần quẹt
+    @Column(name = "last_swipe_reset", nullable = true)
+    private LocalDate lastSwipeReset = LocalDate.now(); // Ngày cuối cùng reset số lần quẹt
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         User user = (User) o;
         return userId == user.userId && firstLogin == user.firstLogin && loginCount == user.loginCount && Objects.equals(email, user.email) && Objects.equals(passwordHash, user.passwordHash) && Objects.equals(avatar, user.avatar) && Objects.equals(phone, user.phone) && Objects.equals(createdAt, user.createdAt) && Objects.equals(lastLogin, user.lastLogin) && status == user.status && Objects.equals(profile, user.profile) && Objects.equals(likes, user.likes) && Objects.equals(messages, user.messages) && Objects.equals(userRoles, user.userRoles) && Objects.equals(friends, user.friends) && Objects.equals(blockedUsers, user.blockedUsers) && Objects.equals(likedUsers, user.likedUsers) && Objects.equals(matches, user.matches) && Objects.equals(dislikedUsers, user.dislikedUsers);
     }

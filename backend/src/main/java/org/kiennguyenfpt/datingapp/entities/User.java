@@ -140,10 +140,10 @@ public class User {
         return loginCount == 1;
     }
 
-    @Column(nullable = false)
+    @Column
     private int dailySwipeCount; // Số lần quẹt trong ngày
 
-    @Column(nullable = false)
+    @Column
     private LocalDate lastSwipeReset = LocalDate.now(); // Ngày cuối cùng reset số lần quẹt
 
     @Override

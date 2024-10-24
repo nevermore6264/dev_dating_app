@@ -8,13 +8,11 @@
         <!-- admin -->
         <sql>
             <![CDATA[
-                -- Chèn gói Trial
-                INSERT INTO packages (package_id, name, description, duration, unlimited_swipe, see_likes, see_profile_views, price)
-                VALUES (1, 'Trial', 'Trải nghiệm quyền lợi Premium trong 7 ngày', 7, TRUE, TRUE, TRUE, 0.00);
-
-                -- Chèn gói Premium
-                INSERT INTO packages (package_id, name, description, duration, unlimited_swipe, see_likes, see_profile_views, price)
-                VALUES (2, 'Premium', 'Swipe không giới hạn, xem ai đã like và xem ai đã xem profile', 30, TRUE, TRUE, TRUE, 9.99);
+                INSERT INTO `packages` (`package_id`, `name`, `description`, `swipe_limit`, `duration_days`)
+                VALUES
+                (1, 'FREE', 'Free package', 10, NULL),
+                (2, 'TRIAL', '7-day trial package', NULL, 7),
+                (3, 'PREMIUM', 'Premium package with no limits', NULL, 30);
             ]]>
         </sql>
     </changeSet>

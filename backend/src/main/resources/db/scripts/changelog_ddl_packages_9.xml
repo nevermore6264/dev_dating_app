@@ -13,17 +13,13 @@
         <!-- admin -->
         <sql>
             <![CDATA[
-                CREATE TABLE packages (
-                    package_id INT AUTO_INCREMENT PRIMARY KEY,    -- Khóa chính, mã định danh của gói
-                    name VARCHAR(100) NOT NULL,                   -- Tên của gói (Trial, Premium)
-                    description TEXT,                             -- Mô tả gói dịch vụ
-                    duration INT NOT NULL,                        -- Thời gian gói dịch vụ (ngày)
-                    unlimited_swipe BOOLEAN DEFAULT FALSE,        -- Quyền swipe không giới hạn
-                    see_likes BOOLEAN DEFAULT FALSE,              -- Quyền xem ai đã like mình
-                    see_profile_views BOOLEAN DEFAULT FALSE,      -- Quyền xem ai đã xem profile của mình
-                    price DECIMAL(10, 2) NOT NULL,                -- Giá gói dịch vụ
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo gói
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Ngày cập nhật gói
+                CREATE TABLE `packages` (
+                  `package_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+                  `name` VARCHAR(50) NOT NULL, -- Tên gói (FREE, TRIAL, PREMIUM)
+                  `description` VARCHAR(255), -- Mô tả gói đăng ký
+                  `swipe_limit` INT DEFAULT NULL, -- Số lượt quẹt tối đa trong ngày (NULL nếu không giới hạn)
+                  `duration_days` INT DEFAULT NULL, -- Thời hạn của gói tính bằng ngày (NULL nếu không giới hạn như gói FREE)
+                  PRIMARY KEY (`package_id`)
                 );
             ]]>
         </sql>

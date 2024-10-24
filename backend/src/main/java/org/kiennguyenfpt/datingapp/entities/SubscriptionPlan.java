@@ -33,9 +33,18 @@ public class SubscriptionPlan {
     private double price;
 
     @Column
-    private String features;
+    private boolean hasLikeLimit;
 
     @Column
-    private String imageUrl;
+    private boolean hasWatchLike;
+
+    @Column
+    private boolean hasShowPriority;
+
+    @Column
+    private boolean hasViewProfile;
+
+    @Column
+    private String imageUrl; // Chưa cần thiết
 
 }

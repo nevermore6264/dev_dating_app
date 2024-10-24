@@ -29,7 +29,7 @@ public class UserSubscription {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long subscriptionId;
+    private Long userSubscriptionId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -48,12 +48,6 @@ public class UserSubscription {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private SubscriptionStatus status = SubscriptionStatus.ACTIVE;
-
-    @Column(nullable = true)
-    private LocalDateTime renewalDate;
-
-    @Column(nullable = false)
-    private boolean isTrial = false;
 
     public boolean isActive() {
         return status == SubscriptionStatus.ACTIVE && (endDate == null || endDate.isAfter(LocalDateTime.now()));

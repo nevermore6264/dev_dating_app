@@ -23,6 +23,7 @@ import ManageMatches from "@/views/admin/ManageMatches.vue";
 import ManagePayments from "@/views/admin/ManagePayments.vue";
 import GetLocation from "@/views/GetLocation.vue";
 import ManagePackages from "@/views/admin/ManagePackages.vue";
+import PackagePremiumPage from "@/views/PackagePremiumPage.vue";
 
 const routes = [
   {
@@ -104,6 +105,11 @@ const routes = [
     path: "/a",
     name: "a",
     component: SuccessToast,
+  },
+  {
+    path: "/packagePremiumPage",
+    name: "packagePremiumPage",
+    component: PackagePremiumPage,
   },
   {
     path: '/admin',

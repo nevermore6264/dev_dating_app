@@ -71,6 +71,14 @@
         </router-link>
       </li>
 
+      <!-- Link to Package -->
+      <li class="menu-item">
+        <router-link to="/packagePremiumPage" class="menu-link">
+          <i class="material-icons">inventory_2</i>
+          <span>Package</span>
+        </router-link>
+      </li>
+
       <!-- Profile Link -->
       <li class="menu-item profile">
         <router-link to="/profile" class="menu-link">

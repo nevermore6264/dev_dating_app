@@ -1,8 +1,8 @@
 package org.kiennguyenfpt.datingapp.controllers.admin;
 
-import org.kiennguyenfpt.datingapp.entities.Package;
+import org.kiennguyenfpt.datingapp.entities.SubscriptionPlan;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
-import org.kiennguyenfpt.datingapp.services.PackageService;
+import org.kiennguyenfpt.datingapp.services.SubscriptionPlanService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,19 +16,19 @@ import java.util.List;
 @RequestMapping("/api/v1/admin/package")
 @CrossOrigin
 public class AdminPackageController {
-    private final PackageService packageService;
+    private final SubscriptionPlanService subscriptionPlanService;
 
     public AdminPackageController(
-            PackageService packageService
+            SubscriptionPlanService subscriptionPlanService
     ) {
-        this.packageService = packageService;
+        this.subscriptionPlanService = subscriptionPlanService;
     }
 
     @GetMapping
     public ResponseEntity getAllPackages() {
         CommonResponse response = new CommonResponse<>();
         try {
-            List<Package> responses = packageService.getAllPackages();
+            List<SubscriptionPlan> responses = subscriptionPlanService.getAllSubscriptionPlans();
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Get list packages successfully!");
             response.setData(responses);

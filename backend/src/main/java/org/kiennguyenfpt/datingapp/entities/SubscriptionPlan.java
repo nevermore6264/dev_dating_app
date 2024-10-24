@@ -29,6 +29,9 @@ public class SubscriptionPlan {
     @Column
     private int duration; // Duration in days
 
+    @Column(name = "description")
+    private String description;
+
     @Column
     private double price;
 

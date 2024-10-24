@@ -3,12 +3,17 @@ package org.kiennguyenfpt.datingapp.controllers.admin;
 import org.kiennguyenfpt.datingapp.dtos.mapper.UserMapper;
 import org.kiennguyenfpt.datingapp.dtos.responses.AdminUserResponse;
 import org.kiennguyenfpt.datingapp.entities.User;
-import org.kiennguyenfpt.datingapp.entities.UserRole;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -33,11 +38,10 @@ public class AdminUserController {
     public ResponseEntity searchUsers(@RequestParam(value = "keyword", required = false) String keyword) {
         CommonResponse response = new CommonResponse<>();
         try {
-            List<User> users = userService.searchUsers(keyword);
-            List<AdminUserResponse> userResponse = users.stream().map(this::userToAdminUserResponse).toList();
+            List<AdminUserResponse> responses = userService.searchAdminUsers(keyword);
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Get list user successfully!");
-            response.setData(userResponse);
+            response.setData(responses);
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -70,23 +74,6 @@ public class AdminUserController {
             response.setMessage("Error: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-    }
-
-    private AdminUserResponse userToAdminUserResponse(User user) {
-        AdminUserResponse adminUserResponse = new AdminUserResponse();
-        adminUserResponse.setUserId(user.getUserId());
-        adminUserResponse.setEmail(user.getEmail());
-        adminUserResponse.setPhone(user.getPhone());
-        adminUserResponse.setCreatedAt(user.getCreatedAt());
-        if (user.getStatus() != null) {
-            adminUserResponse.setStatus(user.getStatus().name());
-        }
-        List<UserRole> list = user.getUserRoles();
-        if (list != null) {
-            adminUserResponse.setRole(list.get(0).getRole());
-        }
-
-        return adminUserResponse;
     }
 
 }

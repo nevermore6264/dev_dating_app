@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.kiennguyenfpt.datingapp.enums.Gender;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,5 +30,11 @@ public class NearlyUserResponse {
     private Integer age;
 
     private Gender gender;
+
+    private String bio;
+
+    private String avatar;
+
+    private List<String> photoUrls;
 
 }

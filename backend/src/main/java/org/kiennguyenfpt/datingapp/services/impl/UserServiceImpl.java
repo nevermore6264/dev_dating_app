@@ -1,6 +1,7 @@
 package org.kiennguyenfpt.datingapp.services.impl;
 
 import org.kiennguyenfpt.datingapp.dtos.requests.UpdateProfileRequest;
+import org.kiennguyenfpt.datingapp.dtos.responses.AdminUserResponse;
 import org.kiennguyenfpt.datingapp.dtos.responses.NearlyUserResponse;
 import org.kiennguyenfpt.datingapp.entities.Photo;
 import org.kiennguyenfpt.datingapp.entities.Profile;
@@ -44,6 +45,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> searchUsers(String keyword) {
         return userRepository.searchUsersByKeyword(keyword);
+    }
+
+    @Override
+    public List<AdminUserResponse> searchAdminUsers(String keyword) {
+        return userRepository.searchAdminUsersByKeyword(keyword);
     }
 
     @Override

@@ -13,24 +13,24 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/admin/package")
+@RequestMapping("/api/v1/admin/subscriptionPlan")
 @CrossOrigin
-public class AdminPackageController {
+public class AdminSubscriptionPlanController {
     private final SubscriptionPlanService subscriptionPlanService;
 
-    public AdminPackageController(
+    public AdminSubscriptionPlanController(
             SubscriptionPlanService subscriptionPlanService
     ) {
         this.subscriptionPlanService = subscriptionPlanService;
     }
 
     @GetMapping
-    public ResponseEntity getAllPackages() {
+    public ResponseEntity getAllSubscriptionPlans() {
         CommonResponse response = new CommonResponse<>();
         try {
             List<SubscriptionPlan> responses = subscriptionPlanService.getAllSubscriptionPlans();
             response.setStatus(HttpStatus.OK.value());
-            response.setMessage("Get list packages successfully!");
+            response.setMessage("Get list subscriptionPlan successfully!");
             response.setData(responses);
 
             return ResponseEntity.ok(response);

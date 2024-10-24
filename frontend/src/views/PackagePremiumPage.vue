@@ -10,9 +10,9 @@
         <!-- Grid for the Subscription Packages -->
         <div class="subscription-grid">
           <div></div> <!-- Empty cell for top-left corner -->
-          <div class="package-header plus-header">LoveBell Plus</div>
-          <div class="package-header gold-header">LoveBell Gold</div>
-          <div class="package-header platinum-header">LoveBell Platinum</div>
+          <div class="package-header plus-header">LoveBell Free</div>
+          <div class="package-header gold-header">LoveBell Trial</div>
+          <div class="package-header platinum-header">LoveBell Premium</div>
   
           <!-- Feature Rows -->
           <div class="feature-title">Thích không giới hạn</div>

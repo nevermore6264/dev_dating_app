@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <changeSet author="Dev" id="9">
+        <!-- admin -->
+        <sql>
+            <![CDATA[
+                -- FREE Plan
+                INSERT INTO `subscription_plans` (`plan_id`, `description`, `duration`, `has_like_limit`, `has_show_priority`, `has_view_profile`, `has_watch_like`, `image_url`, `name`, `price`)
+                VALUES
+                (1, 'Free plan', null, b'1', b'0', b'0', b'1', '/images/free-plan.png', 'FREE', 0.0);
+
+                -- TRIAL Plan
+                INSERT INTO `subscription_plans` (`plan_id`, `description`, `duration`, `has_like_limit`, `has_show_priority`, `has_view_profile`, `has_watch_like`, `image_url`, `name`, `price`)
+                VALUES
+                (2, 'Trial plan', 7, b'1', b'0', b'1', b'1', '/images/trial-plan.png', 'TRIAL', 10.0);
+
+                -- PREMIUM Plan
+                INSERT INTO `subscription_plans` (`plan_id`, `description`, `duration`, `has_like_limit`, `has_show_priority`, `has_view_profile`, `has_watch_like`, `image_url`, `name`, `price`)
+                VALUES
+                (3, 'Premium plan', 30, b'1', b'1', b'1', b'1', '/images/premium-plan.png', 'PREMIUM', 50.00);
+
+            ]]>
+        </sql>
+    </changeSet>
+</databaseChangeLog>

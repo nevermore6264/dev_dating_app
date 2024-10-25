@@ -1,5 +1,6 @@
 package org.kiennguyenfpt.datingapp.services.impl;
 
+import org.kiennguyenfpt.datingapp.dtos.responses.AdminMatchResponse;
 import org.kiennguyenfpt.datingapp.dtos.responses.MatchResponse;
 import org.kiennguyenfpt.datingapp.entities.Match;
 import org.kiennguyenfpt.datingapp.entities.User;
@@ -77,6 +78,9 @@ public class MatchServiceImpl implements MatchService {
                 .orElseThrow(() -> new IllegalArgumentException("Match not found with id: " + matchId));
     }
 
+    @Override
+    public List<AdminMatchResponse> getAllMatches() {
+        return matchRepository.getAllMatchesWithUserDetails();
+    }
+
 }
-
-

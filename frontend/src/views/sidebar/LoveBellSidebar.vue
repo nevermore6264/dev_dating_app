@@ -2,7 +2,9 @@
   <div class="lovebell-sidebar">
     <ul class="menu">
       <li class="menu-item-title">
-        <span>LOVE-BELL</span>
+        <router-link to="/homePage">
+          <span>LOVE-BELL</span>
+        </router-link>
       </li>
       
       <!-- Link to Home -->
@@ -61,6 +63,14 @@
         </router-link>
       </li>
 
+      <!-- Link to Safety -->
+      <li class="menu-item">
+        <router-link to="/getLocation" class="menu-link">
+          <i class="material-icons">location_on</i>
+          <span>Location</span>
+        </router-link>
+      </li>
+
       <!-- Profile Link -->
       <li class="menu-item profile">
         <router-link to="/profile" class="menu-link">
@@ -70,7 +80,7 @@
       </li>
 
       <!-- Link to More Options (Dropdown) -->
-      <li class="menu-item" @click="toggleMoreOptions">
+      <li class="menu-item see-more" @click="toggleMoreOptions">
         <i class="material-icons">menu</i>
         <span>Xem thêm</span>
       </li>
@@ -151,13 +161,13 @@ export default {
 <style>
 .lovebell-sidebar {
   background-color: #ff85a1;
-  height: auto;
   width: 300px;
   color: #000;
   font-family: Arial, sans-serif;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  height: calc(100vh - 56px);
 }
 
 .menu {
@@ -170,8 +180,8 @@ export default {
   padding: 15px 20px;
   font-size: 20px;
   font-weight: bold;
-  display: flex;
-  align-items: center;
+  display: block;
+  width: 100%;
   cursor: pointer;
   color: #000;
 }
@@ -194,10 +204,22 @@ export default {
 }
 
 .menu-item-title {
-  padding: 35px;
+  padding: 35px 0 35px;
   margin-left: 30px;
   font-size: 30px;
   font-family: 'Billabong', cursive;
+  width: 100%;
+  display: block;
+  transition: color 0.3s ease, font-weight 0.3s ease; /* Hiệu ứng chuyển đổi */
+}
+
+.menu-item-title a {
+  color: #000;
+  text-decoration: none;
+}
+
+.menu-item-title:hover {
+  font-weight: bold; /* Đổi sang kiểu chữ đậm khi hover */
 }
 
 .profile-img {
@@ -207,8 +229,23 @@ export default {
   margin-right: 15px;
 }
 
-.profile {
-  margin-top: 260px;
+@media screen and (max-height: 764px) {
+  .lovebell-sidebar{
+    overflow-y: scroll;
+  }
+}
+
+
+@media screen and (min-height: 764px) {
+  .profile {
+    position: absolute;
+    bottom: 112px;
+  }
+
+  .see-more {
+    position: absolute;
+    bottom: 56px;
+  }
 }
 
 .material-icons {
@@ -238,9 +275,9 @@ export default {
 /* Cách dropdown hiển thị từ dưới lên */
 .dropdown-reverse {
   position: absolute;
-  transform: translateY(-125%); /* Thả lên trên */
+  bottom: 260px;
   background-color: #fff;
-  width: 17%;
+  width: 260px;
   list-style-type: none;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 20px;
@@ -255,9 +292,5 @@ export default {
 
 .dropdown-reverse .dropdown-item:hover {
   background-color: rgba(255, 255, 255, 0.1);
-}
-
-.menu-item:last-child {
-  margin-bottom: 20px;
 }
 </style>

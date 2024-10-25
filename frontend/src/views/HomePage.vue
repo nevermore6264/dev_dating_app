@@ -172,7 +172,7 @@ export default {
     this.matches = matchData;
   } catch (error) {
     console.error("Error loading matches:", error.message);
-    alert("Unable to load matches. Please try again later.");
+    // alert("Unable to load matches. Please try again later.");
   }
 },
 
@@ -355,7 +355,7 @@ async loadProfiles() {
 /* Main Layout */
 .main-layout {
   display: flex;
-  height: 100vh;
+  height: calc(100vh - 56px);
 }
 
 /* Sidebar */

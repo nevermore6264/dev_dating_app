@@ -1,19 +1,26 @@
 package org.kiennguyenfpt.datingapp.controllers;
 
-import org.kiennguyenfpt.datingapp.dtos.requests.CafeRequest; // Thêm import
-import org.kiennguyenfpt.datingapp.dtos.responses.CafeResponse; // Thêm import
+import org.kiennguyenfpt.datingapp.dtos.requests.CafeRequest;
+import org.kiennguyenfpt.datingapp.dtos.responses.CafeResponse;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.services.CafeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/cafes")
 @CrossOrigin
-
 public class CafeController {
     private final CafeService cafeService;
 
@@ -31,14 +38,30 @@ public class CafeController {
         return ResponseEntity.ok(cafeService.updateCafe(id, cafeRequest));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCafe(@PathVariable Long id) {
-        return ResponseEntity.ok(cafeService.deleteCafe(id)); // Thay đổi để trả về String
+    @PutMapping("/{id}/lockOrUnLock")
+    public ResponseEntity lockOrUnLockCafe(@PathVariable Long id) {
+        CommonResponse response = new CommonResponse<>();
+        try {
+            int result = cafeService.lockOrUnLockCafe(id);
+            if (result == 1) {
+                response.setStatus(HttpStatus.OK.value());
+                response.setMessage("Lock Or UnLock successfully");
+                return ResponseEntity.ok(response);
+            } else {
+                response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                response.setMessage("Failed to update user status");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            }
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage("Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
     @GetMapping
     public ResponseEntity<List<CafeResponse>> getAllCafes() {
-        return ResponseEntity.ok(cafeService.getAllCafes());
+        return ResponseEntity.ok(cafeService.getActiveCafes());
     }
 
     @GetMapping("/{id}")

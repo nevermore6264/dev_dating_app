@@ -31,39 +31,83 @@
     </table>
 
     <!-- Modal for viewing subscriptionPlan details -->
-    <el-dialog v-model="isDetailModalVisible" title="Subscription Plan Details" width="30%">
+    <el-dialog v-model="isDetailModalVisible" title="Subscription Plan Details" width="50%">
       <div>
         <el-form label-position="top" :model="selectedSubscriptionPlan">
-          <el-form-item label="ID">
-            <el-input v-model="selectedSubscriptionPlan.planId" disabled></el-input>
-          </el-form-item>
-          <el-form-item label="Subscription Plan Name">
-            <el-input v-model="selectedSubscriptionPlan.name" disabled></el-input>
-          </el-form-item>
-          <el-form-item label="Description">
-            <el-input :rows="2" type="textarea" v-model="selectedSubscriptionPlan.description" disabled></el-input>
-          </el-form-item>
-          <el-form-item label="Price">
-            <el-input v-model="selectedSubscriptionPlan.price" :value="selectedSubscriptionPlan.price != null ? `$${selectedSubscriptionPlan.price}` : '-'" disabled></el-input>
-          </el-form-item>
-          <el-form-item label="Duration (Days)">
-            <el-input v-model="selectedSubscriptionPlan.duration" :value="selectedSubscriptionPlan.duration != null ? selectedSubscriptionPlan.duration : '-'" disabled></el-input>
-          </el-form-item>
-          <el-form-item label="Like Limit">
-            <el-input v-model="selectedSubscriptionPlan.hasLikeLimit" :value="selectedSubscriptionPlan.hasLikeLimit ? 'Yes' : 'No'" disabled></el-input>
-          </el-form-item>
-          <el-form-item label="Watch Like">
-            <el-input v-model="selectedSubscriptionPlan.hasWatchLike" :value="selectedSubscriptionPlan.hasWatchLike ? 'Yes' : 'No'" disabled></el-input>
-          </el-form-item>
-          <el-form-item label="Show Priority">
-            <el-input v-model="selectedSubscriptionPlan.hasShowPriority" :value="selectedSubscriptionPlan.hasShowPriority ? 'Yes' : 'No'" disabled></el-input>
-          </el-form-item>
-          <el-form-item label="View Profile">
-            <el-input v-model="selectedSubscriptionPlan.hasViewProfile" :value="selectedSubscriptionPlan.hasViewProfile ? 'Yes' : 'No'" disabled></el-input>
-          </el-form-item>
-          <el-form-item label="Image">
-            <img :src="selectedSubscriptionPlan.imageUrl" alt="Plan Image" width="100" />
-          </el-form-item>
+
+          <!-- Row 1: Plan ID and Plan Name -->
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="ID">
+                <el-input v-model="selectedSubscriptionPlan.planId" disabled></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="Subscription Plan Name">
+                <el-input v-model="selectedSubscriptionPlan.name" disabled></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <!-- Row 2: Description (full width) -->
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="Description">
+                <el-input :rows="2" type="textarea" v-model="selectedSubscriptionPlan.description" disabled></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <!-- Row 3: Price and Duration -->
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="Price">
+                <el-input v-model="selectedSubscriptionPlan.price" :value="selectedSubscriptionPlan.price != null ? `$${selectedSubscriptionPlan.price}` : '-'" disabled></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="Duration (Days)">
+                <el-input v-model="selectedSubscriptionPlan.duration" :value="selectedSubscriptionPlan.duration != null ? selectedSubscriptionPlan.duration : '-'" disabled></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <!-- Row 4: Like Limit and Watch Like -->
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="Like Limit">
+                <el-input v-model="selectedSubscriptionPlan.hasLikeLimit" :value="selectedSubscriptionPlan.hasLikeLimit ? 'Yes' : 'No'" disabled></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="Watch Like">
+                <el-input v-model="selectedSubscriptionPlan.hasWatchLike" :value="selectedSubscriptionPlan.hasWatchLike ? 'Yes' : 'No'" disabled></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <!-- Row 5: Show Priority and View Profile -->
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="Show Priority">
+                <el-input v-model="selectedSubscriptionPlan.hasShowPriority" :value="selectedSubscriptionPlan.hasShowPriority ? 'Yes' : 'No'" disabled></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="View Profile">
+                <el-input v-model="selectedSubscriptionPlan.hasViewProfile" :value="selectedSubscriptionPlan.hasViewProfile ? 'Yes' : 'No'" disabled></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <!-- Row 6: Image (full width) -->
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="Image">
+                <img :src="selectedSubscriptionPlan.imageUrl" alt="Plan Image" width="100" />
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
       </div>
 

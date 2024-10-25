@@ -23,6 +23,7 @@
             class="match-item"
             v-for="match in matches"
             :key="match.targetUserId"
+            @click="navigateToChat(match)"
           >
             <img
               :src="getAuthorizedImageUrl(match.targetUserAvatar)"
@@ -157,7 +158,6 @@ export default {
       showLike: false, // Thêm biến để hiển thị "like"
       currentProfile: {}, // Khởi tạo đối tượng rỗng thay vì null
       profileIndex: 0, // Chỉ số của hồ sơ hiện tại trong danh sách
-
       likedProfiles: [], // Danh sách các hồ sơ đã thích
       dislikedProfiles: [], // Danh sách các hồ sơ đã không thích
       matches: [], // Dữ liệu các hồ sơ
@@ -176,7 +176,6 @@ export default {
         this.matches = matchData;
       } catch (error) {
         console.error("Error loading matches:", error.message);
-        // alert("Unable to load matches. Please try again later.");
       }
     },
 
@@ -225,6 +224,13 @@ export default {
         }
       }, 500);
     },
+    navigateToChat(match) {
+  // Lưu userId của người match vào localStorage
+  localStorage.setItem('selectedUserId', match.targetUserId);
+  
+  // Điều hướng đến trang /chattingPage
+  this.$router.push({ path: '/chattingPage', query: { id: match.targetUserId } });
+},
 
     like() {
       if (!this.currentProfile || !this.currentProfile.userId) {

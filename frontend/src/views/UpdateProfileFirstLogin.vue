@@ -49,10 +49,11 @@
           <div class="input-field">
             <label for="phone">Phone:</label>
             <input
-              type="number"
+              type="text"
               v-model="phone"
               placeholder="Phone"
               class="string-input"
+              @input="phone = phone.replace(/\D/g, '')"
             />
           </div>
           <!-- Age slider field -->
@@ -292,7 +293,8 @@ export default {
   background: #f1f1f1;
 }
 
-.fixed-header, .scrollable-content {
+.fixed-header,
+.scrollable-content {
   animation: slideInLeft 1s ease-out;
 }
 
@@ -454,7 +456,11 @@ button:hover {
   animation: bounce 0.3s ease-in-out;
 }
 @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
     transform: translateY(0);
   }
   40% {

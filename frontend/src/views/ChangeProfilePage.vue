@@ -60,6 +60,7 @@
           placeholder="Nhập số điện thoại của bạn"
           pattern="[0-9]*"
           maxlength="15"
+          @input="profileData.phone = profileData.phone.replace(/\D/g, '')"
           required
         />
       </div>
@@ -87,8 +88,13 @@
               />
             </div>
             <!-- Replace the delete button with a trash icon -->
-            <button type="button" class="delete-photo-button" @click="removePhoto(index)">
-              <i class="fas fa-trash"></i> <!-- Trash bin icon -->
+            <button
+              type="button"
+              class="delete-photo-button"
+              @click="removePhoto(index)"
+            >
+              <i class="fas fa-trash"></i>
+              <!-- Trash bin icon -->
             </button>
           </div>
         </div>
@@ -182,11 +188,16 @@ export default {
           bio: this.profileData.bio,
           gender: this.profileData.gender,
         };
-        
-        formData.append("updateProfileRequest", JSON.stringify(updateProfileRequest));
-        const filesToUpload = this.profileData.photos.map(photo => photo.file).filter(file => file);
+
+        formData.append(
+          "updateProfileRequest",
+          JSON.stringify(updateProfileRequest)
+        );
+        const filesToUpload = this.profileData.photos
+          .map((photo) => photo.file)
+          .filter((file) => file);
         if (filesToUpload.length > 0) {
-          filesToUpload.forEach(file => {
+          filesToUpload.forEach((file) => {
             formData.append("files", file);
           });
         }
@@ -201,9 +212,9 @@ export default {
         );
 
         if (response.status === 200) {
-          this.$emit("close"); 
+          this.$emit("close");
           this.$router.push("/profile");
-          window.location.reload(); 
+          window.location.reload();
         }
       } catch (error) {
         console.error("Error saving profile:", error);

@@ -25,8 +25,8 @@
           <li @click="navigateTo('Payments')">
             <el-icon><TrendCharts/></el-icon> Manage Payments
           </li>
-          <li @click="navigateTo('Packages')">
-            <el-icon><Box/></el-icon> Manage Packages
+          <li @click="navigateTo('SubscriptionPlans')">
+            <el-icon><Box/></el-icon> Manage SubscriptionPlans
           </li>
         </ul>
 

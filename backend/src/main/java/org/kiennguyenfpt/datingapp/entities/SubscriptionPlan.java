@@ -36,16 +36,19 @@ public class SubscriptionPlan {
     private double price;
 
     @Column
-    private boolean hasLikeLimit;
+    private Boolean hasLikeLimit;
 
     @Column
-    private boolean hasWatchLike;
+    private Boolean hasWatchLike;
 
     @Column
-    private boolean hasShowPriority;
+    private Boolean hasShowPriority;
 
     @Column
-    private boolean hasViewProfile;
+    private Boolean hasViewProfile;
+
+    @Column
+    private Integer maxDailySwipes;
 
     @Column
     private String imageUrl; // Chưa cần thiết

@@ -3,6 +3,7 @@ package org.kiennguyenfpt.datingapp.services.impl;
 import jakarta.transaction.Transactional;
 import org.kiennguyenfpt.datingapp.dtos.responses.SwipeResponse;
 import org.kiennguyenfpt.datingapp.entities.Like;
+import org.kiennguyenfpt.datingapp.entities.Profile;
 import org.kiennguyenfpt.datingapp.entities.Swipe;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.exceptions.AlreadyMatchedException;
@@ -12,6 +13,8 @@ import org.kiennguyenfpt.datingapp.repositories.UserRepository;
 import org.kiennguyenfpt.datingapp.services.MatchService;
 import org.kiennguyenfpt.datingapp.services.SwipeService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class SwipeServiceImpl implements SwipeService {
@@ -88,5 +91,10 @@ public class SwipeServiceImpl implements SwipeService {
 
         }
         return new SwipeResponse(isMatch);
+    }
+
+    @Override
+    public List<Profile> getAllLikedProfiles() {
+        return swipeRepository.findAllLikedProfiles();
     }
 }

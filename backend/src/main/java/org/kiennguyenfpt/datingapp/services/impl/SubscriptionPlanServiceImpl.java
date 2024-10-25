@@ -35,10 +35,18 @@ public class SubscriptionPlanServiceImpl implements SubscriptionPlanService {
             subscriptionPlan.setPrice(updatedPlan.getPrice());
             subscriptionPlan.setDuration(updatedPlan.getDuration());
             subscriptionPlan.setImageUrl(updatedPlan.getImageUrl());
-            subscriptionPlan.setHasLikeLimit(updatedPlan.isHasLikeLimit());
-            subscriptionPlan.setHasWatchLike(updatedPlan.isHasWatchLike());
-            subscriptionPlan.setHasShowPriority(updatedPlan.isHasShowPriority());
-            subscriptionPlan.setHasViewProfile(updatedPlan.isHasViewProfile());
+            if (updatedPlan.getHasLikeLimit() != null) {
+                subscriptionPlan.setHasLikeLimit(updatedPlan.getHasLikeLimit());
+            }
+            if (updatedPlan.getHasWatchLike() != null) {
+                subscriptionPlan.setHasWatchLike(updatedPlan.getHasWatchLike());
+            }
+            if (updatedPlan.getHasShowPriority() != null) {
+                subscriptionPlan.setHasShowPriority(updatedPlan.getHasShowPriority());
+            }
+            if (updatedPlan.getHasViewProfile() != null) {
+                subscriptionPlan.setHasViewProfile(updatedPlan.getHasViewProfile());
+            }
             SubscriptionPlan savedSubscriptionPlan = subscriptionPlanRepository.save(subscriptionPlan);
             return savedSubscriptionPlan;
         } else {

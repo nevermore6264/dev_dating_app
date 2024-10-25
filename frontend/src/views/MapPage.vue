@@ -29,7 +29,7 @@
             />
 
             <p>
-              Make sure to look and check, then decide whether you should catch
+              Make sure to look & check, then decide whether you should catch
               up with them!
             </p>
           </div>
@@ -43,28 +43,36 @@
           </button>
 
           <!-- User details displayed below scan button -->
-          <div v-if="selectedUser" class="user-details">
-            <button class="close-button" @click="closeProfile">×</button>
-            <h2>{{ selectedUser.name }} - {{ selectedUser.age }}</h2>
-            <p>{{ selectedUser.bio || "No bio available" }}</p>
-            <div class="action-buttons-modal">
-              <button
-                class="button dislike-button"
-                @click="handleUnlike(selectedUser.userId)"
-              >
-                <i class="fas fa-times"></i>
-              </button>
-              <button class="button super-like-button" @click="superLike">
-                <i class="fas fa-star"></i>
-              </button>
-              <button
-                class="button like-button"
-                @click="handleLike(selectedUser.userId)"
-              >
-                <i class="fas fa-heart"></i>
-              </button>
-            </div>
-          </div>
+<div v-if="selectedUser" class="user-details">
+  <button class="close-button" @click="closeProfile">×</button>
+  
+  <div v-if="selectedUser.photoUrls && selectedUser.photoUrls.length" class="user-photos">
+  <div class="photo-gallery">
+    <button @click="prevPhoto" class="nav-button">❮</button>
+    <img :src="selectedUser.photoUrls[currentPhotoIndex]" alt="User Photo" class="user-photo" />
+    <button @click="nextPhoto" class="nav-button">❯</button>
+  </div>
+</div>
+  <h2>{{ selectedUser.name }} - {{ selectedUser.age }}</h2>
+  <p>{{ selectedUser.bio || "No bio available" }}</p>
+
+  
+  
+
+
+  <div class="action-buttons-modal">
+  <button class="button dislike-button" @click="handleUnlike(selectedUser.userId)">
+    <i class="fas fa-times"></i>
+  </button>
+  <button class="button super-like-button" @click="superLike">
+    <i class="fas fa-star"></i>
+  </button>
+  <button class="button like-button" @click="handleLike(selectedUser.userId)">
+    <i class="fas fa-heart"></i>
+  </button>
+</div>
+</div>
+
         </div>
       </div>
     </div>
@@ -80,6 +88,7 @@ import {
 import { ElNotification } from "element-plus";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { swipeAction } from "@/services/swipe-service";
 
 export default {
   components: {
@@ -93,6 +102,8 @@ export default {
       userId: localStorage.getItem("userId"),
       map: null, // The Leaflet map object
       selectedUser: null, // Người dùng được chọn để hiển thị chi tiết
+      currentPhotoIndex: 0, // Chỉ số của ảnh đang hiển thị
+
     };
   },
   mounted() {
@@ -153,9 +164,27 @@ export default {
       }).addTo(this.map);
     },
 
-    // Function to handle click on marker
+    // Chuyển đến ảnh trước đó
+    prevPhoto() {
+      if (this.selectedUser && this.selectedUser.photoUrls.length) {
+        this.currentPhotoIndex =
+          (this.currentPhotoIndex - 1 + this.selectedUser.photoUrls.length) %
+          this.selectedUser.photoUrls.length;
+      }
+    },
+
+    // Chuyển đến ảnh tiếp theo
+    nextPhoto() {
+      if (this.selectedUser && this.selectedUser.photoUrls.length) {
+        this.currentPhotoIndex =
+          (this.currentPhotoIndex + 1) % this.selectedUser.photoUrls.length;
+      }
+    },
+
+    // Khi chọn người dùng mới, đặt lại chỉ số ảnh về 0
     onMarkerClick(user) {
-      this.selectedUser = user; // Cập nhật thông tin người dùng được chọn
+      this.selectedUser = user;
+      this.currentPhotoIndex = 0;
     },
 
     async startScanning() {
@@ -260,19 +289,48 @@ export default {
       }
     },
     async handleLike(userId) {
+    try {
+      const response = await swipeAction(userId, true);
+      console.log("Swipe action (like) completed:", response);
       ElNotification({
         title: "Liked",
-        message: "You have liked this user." + userId,
+        message: `You have liked user ${userId}`,
         type: "success",
       });
-    },
-    async handleUnlike(userId) {
+      
+      // Thực hiện hành động khác nếu cần, ví dụ: đóng hồ sơ hoặc chuyển đến người dùng khác
+      this.closeProfile();
+    } catch (error) {
+      console.error("Error during like action:", error.message);
+      ElNotification({
+        title: "Error",
+        message: "Có lỗi xảy ra khi thực hiện hành động like.",
+        type: "error",
+      });
+    }
+  },
+
+  async handleUnlike(userId) {
+    try {
+      const response = await swipeAction(userId, false);
+      console.log("Swipe action (unlike) completed:", response);
       ElNotification({
         title: "Unliked",
-        message: "You have unliked this user." + userId,
+        message: `You have unliked user ${userId}`,
         type: "success",
       });
-    },
+      
+      // Thực hiện hành động khác nếu cần, ví dụ: đóng hồ sơ hoặc chuyển đến người dùng khác
+      this.closeProfile();
+    } catch (error) {
+      console.error("Error during unlike action:", error.message);
+      ElNotification({
+        title: "Error",
+        message: "Có lỗi xảy ra khi thực hiện hành động unlike.",
+        type: "error",
+      });
+    }
+  },
     updateSliderStyle() {
       const slider = document.getElementById("range-slider");
       const percentage = ((this.range - 500) / (100000 - 1000)) * 100;
@@ -366,11 +424,45 @@ export default {
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 15px;
-  margin-top: 20px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  width: 70%;
+  width: 60%;
   position: relative; /* Để định vị nút "Close" */
 }
+
+.user-photo {
+  display: block;
+  margin: 0 auto; /* Căn giữa theo chiều ngang */
+  width: 200px; /* Đặt kích thước ảnh tùy ý */
+  height: 250px;
+  object-fit: cover; /* Đảm bảo ảnh không bị méo */
+}
+
+.photo-gallery {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.nav-button {
+  background: none;
+  border: none;
+  font-size: 30px;
+  color: #ff6699;
+  cursor: pointer;
+  margin: 0 10px;
+  transition: color 0.3s;
+}
+
+.nav-button:hover {
+  color: #ff3399;
+}
+
+.nav-button:focus {
+  outline: none;
+}
+
 
 .range-slider {
   -webkit-appearance: none;

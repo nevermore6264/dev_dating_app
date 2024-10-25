@@ -10,74 +10,33 @@
       <hr />
       <!-- Grid for the Subscription Packages -->
       <div class="subscription-grid">
+        <!-- Headers Row -->
         <div></div>
-        <!-- Empty cell for top-left corner -->
         <div class="package-header plus-header">LoveBell Free</div>
         <div class="package-header gold-header">LoveBell Trial</div>
         <div class="package-header platinum-header">LoveBell Premium</div>
 
         <!-- Feature Rows -->
-        <div class="feature-title">Thích không giới hạn</div>
-        <div class="package-feature">
-          <span class="material-icons">check_circle</span>
-        </div>
-        <div class="package-feature">
-          <span class="material-icons">check_circle</span>
-        </div>
-        <div class="package-feature">
-          <span class="material-icons">check_circle</span>
-        </div>
+        <template v-for="(feature, index) in features" :key="index">
+          <div class="feature-title">{{ feature.title }}</div>
+          <div
+            class="package-feature"
+            v-for="(plan, planIndex) in feature.plans"
+            :key="planIndex"
+          >
+            <span class="material-icons" :class="{ locked: !plan.available }">
+              {{ plan.available ? "check_circle" : "lock" }}
+            </span>
+          </div>
+        </template>
 
-        <div class="feature-title">Xem ai Thích bạn</div>
-        <div class="package-feature locked">
-          <span class="material-icons">lock</span>
-        </div>
-        <div class="package-feature">
-          <span class="material-icons">check_circle</span>
-        </div>
-        <div class="package-feature">
-          <span class="material-icons">check_circle</span>
-        </div>
-
-        <div class="feature-title">Lượt Thích ưu tiên</div>
-        <div class="package-feature locked">
-          <span class="material-icons">lock</span>
-        </div>
-        <div class="package-feature locked">
-          <span class="material-icons">lock</span>
-        </div>
-        <div class="package-feature">
-          <span class="material-icons">check_circle</span>
-        </div>
-
-        <div class="feature-title">Quay lại không giới hạn</div>
-        <div class="package-feature">
-          <span class="material-icons">check_circle</span>
-        </div>
-        <div class="package-feature">
-          <span class="material-icons">check_circle</span>
-        </div>
-        <div class="package-feature">
-          <span class="material-icons">check_circle</span>
-        </div>
-
-        <div class="feature-title">1 lượt Tăng tốc miễn phí mỗi tháng</div>
-        <div class="package-feature locked">
-          <span class="material-icons">lock</span>
-        </div>
-        <div class="package-feature locked">
-          <span class="material-icons">lock</span>
-        </div>
-        <div class="package-feature">
-          <span class="material-icons">check_circle</span>
-        </div>
-
-        <!-- Pricing Buttons -->
+        <!-- Pricing Row -->
         <div></div>
-        <!-- Empty cell for spacing -->
-        <button class="price-button pink">Có giá từ 31.500 đ</button>
-        <button class="price-button gold">Có giá từ 50.400 đ</button>
-        <button class="price-button black">Có giá từ 93.600 đ</button>
+        <template v-for="(plan, index) in subscriptionPlans" :key="index">
+          <button :class="['price-button', plan.buttonClass]">
+            Có giá từ {{ plan.price }} đ
+          </button>
+        </template>
       </div>
     </div>
   </div>
@@ -85,15 +44,70 @@
 
 <script>
 import LoveBellSidebar from "@/views/sidebar/LoveBellSidebar.vue";
-
+import { getAllSubscriptionPlans } from "@/services/package-service.js";
 export default {
   data() {
     return {
-      selectedPackage: "plus", // default package
+      subscriptionPlans: [
+        // { planId: 1, name: 'Free', price: 0, buttonClass: 'pink' },
+        // { planId: 2, name: 'Trial', price: 50400, buttonClass: 'gold' },
+        // { planId: 3, name: 'Premium', price: 93600, buttonClass: 'black' }
+      ],
+      features: [
+        {
+          title: "Thích không giới hạn",
+          plans: [
+            { available: true },
+            { available: true },
+            { available: true },
+          ],
+        },
+        {
+          title: "Xem ai Thích bạn",
+          plans: [
+            { available: false },
+            { available: true },
+            { available: true },
+          ],
+        },
+        {
+          title: "Lượt Thích ưu tiên",
+          plans: [
+            { available: false },
+            { available: false },
+            { available: true },
+          ],
+        },
+        {
+          title: "Quay lại không giới hạn",
+          plans: [
+            { available: true },
+            { available: true },
+            { available: true },
+          ],
+        }
+     
+      ],
     };
   },
   components: {
     LoveBellSidebar,
+  },
+  mounted() {
+    this.fetchSubscriptionPlans();
+  },
+  methods: {
+    async fetchSubscriptionPlans() {
+      try {
+        const plans = await getAllSubscriptionPlans();
+        this.subscriptionPlans = plans.map((plan, index) => ({
+          ...plan,
+          buttonClass: ["pink", "gold", "black"][index],
+        }));
+      } catch (error) {
+        console.error("Error fetching subscription plans:", error);
+      }
+    },
   },
 };
 </script>

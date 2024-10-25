@@ -76,12 +76,12 @@
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="Like Limit">
-                <el-input v-model="selectedSubscriptionPlan.hasLikeLimit" :value="selectedSubscriptionPlan.hasLikeLimit ? 'Yes' : 'No'" disabled></el-input>
+                <el-switch v-model="selectedSubscriptionPlan.hasLikeLimit" :disabled="true"></el-switch>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="Watch Like">
-                <el-input v-model="selectedSubscriptionPlan.hasWatchLike" :value="selectedSubscriptionPlan.hasWatchLike ? 'Yes' : 'No'" disabled></el-input>
+                <el-switch v-model="selectedSubscriptionPlan.hasWatchLike" :disabled="true"></el-switch>
               </el-form-item>
             </el-col>
           </el-row>
@@ -90,12 +90,12 @@
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="Show Priority">
-                <el-input v-model="selectedSubscriptionPlan.hasShowPriority" :value="selectedSubscriptionPlan.hasShowPriority ? 'Yes' : 'No'" disabled></el-input>
+                <el-switch v-model="selectedSubscriptionPlan.hasShowPriority" :disabled="true"></el-switch>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="View Profile">
-                <el-input v-model="selectedSubscriptionPlan.hasViewProfile" :value="selectedSubscriptionPlan.hasViewProfile ? 'Yes' : 'No'" disabled></el-input>
+                <el-switch v-model="selectedSubscriptionPlan.hasViewProfile" :disabled="true"></el-switch>
               </el-form-item>
             </el-col>
           </el-row>

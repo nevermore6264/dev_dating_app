@@ -53,7 +53,8 @@
               v-model="phone"
               placeholder="Phone"
               class="string-input"
-              @input="phone = phone.replace(/\D/g, '')"
+              @input="phone = phone.replace(/\D/g, '').slice(0, 10)"
+              maxlength="10"
             />
           </div>
           <!-- Age slider field -->

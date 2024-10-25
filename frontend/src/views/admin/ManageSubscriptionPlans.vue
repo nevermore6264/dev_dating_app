@@ -3,71 +3,106 @@
     <h1>Manage Subscription Plans</h1>
 
     <!-- Table for displaying SubscriptionPlans -->
-    <table border="1" style="width: 100%; border-collapse: collapse;">
+    <table border="1" style="width: 100%; border-collapse: collapse">
       <thead>
-      <tr>
-        <th>ID</th>
-        <th>Subscription Plan Name</th>
-        <th>Description</th>
-        <th>Price</th>
-        <th>Duration (Days)</th>
-        <th>Image</th>
-        <th style="width: 160px">Operations</th>
-      </tr>
+        <tr>
+          <th>ID</th>
+          <th>Subscription Plan Name</th>
+          <th>Description</th>
+          <th>Price</th>
+          <th>Duration (Days)</th>
+          <th>Image</th>
+          <th style="width: 160px">Operations</th>
+        </tr>
       </thead>
       <tbody>
-      <tr v-for="sp in subscriptionPlans" :key="sp.planId">
-        <td>{{ sp?.planId }}</td>
-        <td>{{ sp.name }}</td>
-        <td>{{ sp.description || '-' }}</td>
-        <td>{{ sp?.price != null ? `${formatCurrency(sp.price)}` : '-' }}</td>
-        <td>{{ sp.duration != null ? sp.duration : '-' }}</td>
-        <td><img :src="sp.imageUrl" alt="Plan Image" width="50" /></td>
-        <td width="200px">
-          <el-button type="primary" @click="openDetailModal(sp)">View Details</el-button>
-          <el-button type="warning" @click="openEditModal(sp)">Edit</el-button>
-        </td>
-      </tr>
+        <tr v-for="sp in subscriptionPlans" :key="sp.planId">
+          <td>{{ sp?.planId }}</td>
+          <td>{{ sp.name }}</td>
+          <td>{{ sp.description || '-' }}</td>
+          <td>{{ sp?.price != null ? `${formatCurrency(sp.price)}` : '-' }}</td>
+          <td>{{ sp.duration != null ? sp.duration : '-' }}</td>
+          <td><img :src="sp.imageUrl" alt="Plan Image" width="50" /></td>
+          <td width="200px">
+            <el-button type="primary" @click="openDetailModal(sp)"
+              >View Details</el-button
+            >
+            <el-button type="warning" @click="openEditModal(sp)"
+              >Edit</el-button
+            >
+          </td>
+        </tr>
       </tbody>
     </table>
 
     <!-- Modal for viewing and editing subscriptionPlan details -->
-    <el-dialog v-model="isDetailModalVisible" :title="isEditing ? 'Edit Subscription Plan' : 'Subscription Plan Details'" width="50%">
+    <el-dialog
+      v-model="isDetailModalVisible"
+      :title="
+        isEditing ? 'Edit Subscription Plan' : 'Subscription Plan Details'
+      "
+      width="50%"
+    >
       <div>
         <el-form label-position="top" :model="selectedSubscriptionPlan">
           <!-- Row 1: Plan ID and Plan Name -->
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="ID">
-                <el-input v-model="selectedSubscriptionPlan.planId" disabled></el-input>
+                <el-input
+                  v-model="selectedSubscriptionPlan.planId"
+                  disabled
+                ></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="Subscription Plan Name">
-                <el-input v-model="selectedSubscriptionPlan.name" disabled></el-input>
+                <el-input
+                  v-model="selectedSubscriptionPlan.name"
+                  disabled
+                ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
 
           <!-- Row 2: Description (editable in edit mode) -->
-          <el-row>
-            <el-col :span="24">
+          <el-row :gutter="24">
+            <el-col>
               <el-form-item label="Description">
-                <el-input :rows="2" type="textarea" v-model="selectedSubscriptionPlan.description" :disabled="!isEditing"></el-input>
+                <el-input
+                  :rows="2"
+                  type="textarea"
+                  v-model="selectedSubscriptionPlan.description"
+                  :disabled="!isEditing"
+                ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
 
           <!-- Row 3: Price and Duration (editable in edit mode) -->
-          <el-row :gutter="20">
-            <el-col :span="12">
+          <el-row :gutter="24">
+            <el-col :span="8">
               <el-form-item label="Price">
-                <el-input v-model="selectedSubscriptionPlan.price" :disabled="!isEditing"></el-input>
+                <el-input
+                  v-model="selectedSubscriptionPlan.price"
+                  :disabled="!isEditing"
+                ></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="8">
               <el-form-item label="Duration (Days)">
-                <el-input v-model="selectedSubscriptionPlan.duration" :disabled="!isEditing"></el-input>
+                <el-input
+                  v-model="selectedSubscriptionPlan.duration"
+                  :disabled="!isEditing"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="Daily Swipes">
+                <el-input
+                  v-model="selectedSubscriptionPlan.maxDailySwipes"
+                  :disabled="!isEditing"
+                ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -77,12 +112,18 @@
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="Like Limit">
-                <el-switch v-model="selectedSubscriptionPlan.hasLikeLimit" disabled></el-switch>
+                <el-switch
+                  v-model="selectedSubscriptionPlan.hasLikeLimit"
+                  disabled
+                ></el-switch>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="Watch Like">
-                <el-switch v-model="selectedSubscriptionPlan.hasWatchLike" disabled></el-switch>
+                <el-switch
+                  v-model="selectedSubscriptionPlan.hasWatchLike"
+                  disabled
+                ></el-switch>
               </el-form-item>
             </el-col>
           </el-row>
@@ -91,12 +132,18 @@
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="Show Priority">
-                <el-switch v-model="selectedSubscriptionPlan.hasShowPriority" disabled></el-switch>
+                <el-switch
+                  v-model="selectedSubscriptionPlan.hasShowPriority"
+                  disabled
+                ></el-switch>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="View Profile">
-                <el-switch v-model="selectedSubscriptionPlan.hasViewProfile" disabled></el-switch>
+                <el-switch
+                  v-model="selectedSubscriptionPlan.hasViewProfile"
+                  disabled
+                ></el-switch>
               </el-form-item>
             </el-col>
           </el-row>
@@ -105,7 +152,11 @@
           <el-row>
             <el-col :span="24">
               <el-form-item label="Image">
-                <img :src="selectedSubscriptionPlan.imageUrl" alt="Plan Image" width="100" />
+                <img
+                  :src="selectedSubscriptionPlan.imageUrl"
+                  alt="Plan Image"
+                  width="100"
+                />
               </el-form-item>
             </el-col>
           </el-row>
@@ -113,8 +164,12 @@
       </div>
 
       <span class="dialog-footer">
-        <el-button v-if="!isEditing" type="warning" @click="enableEditing">Edit</el-button>
-        <el-button v-if="isEditing" type="success" @click="saveChanges">Save</el-button>
+        <el-button v-if="!isEditing" type="warning" @click="enableEditing"
+          >Edit</el-button
+        >
+        <el-button v-if="isEditing" type="success" @click="saveChanges"
+          >Save</el-button
+        >
         <el-button type="danger" @click="closeDetailModal">Close</el-button>
       </span>
     </el-dialog>
@@ -123,7 +178,10 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { getAllSubscriptionPlans, updateSubscriptionPlan } from '@/services/admin/admin-subscriptionPlan-service';
+import {
+  getAllSubscriptionPlans,
+  updateSubscriptionPlan,
+} from '@/services/admin/admin-subscriptionPlan-service';
 import { ElMessage } from 'element-plus';
 
 // Variables for holding subscription plans and modal state
@@ -143,7 +201,9 @@ const fetchSubscriptionPlans = async () => {
     const response = await getAllSubscriptionPlans();
     subscriptionPlans.value = response;
   } catch (error) {
-    ElMessage.error('Failed to fetch subscription plans. Please try again later.');
+    ElMessage.error(
+      'Failed to fetch subscription plans. Please try again later.'
+    );
   }
 };
 
@@ -179,7 +239,9 @@ const saveChanges = async () => {
     await fetchSubscriptionPlans(); // Refresh the list
     closeDetailModal();
   } catch (error) {
-    ElMessage.error('Failed to update the subscription plan. Please try again.');
+    ElMessage.error(
+      'Failed to update the subscription plan. Please try again.'
+    );
   }
 };
 

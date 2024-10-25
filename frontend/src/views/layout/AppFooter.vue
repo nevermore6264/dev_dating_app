@@ -19,8 +19,6 @@ footer {
   position: absolute;
   width: 100%;
   bottom: 0;
-
   zoom: 0.8; /* 80% zoom */
-
 }
 </style>

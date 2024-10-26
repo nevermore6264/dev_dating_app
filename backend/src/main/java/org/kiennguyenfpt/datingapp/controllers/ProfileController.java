@@ -5,6 +5,7 @@ import org.kiennguyenfpt.datingapp.dtos.requests.UpdateProfileRequest;
 import org.kiennguyenfpt.datingapp.dtos.requests.UserIdRequest;
 import org.kiennguyenfpt.datingapp.dtos.responses.ProfileResponse;
 import org.kiennguyenfpt.datingapp.dtos.responses.SimpleProfileResponse;
+import org.kiennguyenfpt.datingapp.entities.Photo;
 import org.kiennguyenfpt.datingapp.entities.Profile;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.services.ProfileService;
@@ -140,6 +141,11 @@ public class ProfileController {
             Profile randomProfile = availableProfiles.get(random.nextInt(availableProfiles.size()));
 
             SimpleProfileResponse profileResponse = profileMapper.profileToSimpleProfileResponse(randomProfile);
+
+            List<String> photos = randomProfile.getPhotos().stream()
+                    .map(Photo::getUrl)
+                    .collect(Collectors.toList());
+            profileResponse.setPhotos(photos);
 
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Available profile retrieved successfully.");

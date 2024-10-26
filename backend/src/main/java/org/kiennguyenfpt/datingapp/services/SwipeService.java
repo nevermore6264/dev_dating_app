@@ -8,6 +8,6 @@ import java.util.List;
 public interface SwipeService {
     SwipeResponse swipe(Long userId, Long targetUserId, boolean isLike);
 
-    List<Profile> getAllLikedProfiles();
+    List<Profile> getAllLikedProfilesExcludingCurrentUser(String email);
 
 }

@@ -8,6 +8,7 @@ import org.kiennguyenfpt.datingapp.entities.Swipe;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.exceptions.AlreadyMatchedException;
 import org.kiennguyenfpt.datingapp.repositories.LikeRepository;
+import org.kiennguyenfpt.datingapp.repositories.ProfileRepository;
 import org.kiennguyenfpt.datingapp.repositories.SwipeRepository;
 import org.kiennguyenfpt.datingapp.repositories.UserRepository;
 import org.kiennguyenfpt.datingapp.services.MatchService;
@@ -22,12 +23,14 @@ public class SwipeServiceImpl implements SwipeService {
     private final UserRepository userRepository;
     private final MatchService matchService;
     private final LikeRepository likeRepository;
+    private final ProfileRepository profileRepository;
 
-    public SwipeServiceImpl(SwipeRepository swipeRepository, UserRepository userRepository, MatchService matchService, LikeRepository likeRepository) {
+    public SwipeServiceImpl(SwipeRepository swipeRepository, UserRepository userRepository, MatchService matchService, LikeRepository likeRepository, ProfileRepository profileRepository) {
         this.swipeRepository = swipeRepository;
         this.userRepository = userRepository;
         this.matchService = matchService;
         this.likeRepository = likeRepository;
+        this.profileRepository = profileRepository;
     }
 
     @Override
@@ -94,7 +97,18 @@ public class SwipeServiceImpl implements SwipeService {
     }
 
     @Override
-    public List<Profile> getAllLikedProfiles() {
-        return swipeRepository.findAllLikedProfiles();
+    public List<Profile> getAllLikedProfilesExcludingCurrentUser(String email) {
+        try {
+            // Lấy hồ sơ của người dùng hiện tại dựa trên email
+            Profile currentUserProfile = profileRepository.findByUser_Email(email);
+            if (currentUserProfile == null) {
+                return List.of();
+            }
+            Long currentUserId = currentUserProfile.getUser().getUserId();
+            // Lấy danh sách các hồ sơ đã liked trừ hồ sơ của người dùng hiện tại
+            return swipeRepository.findAllLikedProfilesExcludingCurrentUser(currentUserId);
+        } catch (Exception e) {
+            throw e;
+        }
     }
 }

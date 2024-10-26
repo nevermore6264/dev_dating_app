@@ -79,10 +79,10 @@ public class SwipeController {
     }
 
     @GetMapping("/likedMe")
-    public ResponseEntity<CommonResponse<List<Profile>>> getAllLikedProfiles() {
+    public ResponseEntity<CommonResponse<List<Profile>>> getAllLikedProfilesExcludingCurrentUser(@RequestParam String email) {
         CommonResponse<List<Profile>> response = new CommonResponse<>();
         try {
-            List<Profile> profiles = swipeService.getAllLikedProfiles();
+            List<Profile> profiles = swipeService.getAllLikedProfilesExcludingCurrentUser(email);
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Get list of liked successfully!");
             response.setData(profiles);
@@ -95,4 +95,5 @@ public class SwipeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
 }

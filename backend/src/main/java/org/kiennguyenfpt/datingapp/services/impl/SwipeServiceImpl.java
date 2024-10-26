@@ -5,13 +5,19 @@ import org.kiennguyenfpt.datingapp.dtos.responses.SwipeResponse;
 import org.kiennguyenfpt.datingapp.entities.Like;
 import org.kiennguyenfpt.datingapp.entities.Swipe;
 import org.kiennguyenfpt.datingapp.entities.User;
+import org.kiennguyenfpt.datingapp.entities.UserSubscription;
 import org.kiennguyenfpt.datingapp.exceptions.AlreadyMatchedException;
+import org.kiennguyenfpt.datingapp.exceptions.LikeLimitExceededException;
 import org.kiennguyenfpt.datingapp.repositories.LikeRepository;
 import org.kiennguyenfpt.datingapp.repositories.SwipeRepository;
 import org.kiennguyenfpt.datingapp.repositories.UserRepository;
+import org.kiennguyenfpt.datingapp.repositories.UserSubscriptionRepository;
 import org.kiennguyenfpt.datingapp.services.MatchService;
 import org.kiennguyenfpt.datingapp.services.SwipeService;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class SwipeServiceImpl implements SwipeService {
@@ -19,12 +25,14 @@ public class SwipeServiceImpl implements SwipeService {
     private final UserRepository userRepository;
     private final MatchService matchService;
     private final LikeRepository likeRepository;
+    private final UserSubscriptionRepository userSubscriptionRepository;
 
-    public SwipeServiceImpl(SwipeRepository swipeRepository, UserRepository userRepository, MatchService matchService, LikeRepository likeRepository) {
+    public SwipeServiceImpl(SwipeRepository swipeRepository, UserRepository userRepository, MatchService matchService, LikeRepository likeRepository, UserSubscriptionRepository userSubscriptionRepository) {
         this.swipeRepository = swipeRepository;
         this.userRepository = userRepository;
         this.matchService = matchService;
         this.likeRepository = likeRepository;
+        this.userSubscriptionRepository = userSubscriptionRepository;
     }
 
     @Override
@@ -51,6 +59,16 @@ public class SwipeServiceImpl implements SwipeService {
         boolean hasMatched = matchService.hasMatched(userId, targetUserId);
         if (hasMatched) {
             throw new AlreadyMatchedException("You have already matched with this user.");
+        }
+
+        // Kiểm tra số lượt like tối đa cho gói Free
+        UserSubscription userSubscription = userSubscriptionRepository.findActiveSubscriptionByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User subscription not found"));
+
+        boolean isFreePlan = userSubscription.getSubscriptionPlan().getMaxDailySwipes() == 2;
+
+        if (isFreePlan && user.getDailySwipeCount() >= 2) {
+            throw new LikeLimitExceededException("You have exceeded the maximum number of likes for today.");
         }
 
         // Logic to handle swipe action
@@ -87,6 +105,8 @@ public class SwipeServiceImpl implements SwipeService {
         }else {
 
         }
+        user.setDailySwipeCount(user.getDailySwipeCount() + 1);
+        userRepository.save(user);
         return new SwipeResponse(isMatch);
     }
 }

@@ -26,4 +26,6 @@ public class Swipe {
     private User targetUser;
 
     private boolean isLike;
+
+
 }

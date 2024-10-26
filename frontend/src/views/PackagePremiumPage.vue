@@ -84,6 +84,7 @@ export default {
     async fetchSubscriptionPlans() {
       try {
         const plans = await getAllSubscriptionPlans();
+        console.log("🚀 ~ fetchSubscriptionPlans ~ plans:", plans)
         this.subscriptionPlans = plans.map((plan, index) => ({
           ...plan,
           buttonClass: ["pink", "gold", "black"][index], // Classes for buttons based on index

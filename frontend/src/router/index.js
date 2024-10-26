@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory} from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import LoginPage from "../views/LoginPage.vue";
 import RegisterPage from "@/views/RegisterPage.vue";
 import ForgotPasswordPage from "@/views/ForgotPasswordPage.vue";
@@ -24,7 +24,7 @@ import ManagePayments from "@/views/admin/ManagePayments.vue";
 import GetLocation from "@/views/GetLocation.vue";
 import ManageSubscriptionPlans from "@/views/admin/ManageSubscriptionPlans.vue";
 import PackagePremiumPage from "@/views/PackagePremiumPage.vue";
-
+import LikedBy from "@/views/LikedBy.vue";
 const routes = [
   {
     path: "/",
@@ -112,52 +112,58 @@ const routes = [
     component: PackagePremiumPage,
   },
   {
-    path: '/admin',
-    name: 'AdminDashboard',
+    path: "/likedBy",
+    name: "LikedBy",
+    component: LikedBy,
+  },
+  {
+    path: "/admin",
+    name: "AdminDashboard",
     component: AdminDashboard,
     children: [
       {
-        path: '',
+        path: "",
         component: Home,
         // meta: { breadcrumb: 'Home' }
-      },  // Default to Home
+      }, // Default to Home
       {
-        path: 'home',
+        path: "home",
         component: Home,
-        meta: { breadcrumb: 'Home' }
+        meta: { breadcrumb: "Home" },
       }, // Explicit Home route
       {
-        path: 'cafes',
+        path: "cafes",
         component: ManageCafes, // Đường dẫn đến component quản lý quán cafe,
-        meta: { breadcrumb: 'Manage Cafes' }
+        meta: { breadcrumb: "Manage Cafes" },
       },
       {
-        path: 'users',
+        path: "users",
         component: ManageUsers, // Đường dẫn đến component quản lý users,
-        meta: { breadcrumb: 'Manage Users' }
+        meta: { breadcrumb: "Manage Users" },
       },
       {
-        path: 'contacts',
+        path: "contacts",
         component: ManageContacts, // Đường dẫn đến component quản lý contacts,
-        meta: { breadcrumb: 'Manage Contacts' }
+        meta: { breadcrumb: "Manage Contacts" },
       },
       {
-        path: 'matches',
+        path: "matches",
         component: ManageMatches, // Đường dẫn đến component quản lý matches,
-        meta: { breadcrumb: 'Manage Matches' }
+        meta: { breadcrumb: "Manage Matches" },
       },
       {
-        path: 'payments',
+        path: "payments",
         component: ManagePayments, // Đường dẫn đến component quản lý payments,
-        meta: { breadcrumb: 'Manage Payments' }
+        meta: { breadcrumb: "Manage Payments" },
       },
       {
-        path: 'subscriptionplans',
+        path: "subscriptionplans",
         component: ManageSubscriptionPlans, // Đường dẫn đến component quản lý Packages,
-        meta: { breadcrumb: 'Manage SubscriptionPlans' }
+        meta: { breadcrumb: "Manage SubscriptionPlans" },
       },
     ],
-  }];
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(),

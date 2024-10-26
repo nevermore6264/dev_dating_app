@@ -95,20 +95,20 @@ public class SwipeServiceImpl implements SwipeService {
     }
 
     @Override
-    public List<Profile> getAllLikedProfilesExcludingCurrentUser(String email) throws AccessDeniedException {
-        // Lấy hồ sơ của người dùng hiện tại dựa trên email
-        Profile currentUserProfile = profileRepository.findByUser_Email(email);
+    public List<Profile> getAllLikedProfilesExcludingCurrentUser(Long userId) throws AccessDeniedException {
+        // Lấy hồ sơ của người dùng hiện tại dựa trên userId
+        Profile currentUserProfile = profileRepository.findByUser_UserId(userId);
         if (currentUserProfile == null) {
-            throw new IllegalArgumentException("User profile not found with email " + email);
+            throw new IllegalArgumentException("User profile not found with userId " + userId);
         }
-        Long currentUserId = currentUserProfile.getUser().getUserId();
 
         // Kiểm tra package của người dùng hiện tại
-        UserSubscription userSubscription = userSubscriptionRepository.findByUser_UserIdAndStatus(currentUserId, SubscriptionStatus.ACTIVE);
+        UserSubscription userSubscription = userSubscriptionRepository.findByUser_UserIdAndStatus(userId, SubscriptionStatus.ACTIVE);
         if (userSubscription != null && userSubscription.getSubscriptionPlan().getPlanId() == 1) {
             throw new AccessDeniedException("Users are not allowed to access the list of liked profiles!", null);
         }
 
-        return swipeRepository.findAllLikedProfilesExcludingCurrentUser(currentUserId);
+        return swipeRepository.findAllLikedProfilesExcludingCurrentUser(userId);
     }
+
 }

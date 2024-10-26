@@ -8,6 +8,8 @@ import org.kiennguyenfpt.datingapp.exceptions.AlreadyMatchedException;
 import org.kiennguyenfpt.datingapp.repositories.UserRepository;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.services.SwipeService;
+import org.kiennguyenfpt.datingapp.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,10 +23,13 @@ import java.util.List;
 @RequestMapping("api/v1/swipes")
 @CrossOrigin
 public class SwipeController {
+    private final UserService userService;
     private final SwipeService swipeService;
     private final UserRepository userRepository;
 
-    public SwipeController(SwipeService swipeService, UserRepository userRepository) {
+    @Autowired
+    public SwipeController(UserService userService, SwipeService swipeService, UserRepository userRepository) {
+        this.userService = userService;
         this.swipeService = swipeService;
         this.userRepository = userRepository;
     }
@@ -80,9 +85,16 @@ public class SwipeController {
     }
 
     @GetMapping("/likedMe")
-    public ResponseEntity<CommonResponse<List<Profile>>> getAllLikedProfilesExcludingCurrentUser(@RequestParam Long userId) {
+    public ResponseEntity<CommonResponse<List<Profile>>> getAllLikedProfilesExcludingCurrentUser(Authentication authentication) {
         CommonResponse<List<Profile>> response = new CommonResponse<>();
         try {
+            // Lấy email từ Authentication
+            String email = authentication.getName();
+
+            // Tìm user dựa vào email từ JWT
+            Long userId = userService.findByEmail(email).getUserId();
+
+            // Lấy danh sách các profile đã thích ngoại trừ user hiện tại
             List<Profile> profiles = swipeService.getAllLikedProfilesExcludingCurrentUser(userId);
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Get list of liked successfully!");

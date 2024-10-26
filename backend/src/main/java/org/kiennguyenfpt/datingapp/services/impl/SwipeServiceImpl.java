@@ -2,15 +2,11 @@ package org.kiennguyenfpt.datingapp.services.impl;
 
 import jakarta.transaction.Transactional;
 import org.kiennguyenfpt.datingapp.dtos.responses.SwipeResponse;
-import org.kiennguyenfpt.datingapp.entities.Like;
-import org.kiennguyenfpt.datingapp.entities.Profile;
-import org.kiennguyenfpt.datingapp.entities.Swipe;
-import org.kiennguyenfpt.datingapp.entities.User;
+import org.kiennguyenfpt.datingapp.entities.*;
+import org.kiennguyenfpt.datingapp.enums.SubscriptionStatus;
+import org.kiennguyenfpt.datingapp.exceptions.AccessDeniedException;
 import org.kiennguyenfpt.datingapp.exceptions.AlreadyMatchedException;
-import org.kiennguyenfpt.datingapp.repositories.LikeRepository;
-import org.kiennguyenfpt.datingapp.repositories.ProfileRepository;
-import org.kiennguyenfpt.datingapp.repositories.SwipeRepository;
-import org.kiennguyenfpt.datingapp.repositories.UserRepository;
+import org.kiennguyenfpt.datingapp.repositories.*;
 import org.kiennguyenfpt.datingapp.services.MatchService;
 import org.kiennguyenfpt.datingapp.services.SwipeService;
 import org.springframework.stereotype.Service;
@@ -24,13 +20,15 @@ public class SwipeServiceImpl implements SwipeService {
     private final MatchService matchService;
     private final LikeRepository likeRepository;
     private final ProfileRepository profileRepository;
+    private final UserSubscriptionRepository userSubscriptionRepository;
 
-    public SwipeServiceImpl(SwipeRepository swipeRepository, UserRepository userRepository, MatchService matchService, LikeRepository likeRepository, ProfileRepository profileRepository) {
+    public SwipeServiceImpl(SwipeRepository swipeRepository, UserRepository userRepository, MatchService matchService, LikeRepository likeRepository, ProfileRepository profileRepository, UserSubscriptionRepository userSubscriptionRepository) {
         this.swipeRepository = swipeRepository;
         this.userRepository = userRepository;
         this.matchService = matchService;
         this.likeRepository = likeRepository;
         this.profileRepository = profileRepository;
+        this.userSubscriptionRepository = userSubscriptionRepository;
     }
 
     @Override
@@ -97,18 +95,20 @@ public class SwipeServiceImpl implements SwipeService {
     }
 
     @Override
-    public List<Profile> getAllLikedProfilesExcludingCurrentUser(String email) {
-        try {
-            // Lấy hồ sơ của người dùng hiện tại dựa trên email
-            Profile currentUserProfile = profileRepository.findByUser_Email(email);
-            if (currentUserProfile == null) {
-                return List.of();
-            }
-            Long currentUserId = currentUserProfile.getUser().getUserId();
-            // Lấy danh sách các hồ sơ đã liked trừ hồ sơ của người dùng hiện tại
-            return swipeRepository.findAllLikedProfilesExcludingCurrentUser(currentUserId);
-        } catch (Exception e) {
-            throw e;
+    public List<Profile> getAllLikedProfilesExcludingCurrentUser(String email) throws AccessDeniedException {
+        // Lấy hồ sơ của người dùng hiện tại dựa trên email
+        Profile currentUserProfile = profileRepository.findByUser_Email(email);
+        if (currentUserProfile == null) {
+            throw new IllegalArgumentException("User profile not found with email " + email);
         }
+        Long currentUserId = currentUserProfile.getUser().getUserId();
+
+        // Kiểm tra package của người dùng hiện tại
+        UserSubscription userSubscription = userSubscriptionRepository.findByUser_UserIdAndStatus(currentUserId, SubscriptionStatus.ACTIVE);
+        if (userSubscription != null && userSubscription.getSubscriptionPlan().getPlanId() == 1) {
+            throw new AccessDeniedException("Users are not allowed to access the list of liked profiles!", null);
+        }
+
+        return swipeRepository.findAllLikedProfilesExcludingCurrentUser(currentUserId);
     }
 }

@@ -3,6 +3,7 @@ package org.kiennguyenfpt.datingapp.controllers;
 import org.kiennguyenfpt.datingapp.dtos.requests.SwipeRequest;
 import org.kiennguyenfpt.datingapp.dtos.responses.SwipeResponse;
 import org.kiennguyenfpt.datingapp.entities.Profile;
+import org.kiennguyenfpt.datingapp.exceptions.AccessDeniedException;
 import org.kiennguyenfpt.datingapp.exceptions.AlreadyMatchedException;
 import org.kiennguyenfpt.datingapp.repositories.UserRepository;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
@@ -88,10 +89,17 @@ public class SwipeController {
             response.setData(profiles);
 
             return ResponseEntity.ok(response);
+        } catch (AccessDeniedException e) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        } catch (IllegalArgumentException e) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         } catch (Exception e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.setMessage("Error: " + e.getMessage());
-
+            response.setMessage(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

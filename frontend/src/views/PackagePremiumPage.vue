@@ -11,7 +11,12 @@
       <div class="subscription-grid">
         <!-- Headers Row -->
         <div></div>
-        <div v-for="(plan, index) in subscriptionPlans" :key="index" class="package-header" :class="plan.headerClass">
+        <div
+          v-for="(plan, index) in subscriptionPlans"
+          :key="index"
+          class="package-header"
+          :class="plan.headerClass"
+        >
           {{ plan.name }}
         </div>
 
@@ -19,7 +24,10 @@
         <div class="feature-title">Thích không giới hạn</div>
         <template v-for="(plan, index) in subscriptionPlans" :key="index">
           <div class="package-feature">
-            <span class="material-icons" :class="{ locked: !plan.hasLikeLimit }">
+            <span
+              class="material-icons"
+              :class="{ locked: !plan.hasLikeLimit }"
+            >
               {{ plan.hasLikeLimit ? "check_circle" : "lock" }}
             </span>
           </div>
@@ -28,7 +36,10 @@
         <div class="feature-title">Xem ai Thích bạn</div>
         <template v-for="(plan, index) in subscriptionPlans" :key="index">
           <div class="package-feature">
-            <span class="material-icons" :class="{ locked: !plan.hasWatchLike }">
+            <span
+              class="material-icons"
+              :class="{ locked: !plan.hasWatchLike }"
+            >
               {{ plan.hasWatchLike ? "check_circle" : "lock" }}
             </span>
           </div>
@@ -37,7 +48,10 @@
         <div class="feature-title">Lượt Thích ưu tiên</div>
         <template v-for="(plan, index) in subscriptionPlans" :key="index">
           <div class="package-feature">
-            <span class="material-icons" :class="{ locked: !plan.hasShowPriority }">
+            <span
+              class="material-icons"
+              :class="{ locked: !plan.hasShowPriority }"
+            >
               {{ plan.hasShowPriority ? "check_circle" : "lock" }}
             </span>
           </div>
@@ -46,7 +60,10 @@
         <div class="feature-title">Xem hồ sơ</div>
         <template v-for="(plan, index) in subscriptionPlans" :key="index">
           <div class="package-feature">
-            <span class="material-icons" :class="{ locked: !plan.hasViewProfile }">
+            <span
+              class="material-icons"
+              :class="{ locked: !plan.hasViewProfile }"
+            >
               {{ plan.hasViewProfile ? "check_circle" : "lock" }}
             </span>
           </div>
@@ -55,8 +72,19 @@
         <!-- Pricing Row -->
         <div></div>
         <template v-for="(plan, index) in subscriptionPlans" :key="index">
-          <button :class="['price-button', plan.buttonClass]">
-            Có giá từ {{ plan.price }} đ
+          <!-- Add explicit binding of classes to ensure "in-use-button" applies correctly -->
+          <button
+            :class="[
+              'price-button',
+              plan.buttonClass,
+              isCurrentPlan(plan.id) ? 'in-use-button' : '',
+            ]"
+          >
+            {{
+              isCurrentPlan(plan.id)
+                ? "Đang sử dụng"
+                : `${formatPrice(plan.price)} đ`
+            }}
           </button>
         </template>
       </div>
@@ -67,11 +95,13 @@
 <script>
 import LoveBellSidebar from "@/views/sidebar/LoveBellSidebar.vue";
 import { getAllSubscriptionPlans } from "@/services/package-service.js";
+import { getCurrentSubscriptionPlan } from "@/services/user-subcription-service";
 
 export default {
   data() {
     return {
       subscriptionPlans: [],
+      currentSubscription: null,
     };
   },
   components: {
@@ -79,6 +109,7 @@ export default {
   },
   mounted() {
     this.fetchSubscriptionPlans();
+    this.fetchCurrentSubscription();
   },
   methods: {
     async fetchSubscriptionPlans() {
@@ -86,12 +117,32 @@ export default {
         const plans = await getAllSubscriptionPlans();
         this.subscriptionPlans = plans.map((plan, index) => ({
           ...plan,
+          id: plan.planId, // Ensure this key matches currentSubscription's planId
           buttonClass: ["pink", "gold", "black"][index], // Classes for buttons based on index
           headerClass: ["plus-header", "gold-header", "platinum-header"][index], // Classes for headers based on index
         }));
       } catch (error) {
         console.error("Error fetching subscription plans:", error);
       }
+    },
+    async fetchCurrentSubscription() {
+      try {
+        const currentSubscription = await getCurrentSubscriptionPlan();
+        this.currentSubscription = currentSubscription;
+        console.log("Current subscription loaded:", this.currentSubscription); // Debugging line
+      } catch (error) {
+        console.error("Error fetching current subscription:", error);
+      }
+    },
+    isCurrentPlan(planId) {
+      // Convert both planId and currentSubscription.planId to numbers for comparison
+      return (
+        this.currentSubscription &&
+        Number(this.currentSubscription.planId) === Number(planId)
+      );
+    },
+    formatPrice(price) {
+      return new Intl.NumberFormat("vi-VN").format(price);
     },
   },
 };
@@ -176,7 +227,7 @@ export default {
 }
 
 .locked {
-  color: gray;
+  color: gray !important;
 }
 
 .material-icons {
@@ -214,6 +265,18 @@ export default {
 .price-button:active {
   transform: translateY(0);
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.in-use-button {
+  background: #a0a0a0 !important; /* Ensures gray background */
+  color: white !important; /* Ensures white text */
+  cursor: not-allowed !important; /* Indicates it's not clickable */
+  box-shadow: none !important; /* Removes shadow for flat appearance */
+}
+
+.in-use-button:hover {
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 .pink {

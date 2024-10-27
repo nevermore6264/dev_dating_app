@@ -95,7 +95,7 @@
 <script>
 import LoveBellSidebar from "@/views/sidebar/LoveBellSidebar.vue";
 import { getAllSubscriptionPlans } from "@/services/package-service.js";
-import { getCurrentSubscriptionPlan } from "@/services/user-subcription-service";
+import { getCurrentSubscriptionPlan } from "@/services/user-subscription-service";
 
 export default {
   data() {
@@ -115,7 +115,6 @@ export default {
     async fetchSubscriptionPlans() {
       try {
         const plans = await getAllSubscriptionPlans();
-        console.log("🚀 ~ fetchSubscriptionPlans ~ plans:", plans)
         this.subscriptionPlans = plans.map((plan, index) => ({
           ...plan,
           id: plan.planId, // Ensure this key matches currentSubscription's planId

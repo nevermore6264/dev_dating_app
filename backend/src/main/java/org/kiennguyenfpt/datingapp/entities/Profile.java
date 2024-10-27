@@ -83,14 +83,4 @@ public class Profile {
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProfileVerification> verifications; // Danh sách xác minh của hồ sơ
 
-    /*
-    public List<Photo> getPhotos() {
-        if (photos == null) {
-            photos = new ArrayList<>();
-        }
-        return photos;
-    }
-
-     */
-
 }

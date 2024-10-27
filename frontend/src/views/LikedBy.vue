@@ -15,30 +15,25 @@
       <!-- Sidebar for matches -->
       <aside class="sidebarMatch">
         <div class="sidebar-header">
-          <h3>Compatible Objects</h3>
+          <h3>Những người đã thích bạn</h3>
         </div>
-        <div class="matches-grid" v-if="matches && matches.length > 0">
+        <div class="matches-grid" v-if="likedMe && likedMe.length > 0">
           <!-- Hiển thị các đối tượng tương hợp nếu có -->
           <div
             class="match-item"
-            v-for="match in matches"
-            :key="match.targetUserId"
-            @click="navigateToChat(match)"
+            v-for="like in likedMe"
+            :key="like.profileId"
           >
             <img
-              :src="getAuthorizedImageUrl(match.targetUserAvatar)"
+              :src="getAuthorizedImageUrl(like.avatar)"
               class="match-image"
               alt="Match Avatar"
             />
             <div class="match-info">
-              <span class="match-name">{{ match.targetUserName }}</span>
+              <span class="match-name">{{ like.name }}</span>
             </div>
           </div>
         </div>
-        <br/> <br/> <br/> <br/> 
-        <button class="outer-border" @click="navigateToPackagePage">
-          <div class="animated-text">Who's Like?</div>
-        </button>
       </aside>
 
       <!-- Main content area: Profile card -->
@@ -59,29 +54,16 @@
               'show-dislike': showDislike,
             }"
           >
-            <!-- Nút "Back" để di chuyển về ảnh trước đó -->
-            <button
-              v-if="currentProfile.photos.length > 1"
-              @click="prevPhoto"
-              class="back-photo-button"
-            >
-              <i class="fas fa-chevron-left"></i>
-            </button>
-            <!-- Hiển thị tất cả ảnh trong danh sách -->
-            <!-- Hiển thị một ảnh dựa vào currentPhotoIndex -->
-      <img
-        :src="getAuthorizedImageUrl(currentProfile.photos[currentPhotoIndex])"
-        alt="Profile Image"
-        class="profile-image-card"
-      />
-            <!-- Nút "Next" để di chuyển đến ảnh tiếp theo -->
-            <button
-              v-if="currentProfile.photos.length > 1"
-              @click="nextPhoto"
-              class="next-photo-button"
-            >
-              <i class="fas fa-chevron-right"></i>
-            </button>
+            <img
+              v-if="currentProfile.avatar || currentProfile.imageUrl"
+              :src="
+                getAuthorizedImageUrl(
+                  currentProfile.avatar || currentProfile.imageUrl
+                )
+              "
+              alt="Profile Image"
+              class="profile-image-card"
+            />
             <div class="like-dislike-text" v-if="showLike">LIKE</div>
             <div class="like-dislike-text" v-if="showDislike">DISLIKE</div>
             <div class="profile-info">
@@ -160,7 +142,7 @@
 
 <script>
 import LoveBellSidebar from "@/views/sidebar/LoveBellSidebar.vue";
-import { getMatchesForUser } from "@/services/match-service";
+import { getAllLikedMe } from "@/services/like-service";
 import { loadRandomProfile } from "@/services/profile-service";
 import { swipeAction } from "@/services/swipe-service";
 
@@ -177,21 +159,20 @@ export default {
       profileIndex: 0, // Chỉ số của hồ sơ hiện tại trong danh sách
       likedProfiles: [], // Danh sách các hồ sơ đã thích
       dislikedProfiles: [], // Danh sách các hồ sơ đã không thích
-      matches: [], // Dữ liệu các hồ sơ
+      likedMe: [], // Dữ liệu các hồ sơ
       profileImageUrl: null, // Thêm biến này để lưu URL của ảnh profile
       showInfo: false, // Biến để kiểm soát hiển thị modal
-      currentPhotoIndex: 0, 
     };
   },
   components: {
     LoveBellSidebar,
   },
   methods: {
-    async loadMatches() {
+    async loadlikedMe() {
       try {
-        const matchData = await getMatchesForUser();
-        console.log("Match data:", matchData);
-        this.matches = matchData;
+        const likedMeData = await getAllLikedMe();
+        console.log("Match data:", likedMeData);
+        this.likedMe = likedMeData;
       } catch (error) {
         console.error("Error loading matches:", error.message);
       }
@@ -252,24 +233,6 @@ export default {
         query: { id: match.targetUserId },
       });
     },
-
-    nextPhoto() {
-      // Kiểm tra nếu có nhiều ảnh, chuyển sang ảnh tiếp theo
-      if (this.currentProfile.photos && this.currentProfile.photos.length > 1) {
-        this.currentPhotoIndex =
-          (this.currentPhotoIndex + 1) % this.currentProfile.photos.length;
-      }
-    },
-
-    prevPhoto() {
-      // Kiểm tra nếu có nhiều ảnh, quay lại ảnh trước đó
-      if (this.currentProfile.photos && this.currentProfile.photos.length > 1) {
-        this.currentPhotoIndex =
-          (this.currentPhotoIndex - 1 + this.currentProfile.photos.length) %
-          this.currentProfile.photos.length;
-      }
-    },
-
     like() {
       if (!this.currentProfile || !this.currentProfile.userId) {
         console.error("targetUserId is missing:", this.currentProfile);
@@ -368,57 +331,31 @@ export default {
     },
   },
   async mounted() {
-    await this.loadMatches(); // Tải danh sách matches khi component được mounted
+    // Tải danh sách matches khi component được mounted
     await this.loadProfiles(); // Gọi API khi component được mounted
+    await this.loadlikedMe();
   },
 };
 </script>
 
 <style scoped>
 /* Main Layout */
-.outer-border {
-  display: inline-block;
-  padding: 20px;
-  border: 2px solid red; 
-  border-radius: 8px; 
-  background: linear-gradient(135deg, #ff70a1, #ff4081); 
-  cursor: pointer; 
-  outline: none;
-  border: none;
-}
-
-.animated-text {
-  font-size: 48px;
-  font-weight: bold;
-  text-align: center;
-  animation: scaleText 2s infinite ease-in-out;
-}
-
-@keyframes scaleText {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-}
-
 
 .main-layout {
   display: flex;
   height: calc(100vh - 56px);
 }
 
-  /* Sidebar */
-  .sidebarMatch {
-    width: 30%;
-    background-color: #f6f6f6;
-    border-right: 1px solid #e0e0e0;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    animation: slideInLeft 0.6s ease-out;
-  }
+/* Sidebar */
+.sidebarMatch {
+  width: 30%;
+  background-color: #f6f6f6;
+  border-right: 1px solid #e0e0e0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  animation: slideInLeft 0.6s ease-out;
+}
 
 .sidebar-header {
   text-align: center;
@@ -535,46 +472,14 @@ export default {
   transform: scale(0.95);
 }
 
-  .back-photo-button,
-.next-photo-button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  font-size: 30px;
-  color: #ff6699;
-  cursor: pointer;
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
   margin-top: 20px;
-  animation: none; /* Vô hiệu hóa mọi animation */
+  width: 100%;
 }
-
-  .back-photo-button {
-    left: 5px;
-    top: 270px;
-  }
-
-  .next-photo-button {
-    right: 5px;
-    top: 270px;
-  }
-
-  .profile-image-card {
-    width: 400px;
-    height: 500px;
-    border-radius: 10px;
-    object-fit: cover;
-    margin-bottom: 15px;
-  }
-
-  /* Action Buttons */
-  .action-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 20px;
-    width: 100%;
-  }
 
 .button {
   position: relative;

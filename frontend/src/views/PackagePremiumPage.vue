@@ -115,6 +115,7 @@ export default {
     async fetchSubscriptionPlans() {
       try {
         const plans = await getAllSubscriptionPlans();
+        console.log("🚀 ~ fetchSubscriptionPlans ~ plans:", plans)
         this.subscriptionPlans = plans.map((plan, index) => ({
           ...plan,
           id: plan.planId, // Ensure this key matches currentSubscription's planId

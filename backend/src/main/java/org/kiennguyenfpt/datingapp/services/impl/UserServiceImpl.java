@@ -170,10 +170,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    @Override
-    public void updateAvatar(User user, String imageUrl) {
-        user.getProfile().setAvatar(imageUrl);
-        userRepository.save(user);
-    }
+
 
 }

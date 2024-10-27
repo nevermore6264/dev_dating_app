@@ -9,7 +9,6 @@ import org.kiennguyenfpt.datingapp.entities.UserLocation;
 import org.kiennguyenfpt.datingapp.repositories.UserLocationRepository;
 import org.kiennguyenfpt.datingapp.repositories.UserRepository;
 import org.kiennguyenfpt.datingapp.services.UserLocationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -87,14 +86,11 @@ public class UserLocationServiceImpl implements UserLocationService {
         JsonNode propertiesNode = featuresNode.path("properties");
 
         // Lấy thông tin cần thiết
-        String name = propertiesNode.path("name").asText();
-        String city = propertiesNode.path("city").asText();
-        String country = propertiesNode.path("country").asText();
+        String address = propertiesNode.path("formatted").asText();
         double latitude = propertiesNode.path("lat").asDouble();
         double longitude = propertiesNode.path("lon").asDouble();
-        String formatted = propertiesNode.path("formatted").asText();
 
-        return new LocationResponse(name, city, country, latitude, longitude, formatted);
+        return new LocationResponse(address, latitude, longitude);
     }
 
     @Override

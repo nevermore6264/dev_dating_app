@@ -26,16 +26,31 @@ public class SubscriptionPlan {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private int duration; // Duration in days
+    @Column
+    private Integer duration; // Duration in days
 
-    @Column(nullable = false)
+    @Column(name = "description")
+    private String description;
+
+    @Column
     private double price;
 
-    @Column(columnDefinition = "TEXT")
-    private String features;
+    @Column
+    private Boolean hasLikeLimit;
 
-    @Column(nullable = true)
-    private String imageUrl;
+    @Column
+    private Boolean hasWatchLike;
+
+    @Column
+    private Boolean hasShowPriority;
+
+    @Column
+    private Boolean hasViewProfile;
+
+    @Column
+    private Integer maxDailySwipes;
+
+    @Column
+    private String imageUrl; // Chưa cần thiết
 
 }

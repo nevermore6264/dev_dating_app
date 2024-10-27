@@ -1,6 +1,7 @@
 package org.kiennguyenfpt.datingapp.services;
 
 import org.kiennguyenfpt.datingapp.dtos.requests.UpdateProfileRequest;
+import org.kiennguyenfpt.datingapp.dtos.responses.AdminUserResponse;
 import org.kiennguyenfpt.datingapp.dtos.responses.NearlyUserResponse;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.entities.UserLocation;
@@ -18,6 +19,8 @@ public interface UserService {
     User findByEmail(String email);
 
     User save(User user);
+
+    List<AdminUserResponse> searchAdminUsers(String keyword);
 
     List<User> searchUsers(String keyword);
 

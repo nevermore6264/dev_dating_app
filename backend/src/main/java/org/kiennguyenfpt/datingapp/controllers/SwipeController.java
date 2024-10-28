@@ -101,6 +101,15 @@ public class SwipeController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<CommonResponse<String>> handleAccessDeniedException(AccessDeniedException e) {
+        CommonResponse<String> response = new CommonResponse<>();
+        response.setStatus(HttpStatus.FORBIDDEN.value());
+        response.setMessage(e.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
+
     @GetMapping("/likedMe")
     public ResponseEntity<CommonResponse<List<Profile>>> getAllLikedProfilesExcludingCurrentUser(Authentication authentication) {
         CommonResponse<List<Profile>> response = new CommonResponse<>();
@@ -118,10 +127,6 @@ public class SwipeController {
             response.setData(profiles);
 
             return ResponseEntity.ok(response);
-        } catch (AccessDeniedException e) {
-            response.setStatus(HttpStatus.FORBIDDEN.value());
-            response.setMessage(e.getMessage());
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
         } catch (IllegalArgumentException e) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.setMessage(e.getMessage());

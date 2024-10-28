@@ -28,6 +28,15 @@
           <li @click="navigateTo('SubscriptionPlans')">
             <el-icon><Box/></el-icon> Manage SubscriptionPlans
           </li>
+          <li @click="navigateTo('UserSubscriptions')">
+            <el-icon><CreditCard /></el-icon> Manage User Subscriptions
+          </li>
+          <li @click="navigateTo('Maps')">
+            <el-icon><MapLocation/></el-icon> Manage Maps
+          </li>
+          <li @click="navigateTo('Statistics')">
+            <el-icon><PieChart/></el-icon> Manage Statistics
+          </li>
         </ul>
 
         <!-- Logout button at the bottom -->
@@ -48,7 +57,19 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import {House, CoffeeCup, TrendCharts, User, SwitchButton, ChatLineRound, Money, Box} from '@element-plus/icons-vue';
+import {
+  House,
+  CoffeeCup,
+  TrendCharts,
+  User,
+  SwitchButton,
+  ChatLineRound,
+  Money,
+  Box,
+  MapLocation,
+  PieChart,
+  CreditCard
+} from '@element-plus/icons-vue';
 import Breadcrumb from "@/views/admin/Breadcrumb.vue"; // Import Footer
 
 const router = useRouter();
@@ -110,6 +131,7 @@ const logout = () => {
   display: flex;
   align-items: center;
   padding: 10px 15px;
+  gap: 10px;
   border-radius: 8px; /* Rounded corners */
   transition: background-color 0.3s ease;
 }

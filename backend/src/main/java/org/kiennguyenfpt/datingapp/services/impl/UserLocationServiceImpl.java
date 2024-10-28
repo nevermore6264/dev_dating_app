@@ -105,4 +105,13 @@ public class UserLocationServiceImpl implements UserLocationService {
         Optional<UserLocation> userLocation = userLocationRepository.findByUserId(userId);
         return userLocation;
     }
+
+    @Override
+    public boolean deleteUserLocationByUserId(Long userId) {
+        if (userLocationRepository.findByUserId(userId).isPresent()) {
+            userLocationRepository.deleteByUserId(userId);
+            return true;
+        }
+        return false;
+    }
 }

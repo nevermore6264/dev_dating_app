@@ -1,6 +1,7 @@
 package org.kiennguyenfpt.datingapp.controllers.admin;
 
 import org.kiennguyenfpt.datingapp.dtos.mapper.UserMapper;
+import org.kiennguyenfpt.datingapp.dtos.requests.ChangePackageRequest;
 import org.kiennguyenfpt.datingapp.dtos.responses.AdminUserResponse;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
@@ -11,8 +12,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -35,10 +36,10 @@ public class AdminUserController {
 
     // 1. Xem danh sách người dùng
     @GetMapping
-    public ResponseEntity searchUsers(@RequestParam(value = "keyword", required = false) String keyword) {
+    public ResponseEntity searchUsers() {
         CommonResponse response = new CommonResponse<>();
         try {
-            List<AdminUserResponse> responses = userService.searchAdminUsers(keyword);
+            List<AdminUserResponse> responses = userService.searchAdminUsers();
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Get list user successfully!");
             response.setData(responses);
@@ -73,6 +74,37 @@ public class AdminUserController {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setMessage("Error: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    // 1. Xem danh sách người dùng
+    @GetMapping("/{id}")
+    public ResponseEntity getUserById(@PathVariable Long id) {
+        CommonResponse response = new CommonResponse<>();
+        try {
+            AdminUserResponse responses = userService.getUserById(id);
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("Get user successfully!");
+            response.setData(responses);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage("Error: " + e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @PutMapping("/{userId}/change-package")
+    public ResponseEntity<?> changeUserPackage(
+            @PathVariable Long userId,
+            @RequestBody ChangePackageRequest changePackageRequest) {
+        try {
+            userService.changeUserPackage(userId, changePackageRequest.getPlanId());
+            return ResponseEntity.ok("User package updated successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Failed to update user package: " + e.getMessage());
         }
     }
 

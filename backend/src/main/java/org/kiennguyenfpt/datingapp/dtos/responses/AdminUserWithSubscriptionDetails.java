@@ -5,17 +5,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdminUserResponse {
+public class AdminUserWithSubscriptionDetails {
 
     private Long userId;
 
-    private String name;
+    private String profileName;
 
     private String email;
 
@@ -31,8 +32,13 @@ public class AdminUserResponse {
 
     private String phone;
 
-    private String packageName;
+    private String subscriptionPlanName;
+
+    private Timestamp subscriptionStartDate;
+
+    private Timestamp subscriptionEndDate;
+
+    private String subscriptionStatus;
 
     private List<String> photoUrls;
-
 }

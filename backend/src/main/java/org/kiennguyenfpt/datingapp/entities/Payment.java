@@ -6,24 +6,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
+@Table(name = "Payments")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Swipe")
-public class Swipe {
+public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long paymentId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "target_user_id")
-    private User targetUser;
+    @Column(nullable = false)
+    private double amount;
 
-    private boolean isLike;
+    @Column(nullable = false)
+    private LocalDateTime date = LocalDateTime.now();
+
 }

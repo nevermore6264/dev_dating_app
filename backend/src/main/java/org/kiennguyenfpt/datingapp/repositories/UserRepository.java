@@ -28,21 +28,43 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "AND (:keyword IS NULL OR :keyword = '' OR u.email LIKE %:keyword% OR u.phone LIKE %:keyword%)")
     List<User> searchUsersByKeyword(@Param("keyword") String keyword);
 
-    @Query(value = "SELECT u.user_id, p.name, u.email, l.address\n" +
-            "FROM users u\n" +
-            "JOIN user_roles ur ON u.user_id = ur.user_id\n" +
-            "JOIN roles r ON ur.role_id = r.role_id\n" +
-            "LEFT JOIN profiles p ON u.user_id = p.user_id\n" +
-            "LEFT JOIN user_location l ON u.user_id = l.user_id\n" +
-            "WHERE r.role_name = 'User'\n" +
-            "AND (:keyword IS NULL OR :keyword = '' " +
-            "OR u.email LIKE CONCAT('%', :keyword, '%') " +
-            "OR p.name LIKE CONCAT('%', :keyword, '%'))", nativeQuery = true)
-    List<Object[]> searchAdminUsersByKeywordRaw(@Param("keyword") String keyword);
+    @Query(value = "SELECT \n" +
+            "    u.user_id, \n" +
+            "    p.name AS profile_name, \n" +
+            "    u.email, \n" +
+            "    l.address, \n" +
+            "    u.status, \n" +
+            "    r.role_name, \n" +
+            "    p.bio, \n" +
+            "    p.gender, \n" +
+            "    p.phone, \n" +
+            "    sp.name AS subscription_plan_name, \n" +
+            "    GROUP_CONCAT(ph.url) AS photoUrls\n" +
+            "FROM \n" +
+            "    users u\n" +
+            "JOIN \n" +
+            "    user_roles ur ON u.user_id = ur.user_id\n" +
+            "JOIN \n" +
+            "    roles r ON ur.role_id = r.role_id\n" +
+            "LEFT JOIN \n" +
+            "    profiles p ON u.user_id = p.user_id\n" +
+            "LEFT JOIN \n" +
+            "    user_location l ON u.user_id = l.user_id\n" +
+            "LEFT JOIN \n" +
+            "    user_subscriptions us ON u.user_id = us.user_id\n" +
+            "LEFT JOIN \n" +
+            "    subscription_plans sp ON us.plan_id = sp.plan_id\n " +
+            "LEFT JOIN\n" +
+            "    photos ph ON ph.profile_id = p.profile_id\n" +
+            "WHERE \n" +
+            "    r.role_name = 'User' AND us.status = 'ACTIVE' \n" +
+            "GROUP BY u.user_id , p.name , u.email , l.address , u.status , r.role_name , p.bio , p.gender , p.phone , sp.name",
+            nativeQuery = true)
+    List<Object[]> searchAdminUsersRaw();
 
-    default List<AdminUserResponse> searchAdminUsersByKeyword(@Param("keyword") String keyword) {
+    default List<AdminUserResponse> searchAdminUsers() {
         // Execute the raw query method
-        List<Object[]> results = searchAdminUsersByKeywordRaw(keyword);
+        List<Object[]> results = searchAdminUsersRaw();
 
         // Convert raw results to UserSearchResponse DTOs
         return results.stream()
@@ -50,7 +72,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
                         (Long) result[0],      // userId
                         result[1] != null ? (String) result[1] : "-",  // name, default "-" if null
                         (String) result[2],    // email
-                        result[3] != null ? (String) result[3] : "-"   // address, default "-" if null
+                        result[3] != null ? (String) result[3] : "-",  // address, default "-" if null
+                        result[4] != null ? (String) result[4] : "-",  // status, default "-" if null
+                        result[5] != null ? (String) result[5] : "-",  // role name, default "-" if null
+                        result[6] != null ? (String) result[6] : "-",   // bio, default "-" if null
+                        result[7] != null ? (String) result[7] : "-",   // gender, default "-" if null
+                        result[8] != null ? (String) result[8] : "-",   // phone, default "-" if null
+                        result[9] != null ? (String) result[9] : "-",   // package name, default "-" if null
+                        result[10] != null ? List.of(((String) result[10]).split(",")) : Collections.emptyList() // photoUrls (Profile)
                 ))
                 .collect(Collectors.toList());
     }
@@ -98,4 +127,66 @@ public interface UserRepository extends JpaRepository<User, Long> {
                 .collect(Collectors.toList());
     }
 
+    @Query(value = "SELECT \n" +
+            "    u.user_id, \n" +
+            "    p.name AS profile_name, \n" +
+            "    u.email, \n" +
+            "    l.address, \n" +
+            "    u.status, \n" +
+            "    r.role_name, \n" +
+            "    p.bio, \n" +
+            "    p.gender, \n" +
+            "    p.phone, \n" +
+            "    sp.name AS subscription_plan_name\n," +
+            "    GROUP_CONCAT(ph.url) AS photoUrls\n" +
+            "FROM \n" +
+            "    users u\n" +
+            "JOIN \n" +
+            "    user_roles ur ON u.user_id = ur.user_id\n" +
+            "JOIN \n" +
+            "    roles r ON ur.role_id = r.role_id\n" +
+            "LEFT JOIN \n" +
+            "    profiles p ON u.user_id = p.user_id\n" +
+            "LEFT JOIN \n" +
+            "    user_location l ON u.user_id = l.user_id\n" +
+            "LEFT JOIN \n" +
+            "    user_subscriptions us ON u.user_id = us.user_id\n" +
+            "LEFT JOIN \n" +
+            "    subscription_plans sp ON us.plan_id = sp.plan_id\n" +
+            "LEFT JOIN\n" +
+            "    photos ph ON ph.profile_id = p.profile_id\n" +
+            "WHERE \n" +
+            "    r.role_name = 'User' AND us.status = 'ACTIVE' \n" +
+            "AND u.user_id = :id\n" +
+            "GROUP BY u.user_id , p.name , u.email , l.address , u.status , r.role_name , p.bio , p.gender , p.phone , sp.name",
+            nativeQuery = true)
+    List<Object> getUserByIdRaw(@Param("id") Long id);
+
+    default AdminUserResponse getUserById(@Param("id") Long id) {
+        List<Object> result = getUserByIdRaw(id);
+
+        // Check if the result is null or empty before proceeding
+        if (result == null || result.isEmpty()) {
+            // Handle the case when no user is found
+            return null; // or throw an exception, or return a default AdminUserResponse
+        }
+
+        // Since you're querying for a single user, we can safely cast the first element of the list to an Object array.
+        Object[] userData = (Object[]) result.get(0);
+
+        // Convert raw results to AdminUserResponse DTOs
+        return new AdminUserResponse(
+                userData[0] != null ? ((Number) userData[0]).longValue() : null, // userId
+                userData[1] != null ? (String) userData[1] : "-",                // profile_name
+                userData[2] != null ? (String) userData[2] : "-",                // email
+                userData[3] != null ? (String) userData[3] : "-",                // address
+                userData[4] != null ? (String) userData[4] : "-",                // status
+                userData[5] != null ? (String) userData[5] : "-",                // role_name
+                userData[6] != null ? (String) userData[6] : "-",                // bio
+                userData[7] != null ? (String) userData[7] : "-",                // gender
+                userData[8] != null ? (String) userData[8] : "-",                // phone
+                userData[9] != null ? (String) userData[9] : "-",                 // subscription_plan_name
+                userData[10] != null ? List.of(((String) userData[10]).split(",")) : Collections.emptyList() // photoUrls (Profile)
+        );
+    }
 }

@@ -14,11 +14,13 @@ public interface UserService {
 
     User updateProfile(String email, UpdateProfileRequest updateProfileRequest, List<MultipartFile> files) throws IOException;
 
+    void updateAvatar(User user, String imageUrl);
+
     User findByEmail(String email);
 
     User save(User user);
 
-    List<AdminUserResponse> searchAdminUsers(String keyword);
+    List<AdminUserResponse> searchAdminUsers();
 
     List<User> searchUsers(String keyword);
 
@@ -27,4 +29,8 @@ public interface UserService {
     User findById(Long id);
 
     List<NearlyUserResponse> findNearbyUsers(UserLocation currentLocation, double range);
+
+    AdminUserResponse getUserById(Long id);
+
+    void changeUserPackage(Long userId, Long planId);
 }

@@ -43,5 +43,8 @@ public class Photo {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
 
-
+    public Photo(Profile profile, String url) {
+        this.profile = profile;
+        this.url = url;
+    }
 }

@@ -48,7 +48,7 @@ public class SubscriptionPlan {
     private Boolean hasViewProfile;
 
     @Column
-    private Integer maxDailySwipes;
+    private Integer maxDailySwipes= 0;
 
     @Column
     private String imageUrl; // Chưa cần thiết

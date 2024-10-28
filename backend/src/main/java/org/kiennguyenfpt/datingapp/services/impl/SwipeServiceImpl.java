@@ -79,7 +79,6 @@ public class SwipeServiceImpl implements SwipeService {
             throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "You have exceeded the maximum number of likes for today.");
         }
 
-
         // Logic to handle swipe action
         boolean isMatch = false;
 
@@ -104,8 +103,6 @@ public class SwipeServiceImpl implements SwipeService {
                 likeRepository.save(like);
             }
 
-
-
             // Kiểm tra nếu target user đã like user trước đó (reciprocal like)
             Swipe reciprocalSwipe = swipeRepository.findByUser_UserIdAndTargetUser_UserId(targetUserId, userId);
             if (reciprocalSwipe != null && reciprocalSwipe.isLike()) {
@@ -113,10 +110,7 @@ public class SwipeServiceImpl implements SwipeService {
                 matchService.createMatch(user, targetUser);
                 isMatch = true;
             }
-        }else {
-
         }
-
         return new SwipeResponse(isMatch);
     }
 

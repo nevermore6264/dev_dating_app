@@ -27,6 +27,7 @@ import PackagePremiumPage from "@/views/PackagePremiumPage.vue";
 import ManageMaps from "@/views/admin/ManageMaps.vue";
 import ManageStatistics from "@/views/admin/ManageStatistics.vue";
 import ManageUserSubscriptions from "@/views/admin/ManageUserSubscriptions.vue";
+import LikedBy from "@/views/LikedBy.vue";
 
 const routes = [
   {
@@ -113,6 +114,11 @@ const routes = [
     path: "/packagePremiumPage",
     name: "packagePremiumPage",
     component: PackagePremiumPage,
+  },
+  {
+    path: "/likedBy",
+    name: "likedBy",
+    component: LikedBy,
   },
   {
     path: '/admin',

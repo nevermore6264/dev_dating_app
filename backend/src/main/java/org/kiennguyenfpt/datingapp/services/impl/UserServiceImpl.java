@@ -5,9 +5,15 @@ import org.kiennguyenfpt.datingapp.dtos.responses.AdminUserResponse;
 import org.kiennguyenfpt.datingapp.dtos.responses.NearlyUserResponse;
 import org.kiennguyenfpt.datingapp.entities.Photo;
 import org.kiennguyenfpt.datingapp.entities.Profile;
+import org.kiennguyenfpt.datingapp.entities.SubscriptionPlan;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.entities.UserLocation;
+import org.kiennguyenfpt.datingapp.entities.UserSubscription;
+import org.kiennguyenfpt.datingapp.enums.SubscriptionPlanType;
+import org.kiennguyenfpt.datingapp.enums.SubscriptionStatus;
+import org.kiennguyenfpt.datingapp.repositories.SubscriptionPlanRepository;
 import org.kiennguyenfpt.datingapp.repositories.UserRepository;
+import org.kiennguyenfpt.datingapp.repositories.UserSubscriptionRepository;
 import org.kiennguyenfpt.datingapp.services.PhotoService;
 import org.kiennguyenfpt.datingapp.services.UserService;
 import org.slf4j.Logger;
@@ -16,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,11 +32,23 @@ public class UserServiceImpl implements UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final UserRepository userRepository;
+
+    private final UserSubscriptionRepository userSubscriptionRepository;
+
+    private final SubscriptionPlanRepository subscriptionPlanRepository;
+
     private final PhotoService photoService;
 
-    public UserServiceImpl(UserRepository userRepository, PhotoService photoService) {
+    public UserServiceImpl(
+            UserRepository userRepository,
+            PhotoService photoService,
+            UserSubscriptionRepository userSubscriptionRepository,
+            SubscriptionPlanRepository subscriptionPlanRepository
+    ) {
         this.userRepository = userRepository;
         this.photoService = photoService;
+        this.userSubscriptionRepository = userSubscriptionRepository;
+        this.subscriptionPlanRepository = subscriptionPlanRepository;
     }
 
     @Override
@@ -48,8 +67,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<AdminUserResponse> searchAdminUsers(String keyword) {
-        return userRepository.searchAdminUsersByKeyword(keyword);
+    public List<AdminUserResponse> searchAdminUsers() {
+        return userRepository.searchAdminUsers();
     }
 
     @Override
@@ -65,6 +84,43 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<NearlyUserResponse> findNearbyUsers(UserLocation currentLocation, double rangeInMeters) {
         return userRepository.findNearbyUsers(currentLocation.getLatitude(), currentLocation.getLongitude(), rangeInMeters);
+    }
+
+    @Override
+    public AdminUserResponse getUserById(Long id) {
+        return userRepository.getUserById(id);
+    }
+
+    @Override
+    public void changeUserPackage(Long userId, Long planId) {
+        // 1. Update tất cả các bản ghi cũ của userId về EXPIRED
+        userSubscriptionRepository.updateStatusToExpiredByUserId(userId, "EXPIRED");
+
+        // 2. Tạo bản ghi mới cho UserSubscription
+        UserSubscription newSubscription = new UserSubscription();
+        newSubscription.setUser(userRepository.getOne(userId));
+        newSubscription.setStatus(SubscriptionStatus.ACTIVE);
+
+        // 3. Lấy đối tượng subscription plan dựa trên planId và set vào UserSubscription
+        SubscriptionPlan subscriptionPlan = subscriptionPlanRepository.findById(planId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid plan ID"));
+        newSubscription.setSubscriptionPlan(subscriptionPlan);
+
+        // 4. Set ngày bắt đầu là ngày hiện tại
+        LocalDateTime startDate = LocalDateTime.now();
+        newSubscription.setStartDate(startDate);
+
+        // 5. Xác định end_date dựa trên planId
+        if (SubscriptionPlanType.TRIAL.value() == planId) {
+            newSubscription.setEndDate(startDate.plusDays(7));
+        } else if (SubscriptionPlanType.PREMIUM.value() == planId) {
+            newSubscription.setEndDate(startDate.plusDays(30));
+        } else if (SubscriptionPlanType.FREE.value() == planId) {
+            newSubscription.setEndDate(null); // Không có end_date nếu planId là 1
+        }
+
+        // 6. Lưu bản ghi mới xuống cơ sở dữ liệu
+        userSubscriptionRepository.save(newSubscription);
     }
 
     /*
@@ -170,6 +226,10 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
+    @Override
+    public void updateAvatar(User user, String imageUrl) {
+        user.getProfile().setAvatar(imageUrl);
+        userRepository.save(user);
+    }
 
 }

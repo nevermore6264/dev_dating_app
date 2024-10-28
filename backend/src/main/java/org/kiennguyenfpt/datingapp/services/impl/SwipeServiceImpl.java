@@ -72,7 +72,14 @@ public class SwipeServiceImpl implements SwipeService {
         // Lấy số lượt like tối đa cho gói của người dùng
         UserSubscription userSubscription = userSubscriptionRepository.findActiveSubscriptionByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User subscription not found"));
-        int dailySwipeMax = userSubscription.getSubscriptionPlan().getMaxDailySwipes();
+        SubscriptionPlan subscriptionPlan = userSubscription.getSubscriptionPlan();
+
+        // Kiểm tra package của người dùng, giống API likedMe
+        if (subscriptionPlan.getPlanId() == 1 && !Boolean.TRUE.equals(subscriptionPlan.getHasLikeLimit())) {
+            throw new AccessDeniedException("Your subscription plan does not allow using the swipe feature.", HttpStatus.FORBIDDEN);
+        }
+
+        int dailySwipeMax = subscriptionPlan.getMaxDailySwipes() != null ? subscriptionPlan.getMaxDailySwipes() : Integer.MAX_VALUE;
 
         // Kiểm tra nếu đã vượt quá số lượt like tối đa cho gói
         if (user.getDailySwipeCount() >= dailySwipeMax) {
@@ -113,6 +120,7 @@ public class SwipeServiceImpl implements SwipeService {
         }
         return new SwipeResponse(isMatch);
     }
+
 
     @Override
     public List<Profile> getAllLikedProfilesExcludingCurrentUser(Long userId) throws AccessDeniedException {

@@ -35,7 +35,8 @@
             </div>
           </div>
         </div>
-        <button class="outer-border" @click="navigateToPackagePage">
+        <br/> <br/> <br/> <br/> 
+        <button class="outer-border" @click="navigateToLikeByPage">
           <div class="animated-text">Who's Like?</div>
         </button>
       </aside>
@@ -68,13 +69,11 @@
             </button>
             <!-- Hiển thị tất cả ảnh trong danh sách -->
             <!-- Hiển thị một ảnh dựa vào currentPhotoIndex -->
-            <img
-              :src="
-                getAuthorizedImageUrl(currentProfile.photos[currentPhotoIndex])
-              "
-              alt="Profile Image"
-              class="profile-image-card"
-            />
+      <img
+        :src="getAuthorizedImageUrl(currentProfile.photos[currentPhotoIndex])"
+        alt="Profile Image"
+        class="profile-image-card"
+      />
             <!-- Nút "Next" để di chuyển đến ảnh tiếp theo -->
             <button
               v-if="currentProfile.photos.length > 1"
@@ -181,7 +180,7 @@ export default {
       matches: [], // Dữ liệu các hồ sơ
       profileImageUrl: null, // Thêm biến này để lưu URL của ảnh profile
       showInfo: false, // Biến để kiểm soát hiển thị modal
-      currentPhotoIndex: 0,
+      currentPhotoIndex: 0, 
     };
   },
   components: {
@@ -253,7 +252,7 @@ export default {
         query: { id: match.targetUserId },
       });
     },
-
+    
     nextPhoto() {
       // Kiểm tra nếu có nhiều ảnh, chuyển sang ảnh tiếp theo
       if (this.currentProfile.photos && this.currentProfile.photos.length > 1) {
@@ -363,13 +362,13 @@ export default {
         return url;
       }
     },
-
+    navigateToLikeByPage() {
+    this.$router.push('/likedBy'); // Navigate to /likeBy route
+  },
+    
     getRandomDistance() {
       return Math.floor(Math.random() * 10) + 1;
     },
-    navigateToPackagePage() {
-    this.$router.push({ path: "/likedBy" });
-  },
   },
   async mounted() {
     await this.loadMatches(); // Tải danh sách matches khi component được mounted
@@ -383,10 +382,10 @@ export default {
 .outer-border {
   display: inline-block;
   padding: 20px;
-  border: 2px solid red;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #ff70a1, #ff4081);
-  cursor: pointer;
+  border: 2px solid red; 
+  border-radius: 8px; 
+  background: linear-gradient(135deg, #ff70a1, #ff4081); 
+  cursor: pointer; 
   outline: none;
   border: none;
 }
@@ -399,8 +398,7 @@ export default {
 }
 
 @keyframes scaleText {
-  0%,
-  100% {
+  0%, 100% {
     transform: scale(1);
   }
   50% {
@@ -408,21 +406,22 @@ export default {
   }
 }
 
+
 .main-layout {
   display: flex;
   height: calc(100vh - 56px);
 }
 
-/* Sidebar */
-.sidebarMatch {
-  width: 30%;
-  background-color: #f6f6f6;
-  border-right: 1px solid #e0e0e0;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  animation: slideInLeft 0.6s ease-out;
-}
+  /* Sidebar */
+  .sidebarMatch {
+    width: 30%;
+    background-color: #f6f6f6;
+    border-right: 1px solid #e0e0e0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    animation: slideInLeft 0.6s ease-out;
+  }
 
 .sidebar-header {
   text-align: center;
@@ -539,7 +538,7 @@ export default {
   transform: scale(0.95);
 }
 
-.back-photo-button,
+  .back-photo-button,
 .next-photo-button {
   position: absolute;
   top: 50%;
@@ -553,32 +552,32 @@ export default {
   animation: none; /* Vô hiệu hóa mọi animation */
 }
 
-.back-photo-button {
-  left: 5px;
-  top: 270px;
-}
+  .back-photo-button {
+    left: 5px;
+    top: 270px;
+  }
 
-.next-photo-button {
-  right: 5px;
-  top: 270px;
-}
+  .next-photo-button {
+    right: 5px;
+    top: 270px;
+  }
 
-.profile-image-card {
-  width: 400px;
-  height: 500px;
-  border-radius: 10px;
-  object-fit: cover;
-  margin-bottom: 15px;
-}
+  .profile-image-card {
+    width: 400px;
+    height: 500px;
+    border-radius: 10px;
+    object-fit: cover;
+    margin-bottom: 15px;
+  }
 
-/* Action Buttons */
-.action-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 20px;
-  width: 100%;
-}
+  /* Action Buttons */
+  .action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+    width: 100%;
+  }
 
 .button {
   position: relative;

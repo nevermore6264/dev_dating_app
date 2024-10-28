@@ -2,7 +2,7 @@ package org.kiennguyenfpt.datingapp.controllers;
 
 import org.kiennguyenfpt.datingapp.dtos.requests.UserLocationRequest;
 import org.kiennguyenfpt.datingapp.dtos.responses.NearlyUserResponse;
-import org.kiennguyenfpt.datingapp.entities.User;
+import org.kiennguyenfpt.datingapp.dtos.responses.UserLocationResponse;
 import org.kiennguyenfpt.datingapp.entities.UserLocation;
 import org.kiennguyenfpt.datingapp.responses.CommonResponse;
 import org.kiennguyenfpt.datingapp.services.UserLocationService;
@@ -10,6 +10,7 @@ import org.kiennguyenfpt.datingapp.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/location")
@@ -90,6 +92,43 @@ public class UserLocationController {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setMessage("Error: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    // GET endpoint to retrieve user location by userId
+    @GetMapping("/{userId}")
+    public ResponseEntity getUserLocation(@PathVariable Long userId) {
+        CommonResponse response = new CommonResponse<>();
+
+        try {
+            Optional<UserLocation> optional = userLocationService.getUserLocation(userId);
+            response.setStatus(HttpStatus.OK.value());
+            if (optional.isEmpty()) {
+                response.setData(null);
+            } else {
+                response.setData(new UserLocationResponse(
+                        optional.get().getLatitude(),
+                        optional.get().getLongitude(),
+                        optional.get().getAddress()
+                ));
+            }
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage("Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+
+    }
+
+    // DELETE endpoint to delete user location by userId
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<?> deleteUserLocation(@PathVariable Long userId) {
+        boolean deleted = userLocationService.deleteUserLocationByUserId(userId);
+        if (deleted) {
+            return ResponseEntity.ok("Location deleted successfully");
+        } else {
+            return ResponseEntity.status(404).body("Location not found");
         }
     }
 

@@ -1,9 +1,8 @@
 package org.kiennguyenfpt.datingapp.services.impl;
 
-import org.kiennguyenfpt.datingapp.dtos.responses.AdminUserSubscriptionResponse;
-import org.kiennguyenfpt.datingapp.dtos.responses.AdminUserWithSubscriptionDetails;
-import org.kiennguyenfpt.datingapp.dtos.responses.RevenueStatsResponse;
-import org.kiennguyenfpt.datingapp.dtos.responses.SubscriptionStatsResponse;
+import org.kiennguyenfpt.datingapp.dtos.responses.*;
+import org.kiennguyenfpt.datingapp.entities.UserSubscription;
+import org.kiennguyenfpt.datingapp.enums.SubscriptionStatus;
 import org.kiennguyenfpt.datingapp.repositories.UserSubscriptionRepository;
 import org.kiennguyenfpt.datingapp.services.UserSubscriptionService;
 import org.springframework.stereotype.Service;
@@ -144,4 +143,19 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
         return response;
     }
 
+    @Override
+    public SubscriptionPlanResponse getActiveSubscriptionByUserId(Long userId) {
+        UserSubscription userSubscription = userSubscriptionRepository.findByUser_UserIdAndStatus(userId, SubscriptionStatus.ACTIVE);
+        if (userSubscription == null) {
+            return null;
+        }
+
+        // Map UserSubscription to SubscriptionPlanResponse
+        return new SubscriptionPlanResponse(
+                userSubscription.getSubscriptionPlan().getPlanId(),
+                userSubscription.getSubscriptionPlan().getName(),
+                userSubscription.getSubscriptionPlan().getDescription(),
+                userSubscription.getSubscriptionPlan().getPrice()
+        );
+    }
 }

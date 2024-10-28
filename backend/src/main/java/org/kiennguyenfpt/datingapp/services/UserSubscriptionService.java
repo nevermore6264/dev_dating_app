@@ -1,9 +1,6 @@
 package org.kiennguyenfpt.datingapp.services;
 
-import org.kiennguyenfpt.datingapp.dtos.responses.AdminUserSubscriptionResponse;
-import org.kiennguyenfpt.datingapp.dtos.responses.AdminUserWithSubscriptionDetails;
-import org.kiennguyenfpt.datingapp.dtos.responses.RevenueStatsResponse;
-import org.kiennguyenfpt.datingapp.dtos.responses.SubscriptionStatsResponse;
+import org.kiennguyenfpt.datingapp.dtos.responses.*;
 
 import java.util.List;
 
@@ -24,4 +21,7 @@ public interface UserSubscriptionService {
     List<RevenueStatsResponse> getQuarterlyRevenue();
 
     List<RevenueStatsResponse> getYearlyRevenue();
+
+    SubscriptionPlanResponse getActiveSubscriptionByUserId(Long userId);
+
 }

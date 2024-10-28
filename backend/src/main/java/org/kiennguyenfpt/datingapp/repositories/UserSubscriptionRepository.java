@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.kiennguyenfpt.datingapp.dtos.responses.AdminUserSubscriptionResponse;
 import org.kiennguyenfpt.datingapp.dtos.responses.AdminUserWithSubscriptionDetails;
 import org.kiennguyenfpt.datingapp.entities.UserSubscription;
+import org.kiennguyenfpt.datingapp.enums.SubscriptionStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,10 +15,14 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserSubscriptionRepository extends JpaRepository<UserSubscription, Long> {
+    @Query("SELECT us FROM UserSubscription us WHERE us.user.userId = :userId AND us.status = 'ACTIVE'")
+    Optional<UserSubscription> findActiveSubscriptionByUserId(@Param("userId") Long userId);
 
+    UserSubscription findByUser_UserIdAndStatus(Long userId, SubscriptionStatus status);
     // Native query để lấy danh sách gói đăng ký theo userId
     @Query(value = "SELECT * FROM user_subscriptions WHERE user_id = :userId", nativeQuery = true)
     List<UserSubscription> findByUserId(@Param("userId") Long userId);

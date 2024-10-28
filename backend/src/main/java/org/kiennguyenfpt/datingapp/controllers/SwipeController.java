@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 
@@ -50,14 +51,24 @@ public class SwipeController {
             response.setMessage("Swipe action completed successfully.");
             response.setData(swipeResponse);
             return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            response.setMessage(e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+        } catch (ResponseStatusException e) {
+            // Kiểm tra nếu lỗi là TOO_MANY_REQUESTS (429)
+            if (e.getStatusCode() == HttpStatus.TOO_MANY_REQUESTS) {
+                response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+                response.setMessage("You have exceeded the maximum number of likes for today.");
+                return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(response);
+            }
+            // Xử lý các ResponseStatusException khác (nếu có)
+            response.setStatus(e.getStatusCode().value());
+            response.setMessage(e.getReason());
+            return ResponseEntity.status(e.getStatusCode()).body(response);
+
         } catch (AlreadyMatchedException e) { // Bắt ngoại lệ AlreadyMatchedException riêng
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.setMessage(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
         } catch (Exception e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setMessage("Error performing swipe action: " + e.getMessage());

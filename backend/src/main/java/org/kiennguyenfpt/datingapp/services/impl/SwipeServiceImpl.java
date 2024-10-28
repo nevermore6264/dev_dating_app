@@ -7,17 +7,15 @@ import org.kiennguyenfpt.datingapp.entities.Swipe;
 import org.kiennguyenfpt.datingapp.entities.User;
 import org.kiennguyenfpt.datingapp.entities.UserSubscription;
 import org.kiennguyenfpt.datingapp.exceptions.AlreadyMatchedException;
-import org.kiennguyenfpt.datingapp.exceptions.LikeLimitExceededException;
 import org.kiennguyenfpt.datingapp.repositories.LikeRepository;
 import org.kiennguyenfpt.datingapp.repositories.SwipeRepository;
 import org.kiennguyenfpt.datingapp.repositories.UserRepository;
 import org.kiennguyenfpt.datingapp.repositories.UserSubscriptionRepository;
 import org.kiennguyenfpt.datingapp.services.MatchService;
 import org.kiennguyenfpt.datingapp.services.SwipeService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.List;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class SwipeServiceImpl implements SwipeService {
@@ -61,14 +59,14 @@ public class SwipeServiceImpl implements SwipeService {
             throw new AlreadyMatchedException("You have already matched with this user.");
         }
 
-        // Kiểm tra số lượt like tối đa cho gói Free
+        // Lấy số lượt like tối đa cho gói của người dùng
         UserSubscription userSubscription = userSubscriptionRepository.findActiveSubscriptionByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User subscription not found"));
+        int dailySwipeMax = userSubscription.getSubscriptionPlan().getMaxDailySwipes();
 
-        boolean isFreePlan = userSubscription.getSubscriptionPlan().getMaxDailySwipes() == 2;
-
-        if (isFreePlan && user.getDailySwipeCount() >= 2) {
-            throw new LikeLimitExceededException("You have exceeded the maximum number of likes for today.");
+        // Kiểm tra nếu đã vượt quá số lượt like tối đa cho gói
+        if (user.getDailySwipeCount() >= dailySwipeMax) {
+            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "You have exceeded the maximum number of likes for today.");
         }
 
         // Logic to handle swipe action
@@ -83,6 +81,8 @@ public class SwipeServiceImpl implements SwipeService {
 
         // Nếu là like, lưu vào bảng Like
         if (isLike) {
+            user.setDailySwipeCount(user.getDailySwipeCount() + 1);
+            userRepository.save(user);
             // Kiểm tra xem người dùng đã like targetUser trước đó chưa
             Like existingLike = likeRepository.findByUserAndProfile(user, targetUser.getProfile());
             if (existingLike == null) {
@@ -105,8 +105,7 @@ public class SwipeServiceImpl implements SwipeService {
         }else {
 
         }
-        user.setDailySwipeCount(user.getDailySwipeCount() + 1);
-        userRepository.save(user);
+
         return new SwipeResponse(isMatch);
     }
 }

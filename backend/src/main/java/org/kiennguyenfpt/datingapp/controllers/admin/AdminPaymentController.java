@@ -25,6 +25,7 @@ public class AdminPaymentController {
         this.paymentService = paymentService;
     }
 
+    /*
     // 1. Xem lịch sử các giao dịch
     @GetMapping
     public ResponseEntity getPaymentHistory(@RequestParam(value = "userId", required = false) Long userId) {
@@ -43,5 +44,7 @@ public class AdminPaymentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
+     */
 }
 

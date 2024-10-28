@@ -14,8 +14,6 @@ public interface UserService {
 
     User updateProfile(String email, UpdateProfileRequest updateProfileRequest, List<MultipartFile> files) throws IOException;
 
-    void updateAvatar(User user, String imageUrl);
-
     User findByEmail(String email);
 
     User save(User user);

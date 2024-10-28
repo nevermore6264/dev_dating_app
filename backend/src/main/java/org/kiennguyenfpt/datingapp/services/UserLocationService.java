@@ -15,4 +15,6 @@ public interface UserLocationService {
     boolean isLocationSetForUser(Long userId);
 
     Optional<UserLocation> getUserLocation(Long userId);
+
+    boolean deleteUserLocationByUserId(Long userId);
 }

@@ -79,6 +79,7 @@ public class SwipeServiceImpl implements SwipeService {
             throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "You have exceeded the maximum number of likes for today.");
         }
 
+
         // Logic to handle swipe action
         boolean isMatch = false;
 

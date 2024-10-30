@@ -6,7 +6,7 @@
     </div>
 
     <!-- Drawer Form for Contact Support -->
-    <el-drawer v-model="drawerVisible" :direction="direction" size="30%">
+    <el-drawer v-model="drawerVisible" :direction="direction" size="30%" class="contact-drawer">
       <!-- Header Slot -->
       <template #header>
         <h4>Contact Support</h4>
@@ -19,9 +19,10 @@
             <label for="full_name">Full Name</label>
             <el-input
                 id="full_name"
-                v-model="contactForm.full_name"
+                v-model="contactForm.fullName"
                 placeholder="Enter your full name"
                 class="styled-input"
+                size="large"
             ></el-input>
           </div>
 
@@ -32,6 +33,7 @@
                 v-model="contactForm.email"
                 placeholder="Enter your email"
                 class="styled-input"
+                size="large"
             ></el-input>
           </div>
 
@@ -39,9 +41,10 @@
             <label for="phone_number">Phone Number</label>
             <el-input
                 id="phone_number"
-                v-model="contactForm.phone_number"
+                v-model="contactForm.phoneNumber"
                 placeholder="Enter your phone number"
                 class="styled-input"
+                size="large"
             ></el-input>
           </div>
 
@@ -53,6 +56,7 @@
                 v-model="contactForm.message"
                 placeholder="Write your message"
                 class="styled-input"
+                :rows="10"
             ></el-input>
           </div>
         </form>
@@ -61,8 +65,8 @@
       <!-- Footer Slot -->
       <template #footer>
         <div style="text-align: right">
-          <el-button @click="cancelForm">Cancel</el-button>
-          <el-button type="primary" @click="submitContactForm">Send</el-button>
+          <el-button class="cancel-button" @click="cancelForm">Cancel</el-button>
+          <el-button class="submit-button" type="primary" @click="submitContactForm">Send</el-button>
         </div>
       </template>
     </el-drawer>
@@ -78,23 +82,25 @@ const drawerVisible = ref(false);
 const direction = ref('rtl'); // Tùy chỉnh hướng của Drawer
 
 const contactForm = ref({
-  full_name: '',
+  fullName: '',
   email: '',
-  phone_number: '',
+  phoneNumber: '',
   message: ''
 });
 
 const submitContactForm = async () => {
-  if (!contactForm.value.email || !contactForm.value.full_name || !contactForm.value.phone_number) {
+  if (!contactForm.value.email || !contactForm.value.fullName || !contactForm.value.phoneNumber) {
     ElMessage.error("Please fill in all required fields.");
     return;
   }
 
   try {
-    const result = await insertContactForm(contactForm);
-    console.log('Contact form submitted:', result);
+    await insertContactForm(contactForm.value);
+    ElMessage.success("Your contact form has been submitted successfully!");
+    contactForm.value = { fullName: '', email: '', phoneNumber: '', message: '' };
+    drawerVisible.value = false;
   } catch (error) {
-    console.error(error.message);
+    ElMessage.error(error.message || "An error occurred while submitting the contact form");
   }
 };
 
@@ -145,5 +151,31 @@ const cancelForm = () => {
   border-radius: 5px;
   font-size: 14px;
   transition: border-color 0.3s;
+}
+
+.cancel-button {
+  background-color: #666666;
+  color: #fff;
+  font-size: 20px;
+  padding: 20px 25px; /* Adjusted padding for better sizing */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button {
+  background-color: #ff4081;
+  color: #fff;
+  font-size: 20px;
+  padding: 20px 25px; /* Adjusted padding for better sizing */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #e73370; /* Slightly darker color for hover effect */
 }
 </style>

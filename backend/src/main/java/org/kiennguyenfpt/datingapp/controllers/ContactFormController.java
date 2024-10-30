@@ -27,7 +27,7 @@ public class ContactFormController {
     public ResponseEntity sendContactForm(@RequestBody ContactUsRequest contactUsRequest) { // Add a replyMessage
         CommonResponse response = new CommonResponse<>();
         try {
-            int result = contactFormService.sendContactForm(contactUsRequest); // Updated service method
+            contactFormService.sendContactForm(contactUsRequest);
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Reply sent successfully!");
             return ResponseEntity.ok(response);

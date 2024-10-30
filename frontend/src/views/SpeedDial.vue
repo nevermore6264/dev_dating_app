@@ -72,6 +72,7 @@
 <script setup>
 import { ref } from 'vue';
 import { ElMessage } from 'element-plus';
+import {insertContactForm} from "@/services/contact-service";
 
 const drawerVisible = ref(false);
 const direction = ref('rtl'); // Tùy chỉnh hướng của Drawer
@@ -83,16 +84,18 @@ const contactForm = ref({
   message: ''
 });
 
-const submitContactForm = () => {
+const submitContactForm = async () => {
   if (!contactForm.value.email || !contactForm.value.full_name || !contactForm.value.phone_number) {
     ElMessage.error("Please fill in all required fields.");
     return;
   }
 
-  console.log("Submitted data:", contactForm.value);
-  contactForm.value = { full_name: '', email: '', phone_number: '', message: '' };
-  drawerVisible.value = false;
-  ElMessage.success("Your support request has been sent!");
+  try {
+    const result = await insertContactForm(contactForm);
+    console.log('Contact form submitted:', result);
+  } catch (error) {
+    console.error(error.message);
+  }
 };
 
 const cancelForm = () => {

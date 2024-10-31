@@ -20,6 +20,7 @@ import org.kiennguyenfpt.datingapp.services.PhotoService;
 import org.kiennguyenfpt.datingapp.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,18 +45,22 @@ public class UserServiceImpl implements UserService {
 
     private final PaymentRepository paymentRepository;
 
+    private final SimpMessagingTemplate messagingTemplate;
+
     public UserServiceImpl(
             final UserRepository userRepository,
             final PhotoService photoService,
             final UserSubscriptionRepository userSubscriptionRepository,
             final SubscriptionPlanRepository subscriptionPlanRepository,
-            final PaymentRepository paymentRepository
+            final PaymentRepository paymentRepository,
+            final SimpMessagingTemplate messagingTemplate
     ) {
         this.userRepository = userRepository;
         this.photoService = photoService;
         this.userSubscriptionRepository = userSubscriptionRepository;
         this.subscriptionPlanRepository = subscriptionPlanRepository;
         this.paymentRepository = paymentRepository;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @Override
@@ -136,6 +141,11 @@ public class UserServiceImpl implements UserService {
         }
         // 6. Lưu bản ghi mới xuống cơ sở dữ liệu
         userSubscriptionRepository.save(newSubscription);
+        // Gửi thông báo tới client qua WebSocket
+        messagingTemplate.convertAndSend(
+                "/topic/changeUserPackage/" + userId,
+                "Your package has been updated to: " + SubscriptionPlanType.fromValue(planId).name()
+        );
     }
 
     /*

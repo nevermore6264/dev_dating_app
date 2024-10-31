@@ -7,7 +7,7 @@
           v-model="searchQuery"
           placeholder="Search by Email, Phone"
           style="width: 300px;"
-          @input="filterUsers"
+          @input="filteredUsers"
       >
         <template #prepend>
           <el-button :icon="Search" />

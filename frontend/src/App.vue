@@ -5,6 +5,7 @@ import './assets/element-ui.scss';
 import Snowflakes from "@/views/layout/Snowflakes.vue";
 import Footer from "@/views/layout/AppFooter.vue"; // Import Footer
 import SpeedDial from "@/views/SpeedDial.vue";
+import UserNotification from "@/views/UserNotification.vue";
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 </script>
 
@@ -16,6 +17,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
       </nav>
     </div>
   </header>
+
+  <UserNotification />
 
   <RouterView />
   <Snowflakes></Snowflakes>

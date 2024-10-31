@@ -17,6 +17,7 @@ export default {
 
     // Hàm kết nối WebSocket
     onMounted(() => {
+      console.log("xxxxxxxxxxxxxxxx")
       const userId = localStorage.getItem('userId');
       console.log('Connecting to WebSocket for user ID:', userId);
       connectWebSocket(userId, (message) => {

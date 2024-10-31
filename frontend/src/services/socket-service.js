@@ -1,19 +1,18 @@
-import { Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
+import { Stomp } from "@stomp/stompjs";
 
 let stompClient = null;
 
 export function connectWebSocket(userId, callback) {
-  const socket = new SockJS( + "http://localhost:8088/ws");
+  const socket = new SockJS("http://localhost:8088/ws"); // This should match the backend's endpoint
   stompClient = Stomp.over(socket);
-  console.log("Vao day 1213");
 
-  stompClient.connect({}, () => {
-    console.log("Vao day xxx");
+  stompClient.connect({}, (frame) => {
+    console.log('Connected: ' + frame);
 
-    // Subscribe vào topic để nhận thông báo cho userId cụ thể
+    // Subscribe to the topic for notifications
     stompClient.subscribe(`/topic/changeUserPackage/${userId}`, (message) => {
-      console.log("Vao day");
+      console.log("Message received:", message);
       if (message.body) callback(message.body);
     });
   });

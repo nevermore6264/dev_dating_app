@@ -6,6 +6,7 @@ let stompClient = null;
 export function connectWebSocket(userId, callback) {
   const socket = new SockJS( + "http://localhost:8088/ws");
   stompClient = Stomp.over(socket);
+  console.log("Vao day 1213");
 
   stompClient.connect({}, () => {
     console.log("Vao day xxx");

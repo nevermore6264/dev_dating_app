@@ -15,13 +15,14 @@ export default {
       console.log("UserNotification component mounted");
       connectSSE((message) => {
         console.log("Received message:", message);
+        localStorage.setItem("plan", message);
 
         // Hiển thị ElNotification khi nhận thông báo mới
         ElNotification({
           title: 'Notification',
-          message: message,
-          type: 'success', // Bạn có thể thay đổi thành 'info', 'warning', hoặc 'error' tùy theo loại thông báo
-          duration: 5000 // Tự động ẩn sau 5 giây
+          message: "Your package has been updated to:" + message,
+          type: 'success',
+          duration: 5000
         });
       });
     });

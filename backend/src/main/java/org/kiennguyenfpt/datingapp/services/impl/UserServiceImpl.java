@@ -142,7 +142,7 @@ public class UserServiceImpl implements UserService {
         // 6. Lưu bản ghi mới xuống cơ sở dữ liệu
         userSubscriptionRepository.save(newSubscription);
         // Gửi thông báo tới client qua WebSocket
-        String message = "Your package has been updated to: " + subscriptionPlan.getName();
+        String message = subscriptionPlan.getName();
         sseService.sendNotification(message);
     }
 

@@ -1,6 +1,7 @@
 // sse-client.js
 export function connectSSE(callback) {
-  const eventSource = new EventSource("http://localhost:8088/api/subscribe");
+  const uri = process.env.VITE_PUBLIC_BASE_URI != null ? process.env.VITE_PUBLIC_BASE_URI : "http://localhost:8088";
+  const eventSource = new EventSource(uri + "/api/subscribe"); // Thay đổi URL nếu cần
 
   eventSource.onmessage = function(event) {
     console.log("Notification:", event.data);

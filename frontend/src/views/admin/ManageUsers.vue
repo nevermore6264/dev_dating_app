@@ -241,7 +241,7 @@ const changeUserPackage = async () => {
 
   try {
     await changeUserPackageAPI(selectedUserForPackageChange.value.userId, planId);
-    await fetchUsers(); // Cập nhật lại danh sách người dùng sau khi thay đổi gói
+    await fetchUsers();
     ElNotification({
       title: 'Success',
       message: 'Package changed successfully.',

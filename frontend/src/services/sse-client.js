@@ -1,6 +1,6 @@
 // sse-client.js
 export function connectSSE(callback) {
-  const eventSource = new EventSource("http://localhost:8088/api/subscribe"); // Thay đổi URL nếu cần
+  const eventSource = new EventSource("http://localhost:8088/api/subscribe");
 
   eventSource.onmessage = function(event) {
     console.log("Notification:", event.data);

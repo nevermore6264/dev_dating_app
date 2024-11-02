@@ -17,10 +17,10 @@ import org.kiennguyenfpt.datingapp.repositories.SubscriptionPlanRepository;
 import org.kiennguyenfpt.datingapp.repositories.UserRepository;
 import org.kiennguyenfpt.datingapp.repositories.UserSubscriptionRepository;
 import org.kiennguyenfpt.datingapp.services.PhotoService;
+import org.kiennguyenfpt.datingapp.services.SseService;
 import org.kiennguyenfpt.datingapp.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
 
     private final PaymentRepository paymentRepository;
 
-    private final SimpMessagingTemplate messagingTemplate;
+    private final SseService sseService;
 
     public UserServiceImpl(
             final UserRepository userRepository,
@@ -53,14 +53,14 @@ public class UserServiceImpl implements UserService {
             final UserSubscriptionRepository userSubscriptionRepository,
             final SubscriptionPlanRepository subscriptionPlanRepository,
             final PaymentRepository paymentRepository,
-            final SimpMessagingTemplate messagingTemplate
+            final SseService sseService
     ) {
         this.userRepository = userRepository;
         this.photoService = photoService;
         this.userSubscriptionRepository = userSubscriptionRepository;
         this.subscriptionPlanRepository = subscriptionPlanRepository;
         this.paymentRepository = paymentRepository;
-        this.messagingTemplate = messagingTemplate;
+        this.sseService = sseService;
     }
 
     @Override
@@ -142,10 +142,8 @@ public class UserServiceImpl implements UserService {
         // 6. Lưu bản ghi mới xuống cơ sở dữ liệu
         userSubscriptionRepository.save(newSubscription);
         // Gửi thông báo tới client qua WebSocket
-        messagingTemplate.convertAndSend(
-                "/topic/changeUserPackage/" + userId,
-                "Your package has been updated to: " + SubscriptionPlanType.fromValue(planId).name()
-        );
+        String message = "Your package has been updated to: " + subscriptionPlan.getName();
+        sseService.sendNotification(message);
     }
 
     /*

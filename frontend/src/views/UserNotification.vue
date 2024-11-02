@@ -29,7 +29,11 @@ export default {
               title: 'Notification',
               message: "Your package has been updated to: " + message,
               type: 'success',
-              duration: 5000
+              duration: 2000,
+              onClose: () => {
+                // Reload the screen after the notification closes
+                window.location.reload();
+              }
             });
           }
         }

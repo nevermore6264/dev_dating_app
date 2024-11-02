@@ -13,22 +13,25 @@ export default {
   setup() {
     onMounted(() => {
       console.log("UserNotification component mounted");
+      let lastMessage = null;
 
       connectSSE((message) => {
         console.log("Received message:", message);
         localStorage.setItem("plan", message);
 
-        // Lấy vai trò (role) từ localStorage
-        const role = localStorage.getItem("role");
-
         // Kiểm tra nếu role không phải là "admin" thì hiển thị thông báo
-        if (role !== "admin") {
-          ElNotification({
-            title: 'Notification',
-            message: "Your package has been updated to: " + message,
-            type: 'success',
-            duration: 5000
-          });
+        if (message !== lastMessage) {  // Chỉ hiển thị khi tin nhắn khác với tin nhắn trước
+          lastMessage = message;        // Cập nhật tin nhắn cuối cùng
+          const role = localStorage.getItem("role");
+
+          if (role !== "admin") {
+            ElNotification({
+              title: 'Notification',
+              message: "Your package has been updated to: " + message,
+              type: 'success',
+              duration: 5000
+            });
+          }
         }
       });
     });

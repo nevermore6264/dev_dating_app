@@ -1,11 +1,13 @@
-export function connectSSE() {
-  const eventSource = new EventSource("http://localhost:8088/api/subscribe");
+// sse-client.js
+export function connectSSE(callback) {
+  const eventSource = new EventSource("http://localhost:8088/api/subscribe"); // Thay đổi URL nếu cần
 
   eventSource.onmessage = function(event) {
     console.log("Notification:", event.data);
+    callback(event.data); // Gọi hàm callback với dữ liệu sự kiện
   };
 
-  eventSource.onerror = function() {
-    console.log("Connection closed");
+  eventSource.onerror = function(error) {
+    console.error("SSE connection error:", error);
   };
 }

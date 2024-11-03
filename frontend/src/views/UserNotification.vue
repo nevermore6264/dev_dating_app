@@ -14,16 +14,14 @@ export default {
     onMounted(() => {
       console.log("UserNotification component mounted");
 
-      const currentUserId = localStorage.getItem("userID"); // Lấy userID của người dùng hiện tại
-      let lastPackage = null;
+      const currentUserId = localStorage.getItem("userId"); // Lấy userID của người dùng hiện tại
 
       connectSSE((message) => {
         console.log("Received message:", message);
 
         // Kiểm tra nếu userId của message trùng với userId của người dùng hiện tại
-        if (message.userId === currentUserId && message.package !== lastPackage) {
-          lastPackage = message.package; // Cập nhật package cuối cùng
-          localStorage.setItem("plan", message.package);
+        if (message.userId == currentUserId) {
+          localStorage.setItem("plan", message.plan);
 
           const role = localStorage.getItem("role");
 

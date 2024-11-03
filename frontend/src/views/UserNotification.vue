@@ -14,11 +14,13 @@ export default {
     onMounted(() => {
       console.log("UserNotification component mounted");
 
+      const currentUserId = localStorage.getItem("userId"); // Lấy userID của người dùng hiện tại
       connectSSE((message) => {
         const messageJson = JSON.parse(message);
         console.log("Received message:", messageJson);
 
         // Kiểm tra nếu userId của message trùng với userId của người dùng hiện tại
+        if (messageJson.userId === currentUserId) {
           localStorage.setItem("plan", messageJson.package);
           const role = localStorage.getItem("role");
 
@@ -33,6 +35,7 @@ export default {
                 window.location.reload();
               }
             });
+          }
         }
       });
     });

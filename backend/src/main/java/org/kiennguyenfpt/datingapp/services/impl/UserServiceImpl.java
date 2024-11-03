@@ -142,7 +142,13 @@ public class UserServiceImpl implements UserService {
         // 6. Lưu bản ghi mới xuống cơ sở dữ liệu
         userSubscriptionRepository.save(newSubscription);
         // Gửi thông báo tới client qua WebSocket
-        String message = subscriptionPlan.getName();
+        // 6. Lưu bản ghi mới xuống cơ sở dữ liệu
+        userSubscriptionRepository.save(newSubscription);
+
+        // Tạo thông điệp với userID và tên gói đăng ký
+        String message = String.format("{\"userId\": \"%s\", \"package\": \"%s\"}", userId, subscriptionPlan.getName());
+
+        // Gửi thông báo tới client qua WebSocket với userId và message
         sseService.sendNotification(message);
     }
 

@@ -22,13 +22,12 @@ export default {
         // Kiểm tra nếu userId của message trùng với userId của người dùng hiện tại
         if (message.userId == currentUserId) {
           localStorage.setItem("plan", message.plan);
-
           const role = localStorage.getItem("role");
 
           if (role !== "admin") {
             ElNotification({
               title: 'Notification',
-              message: "Your package has been updated to: " + message.package,
+              message: "Your package has been updated to: " + message.plan,
               type: 'success',
               duration: 5000,
               onClose: () => {

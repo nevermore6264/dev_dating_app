@@ -14,20 +14,18 @@ export default {
     onMounted(() => {
       console.log("UserNotification component mounted");
 
-      const currentUserId = localStorage.getItem("userId"); // Lấy userID của người dùng hiện tại
-
       connectSSE((message) => {
-        console.log("Received message:", message);
+        const messageJson = JSON.parse(message);
+        console.log("Received message:", messageJson);
 
         // Kiểm tra nếu userId của message trùng với userId của người dùng hiện tại
-        if (message.userId == currentUserId) {
-          localStorage.setItem("plan", message.plan);
+          localStorage.setItem("plan", messageJson.package);
           const role = localStorage.getItem("role");
 
           if (role !== "admin") {
             ElNotification({
               title: 'Notification',
-              message: "Your package has been updated to: " + message.plan,
+              message: "Your package has been updated to: " + messageJson.package,
               type: 'success',
               duration: 5000,
               onClose: () => {
@@ -35,7 +33,6 @@ export default {
                 window.location.reload();
               }
             });
-          }
         }
       });
     });

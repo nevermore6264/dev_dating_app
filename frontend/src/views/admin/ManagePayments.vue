@@ -32,7 +32,7 @@
         <td>{{ payment.email }}</td>
         <td>{{ formatCurrency(payment.amount) }}</td>
         <td>{{ formatDate(payment.date) }}</td>
-        <td>{{ payment.address }}</td>
+        <td>{{ payment.address != null ? payment.address : '-' }}</td>
       </tr>
       </tbody>
     </table>
